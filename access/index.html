@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>统一认证平台 - KLPBBS问卷</title>
+    <!-- 引入Bootstrap CSS -->
+    <link href="https://api.damesck.cn/api/bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://api.damesck.cn/api/bootstrap-5.3.0-alpha1-dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <script src="https://static.geetest.com/v4/gt4.js"></script>
+    <script src="https://static.geetest.com/v4/gt4.js"></script>
+    <script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="/js/utils/cookieUtil.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <br>
+    <br>
+    <br>
+    <div class="alert alert-secondary">
+        <div class="row">
+            <div class="col-sm-6 p-4">
+                <h4>KLPBBS问卷</h4>
+                <!--<h2><img src="https://s21.ax1x.com/2024/04/11/pFXQOMT.png" width="50" alt=""> damesck api</h2>-->
+                <br>
+
+                <img src="https://klpbbs.com/logo.png" alt="" width="200">
+                <br>
+                <br>
+                <a type="button" class="btn btn-success" onclick="getToken()"><i class="fa fa-chain"></i> 通过苦力怕论坛登录</a>
+                <script>
+                    function getToken() {
+                        let requestOptions = {
+                            method: 'POST',
+                        };
+
+                        fetch("https://wj.klpbbs.cn/api/user", requestOptions)
+                            .then(response => response.text())
+                            .then(result => {
+                                //set cookie
+                                setCookie("token", result, 7);
+
+                                window.location.href = `https://klpbbs.com/plugin.php?id=klpbbs_api:oauth2&appid=4474a21e0077bcd413dd975e5c9aacc339e1fd54&state=${result}`;
+                            })
+                            .catch(error => console.log('error', error));
+                    }
+                </script>
+                <!-- <p>更多功能</p> -->
+                <!-- <div class="alert alert-secondary"> -->
+                <!-- </div> -->
+            </div>
+            <div class="col-sm-4 p-3">
+
+<!--                <div class="login-form">-->
+<!--                    <h2>管理员登录</h2>-->
+<!--&lt;!&ndash;                    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">&ndash;&gt;-->
+<!--                    <div class="form-group">-->
+<!--                        <label for="uid">UID:</label>-->
+<!--                        <input type="text" name="uid" class="form-control" required>-->
+<!--                    </div>-->
+<!--                    <div class="form-group">-->
+<!--                        <label for="password">密码:</label>-->
+<!--                        <input type="password" name="password" class="form-control" required>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; <button type="button" class="btn btn-outline-light text-dark">账号激活</button>-->
+<!--                    <button type="button" class="btn btn-outline-light text-dark"><u class="text-danger">忘记密码</u></button> &ndash;&gt;-->
+<!--                    <br>-->
+<!--                    <div id="captcha" required></div>-->
+<!--                    <br>-->
+<!--                    <button type="submit" class="btn btn-primary btn-block" id="btn" name="submit">登录</button>-->
+<!--                    </form>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+    <p>2024版权所有 © KLPBBS 问卷</p>
+
+    <!-- 引入Bootstrap JavaScript -->
+</div>
+</body>
+<!-- 注意，验证码本身是不需要 jquery 库，此处使用 jquery 仅为了在 demo 中使用，减少代码量 -->
+<script src="https://apps.bdimg.com/libs/jquery/1.9.1/jquery.js"></script>
+<!-- 引入 gt.js，既可以使用其中提供的 initGeetest 初始化函数 -->
+<script src="libs/gt4.js"></script>
+<script>
+    initGeetest4({
+        captchaId: '7e111794121d87ca0959954f89580e1a',
+        product: 'float'
+    },function (captcha) {
+        // captcha为验证码实例
+        captcha.appendTo("#captcha");// 调用appendTo将验证码插入到页的某一个元素中，这个元素用户可以自定义
+        $("#btn").click(function(){
+            let result = captcha.getValidate();
+            if (!result) {
+                return alert('请完成验证');
+            }
+            result.captcha_id = "7e111794121d87ca0959954f89580e1a"
+            //your code
+            $.ajax({
+                url: 'demo/login',
+                type: 'get',
+                dataType: 'json',
+                data: result,
+                success: function (data) {
+                    if (data.result === 'success') {
+                        setTimeout(function () {
+                            alert('登录成功');
+                        }, 1500);
+                    } else if (data.result === 'fail') {
+                        setTimeout(function () {
+                            alert('登录失败，请完成验证');
+                            captcha.reset();
+                        }, 1500);
+                    }
+                }
+            });
+        })
+    });
+</script>
+</html>
