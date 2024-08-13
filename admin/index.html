@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>管理中心 - KLPBBS问卷</title>
+  <link href="https://api.damesck.net/api/bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://api.damesck.net/api/bootstrap-5.3.0-alpha1-dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 240px;
+      background-color: #f8f9fa;
+      padding-top: 70px; /* 留出空间给导航栏 */
+      z-index: 1000; /* 确保侧边栏在主内容之上 */
+      overflow-y: auto;
+    }
+    .content {
+      margin-left: 240px;
+      padding: 20px;
+    }
+    .user-info {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding-bottom: 20px;
+    }
+    .navbar {
+      z-index: 1100; /* 确保导航栏在侧边栏之上 */
+    }
+  </style>
+</head>
+<body>
+
+<!-- 顶部导航栏 -->
+<div class="sticky-top shadow mb-2" style="background-color:rgba(255,255,255,0.95)">
+  <div class="container">
+    <header class="d-flex flex-wrap pt-2 pb-2">
+      <span class="fs-4 me-auto"><i class="fa fa-paper-plane text-primary" aria-hidden="true"></i>&nbsp;管理中心</span>
+      <a href="" class="btn btn-outline-success"><i class="fa fa-home"></i> 返回首页</a>
+    </header>
+  </div>
+</div>
+
+<!-- 侧边栏 -->
+<div class="sidebar">
+  <!-- Logo -->
+  <div class="text-center mb-4">
+    <h4><b>KLPBBS问卷</b></h4>
+  </div>
+  <!-- 导航按钮 -->
+  <ul class="nav flex-column">
+    <li class="nav-item mb-2">
+      <a class="nav-link active" href="#"><i class="fa fa-dashboard"></i> 管理问卷</a>
+    </li>
+    <li class="nav-item mb-2">
+      <a class="nav-link" href="#"><i class="fa fa-bar-chart"></i> 审核问卷</a>
+    </li>
+    <li class="nav-item mb-2">
+      <a class="nav-link" href="#"><i class="fa fa-users"></i> 用户管理</a>
+    </li>
+    <li class="nav-item mb-2">
+      <a class="nav-link" href="#"><i class="fa fa-cogs"></i> 设置</a>
+    </li>
+  </ul>
+  <!-- 用户信息 -->
+  <div class="user-info p-3 bg-light border-top">
+    <p class="text-center"><strong>用户：</strong>%UID%</p>
+    <a href="#" class="btn btn-outline-secondary btn-block"><i class="fa fa-sign-out"></i> 登出</a>
+  </div>
+</div>
+
+<!-- 主要内容 -->
+<div class="content">
+  <div class="row">
+    <!-- 第一个问卷框 -->
+    <div class="col-md-2">
+      <div class="card mb-4">
+        <img src="http://iph.href.lu/350x220" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">问卷标题1</h5>
+          <p class="card-text">这里是问卷1的详细描述内容。</p>
+          <a href="#" class="btn btn-primary">管理问卷</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第二个问卷框 -->
+    <div class="col-md-2">
+      <div class="card mb-4">
+        <img src="http://iph.href.lu/350x220" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">问卷标题2</h5>
+          <p class="card-text">这里是问卷2的详细描述内容。</p>
+          <a href="#" class="btn btn-primary">管理问卷</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第三个问卷框 -->
+    <div class="col-md-2">
+      <div class="card mb-4">
+        <img src="http://iph.href.lu/350x220" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">问卷标题3</h5>
+          <p class="card-text">这里是问卷3的详细描述内容。</p>
+          <a href="#" class="btn btn-primary">管理问卷</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
