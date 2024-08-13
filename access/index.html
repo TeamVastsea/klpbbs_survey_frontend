@@ -11,7 +11,7 @@
     <script src="/js/utils/cookieUtil.js"></script>
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #ffffff; /* 将背景色改为白色 */
         }
         .logo-img {
             max-width: 120px;
@@ -29,19 +29,20 @@
             background-color: #fff;
             border: 1px solid #ccc;
             border-radius: 10px;
-            box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.1);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1); /* 调整阴影 */
             text-align: center;
         }
         .login-button {
-            padding: 12px 24px; /* 调整按钮的内边距 */
+            padding: 10px 20px; /* 调整按钮的内边距 */
             font-size: 1.2rem; /* 调整按钮字体大小 */
             background-color: #4CAF50;
-            border: 2px solid #4CAF50;
+            border: 1px solid #4CAF50; /* 调整边框宽度 */
             border-radius: 5px;
             color: #fff;
             text-decoration: none;
             transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-            display: inline-block;
+            display: block; /* 将按钮修改为块级元素，充满父容器宽度 */
+            width: 100%; /* 让按钮宽度充满父容器 */
         }
         .login-button:hover {
             background-color: #45a049;
@@ -64,12 +65,21 @@
     </style>
 </head>
 <body>
+<div class="sticky-top shadow mb-2" style="background-color:rgba(255,255,255,0.95)">
+    <div class="container">
+        <header class="d-flex flex-wrap pt-2 pb-2">
+            <span class="fs-4 me-auto"><i class="fa fa-paper-plane text-primary" aria-hidden="true"></i>&nbsp;统一身份认证 - KLPBBS问卷</span>
+            <a href="../" class="btn btn-outline-success"><i class="fa fa-home"></i> 返回首页</a>
+            <!--            <span class="d-flex fs-4 text-end"><button type="button" class="btn btn-outline-success btn-sm" onclick="copyText('我在玩国际版我的世界，用浏览器打开链接，内含200+免费国际版安卓安装包。快来和我一起体验Minecraft吧！(仅供体验，请支持正版)链接:\nhttps://mcapks.net')"><i class="fa fa-share-square-o" aria-hidden="true"></i>&nbsp;分享</button></span>-->
+        </header>
+    </div>
+</div>
 <div class="container">
     <div class="login-container">
         <div class="login-box">
             <img src="https://klpbbs.com/logo.png" alt="Logo" class="logo-img mb-4">
             <h2 class="mb-4">KLPBBS问卷</h2>
-            <a type="button" class="login-button" onclick="getToken()">通过苦力怕论坛登录</a>
+            <a type="button" href="#" class="login-button" onclick="getToken()">通过苦力怕论坛登录</a>
             <script>
                 function getToken() {
                     let requestOptions = {

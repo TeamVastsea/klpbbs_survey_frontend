@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-    <title>Bootstrap5 实例</title>
+    <title>确认登录 - KLPBBS问卷</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://api.damesck.net/api/bootstrap-5.3.0-alpha1-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -9,8 +9,16 @@
     <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="/js/utils/cookieUtil.js"></script>
     <style>
-        a.ex{
+        a.ex {
             color: darkgray;
+        }
+
+        /* 设置图片为圆形并调整大小 */
+        img.rounded-circle {
+            border-radius: 50%;
+            width: 130px; /* 你可以根据需要调整大小 */
+            height: 130px;
+            object-fit: cover; /* 确保图片按比例缩放且覆盖整个圆形 */
         }
     </style>
 </head>
@@ -20,7 +28,6 @@
         <header class="d-flex flex-wrap pt-2 pb-2">
             <span class="fs-4 me-auto"><i class="fa fa-paper-plane text-primary" aria-hidden="true"></i>&nbsp;确认登录 - KLPBBS问卷</span>
             <a href="" class="btn btn-outline-success"><i class="fa fa-home"></i> 返回首页</a>
-            <!--            <span class="d-flex fs-4 text-end"><button type="button" class="btn btn-outline-success btn-sm" onclick="copyText('我在玩国际版我的世界，用浏览器打开链接，内含200+免费国际版安卓安装包。快来和我一起体验Minecraft吧！(仅供体验，请支持正版)链接:\nhttps://mcapks.net')"><i class="fa fa-share-square-o" aria-hidden="true"></i>&nbsp;分享</button></span>-->
         </header>
     </div>
 </div>
@@ -56,29 +63,34 @@
 
         function quit() {
             clearCookie("token");
-            window.location.href = "/access";
+            window.location.href = "/verify_no.html";
         }
     </script>
 
     <div class="card" style="width: 18rem;">
-        <img src="https://user.klpbbs.com/data/avatar/001/67/72/08_avatar_big.jpg" id="avatar" class="card-img-top" alt="">
+        <!-- 添加 'rounded-circle' 类以将图片变为圆形并调整大小 -->
+        <br>
+        <img src="https://user.klpbbs.com/data/avatar/001/67/72/08_avatar_big.jpg" id="avatar" class="card-img-top rounded-circle mx-auto d-block" alt="">
         <div class="card-body text-center">
             <h5 class="card-title">确认这是你</h5>
             <p class="card-text">UID：<a id="user_id"></a> <br> 用户名：<a id="username"></a></p>
             <a href="#" class="btn btn-outline-success"><i class="fa fa-check"></i> 开始问卷</a>
             <br><br>
-            <a class="ex" onclick="quit()" href="#">这不是你？重新登陆</a>
+            <a class="ex" onclick="quit()">这不是你？重新登陆</a>
         </div>
     </div>
 </div>
-<p>2024版权所有 © KLPBBS 问卷</p>
-<!--<div class="container mt-3">-->
-<!--    <div class="alert alert-dark">-->
-<!--        <h2>正在进行验证</h2>-->
-<!--        <p>请稍后</p>-->
-<!--        <div class="spinner-border text-primary"></div>-->
-<!--    </div>-->
-<!--</div>-->
-
+<div class="container mt-3">
+    <p>
+        Copyright
+        <a href="https://klpbbs.com">
+            KLPBBS
+        </a>
+        And
+        <a href="https://github.com/TeamVastsea">
+            TeamVastsea
+        </a>
+    </p>
+</div>
 </body>
 </html>
