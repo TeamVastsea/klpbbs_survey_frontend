@@ -1,6 +1,6 @@
 'use client';
 
-import {Card, Center, Stack, Text, Image, Space} from '@mantine/core';
+import { Center, Stack, Space } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
 import UserInfoCard from '@/app/oauth/callback/components/UserInfoCard';
 

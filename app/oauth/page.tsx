@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Center, Space, Stack } from '@mantine/core';
+import { Center, Space, Stack } from '@mantine/core';
 import { LoginBanner } from '@/app/oauth/components/LoginBanner';
 
 export default function OAuthPage() {
