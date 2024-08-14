@@ -40,9 +40,11 @@ export default function HomePage() {
                 flexDirection: 'column',
                 justifyContent: 'space-between',
                 height: '100%',
+                maxWidth: '100%', // Ensure the card doesn't exceed the grid item's width
                 width: '340px',
-            }}>
-            <div>
+            }}
+        >
+            <div style={{ flex: 1 }}> {/* Ensure this div takes available space */}
                 <Card.Section>
                     <Image
                       src={survey.image}
@@ -90,6 +92,13 @@ export default function HomePage() {
             version: '可爱喵',
             description: '最喜欢 nya 了',
             image: 'https://avatars.githubusercontent.com/u/97330394?v=4',
+            link: 'https://github.com/SnowballXueQiu',
+        },
+        {
+            title: 'Test',
+            version: 'Test',
+            description: 'Test',
+            image: 'https://placehold.co/400x400',
             link: 'https://github.com/SnowballXueQiu',
         },
     ];
@@ -173,16 +182,27 @@ export default function HomePage() {
                 <Title>现有问卷</Title>
                 <SimpleGrid
                   cols={{
-                    base: 1,
-                    sm: 2,
-                }}
+                        base: 1,
+                        sm: 2,
+                    }}
                   spacing="lg"
                   style={{
-                    maxWidth: '80%',
-                    width: '100%',
-                    marginTop: '1rem', // Add space between title and grid
-                }}>
-                    {surveys.map((survey) => surveyCard(survey))}
+                        maxWidth: '80%',
+                        width: '100%',
+                        marginTop: '1rem',
+                    }}
+                >
+                    {surveys.map((survey) => (
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '100%',
+                            height: '100%',
+                        }}>
+                            {surveyCard(survey)}
+                        </div>
+                    ))}
                 </SimpleGrid>
             </Center>
         </div>
