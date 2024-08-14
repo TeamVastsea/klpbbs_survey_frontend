@@ -1,43 +1,174 @@
 'use client';
 
-import { Badge, Button, Card, Center, Group, Image, Space, Stack, Text } from '@mantine/core';
-import { useRouter } from 'next/navigation';
+import {
+    Badge,
+    Button,
+    Card,
+    Center,
+    Container,
+    Group,
+    Image,
+    SimpleGrid,
+    Space,
+    Stack,
+    Text,
+    Title
+} from '@mantine/core';
+import {useRouter} from 'next/navigation';
+import classes from '@/app/oauth/components/LoginBanner.module.css';
+
+type Survey = {
+    title: string;
+    version: string;
+    description: string;
+    image: string;
+    link: string;
+};
 
 export default function HomePage() {
     const router = useRouter();
 
+    const surveyCard = (survey: Survey) => (
+        <Card shadow="sm" padding="lg" radius="md" withBorder key={survey.title} style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: '100%'
+        }}>
+            <div>
+                <Card.Section>
+                    <Image
+                        src={survey.image}
+                        height={160}
+                        alt={survey.title}
+                    />
+                </Card.Section>
+
+                <Group justify="space-between" mt="md" mb="xs">
+                    <Text fw={500}>{survey.title}</Text>
+                    <Badge color="pink">{survey.version}</Badge>
+                </Group>
+
+                <Text size="sm" c="dimmed">
+                    {survey.description}
+                </Text>
+            </div>
+
+            <Button
+                color="blue"
+                fullWidth
+                mt="md"
+                radius="md"
+                style={{marginTop: 'auto'}}
+                component="a"
+                href={survey.link}
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                现在参加
+            </Button>
+        </Card>
+    );
+
+    const surveys: Survey[] = [
+        {
+            title: '内群卷卷',
+            version: '2.0船新版本',
+            description: '你好，欢迎参加内群入群问卷，我们希望了解你的需求，以便更好地为你服务。',
+            image: 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png',
+            link: 'oauth',
+        },
+        {
+            title: '我爱雪球',
+            version: '可爱喵',
+            description: '最喜欢 nya 了',
+            image: 'https://avatars.githubusercontent.com/u/97330394?v=4',
+            link: 'https://github.com/SnowballXueQiu',
+        },
+    ];
+
     return (
-        <Center>
-            <Stack>
-                <Space h={100} />
-                <Card shadow="sm" padding="lg" radius="md" withBorder w={300}>
-                    <Card.Section>
+        <div style={{
+            scrollSnapType: 'y mandatory',
+            overflowY: 'scroll',
+            height: '100vh'
+        }}>
+            <Center style={{
+                minHeight: '100vh',
+                scrollSnapAlign: 'start'
+            }}>
+                <SimpleGrid cols={{
+                    base: 1,
+                    sm: 2
+                }} spacing="lg" style={{
+                    maxWidth: '80%',
+                    width: '100%'
+                }}>
+                    <Stack justify="center">
+                        <Title className={classes.title}>
+                            <Text span c="#062C12" inherit>苦</Text>
+                            <Text span c="#0D4B22" inherit>力</Text>
+                            <Text span c="#089946" inherit>怕</Text>
+                            论坛 | 问卷系统
+                        </Title>
+                        <Text fw={500} fz="lg">
+                            收集更好的数据，作出更好的决策。
+                        </Text>
+                        <Space h="md"/>
+                        <Group>
+                            <Button
+                                color="blue"
+                                radius="md"
+                                onClick={() => {
+                                    router.push('https://github.com/orgs/TeamVastsea/teams/klpbbs_survey');
+                                }}
+                            >
+                                Github链接
+                            </Button>
+                            <Button
+                                color="gray"
+                                radius="md"
+                                onClick={() => {
+                                    router.push('#');
+                                }}
+                            >
+                                进入工作台
+                            </Button>
+                        </Group>
+                    </Stack>
+
+                    <Container>
                         <Image
-                          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
-                          height={160}
-                          alt="Norway"
+                            src="https://data.klpbbs.com/file/tc/img/2024/08/12/66b96cbee4ef7.png"
+                            alt="KLPBBS logo"
+                            className={classes.image}
+                            style={{
+                                maxWidth: 380,
+                                margin: '0 auto'
+                            }}
                         />
-                    </Card.Section>
+                    </Container>
+                </SimpleGrid>
+            </Center>
 
-                    <Group justify="space-between" mt="md" mb="xs">
-                        <Text fw={500}>内群卷卷</Text>
-                        <Badge color="pink">2.0船新版本</Badge>
-                    </Group>
-
-                    <Text size="sm" c="dimmed">
-                        你好，欢迎参加内群入群问卷，我们希望了解你的需求，以便更好地为你服务。
-                    </Text>
-
-                    <Button
-                      color="blue"
-                      fullWidth
-                      mt="md"
-                      radius="md"
-                      onClick={() => { router.push('oauth'); }}>
-                        现在参加
-                    </Button>
-                </Card>
-            </Stack>
-        </Center>
+            <Center style={{
+                minHeight: '100vh',
+                scrollSnapAlign: 'start',
+                flexDirection: 'column', // Stack elements vertically
+                alignItems: 'center' // Center elements horizontally
+            }}>
+                <Title>现有问卷</Title>
+                <SimpleGrid cols={{
+                    base: 1,
+                    sm: 2
+                }} spacing="lg" style={{
+                    maxWidth: '80%',
+                    width: '100%',
+                    marginTop: '1rem' // Add space between title and grid
+                }}>
+                    {surveys.map((survey) => surveyCard(survey))}
+                </SimpleGrid>
+            </Center>
+        </div>
     );
 }
