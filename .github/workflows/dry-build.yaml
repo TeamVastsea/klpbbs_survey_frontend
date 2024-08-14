@@ -1,0 +1,15 @@
+name: Dry build
+on:
+  pull_request:
+
+jobs:
+  DryBuild:
+    name: Dry build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
+      - run: yarn install --frozen-lockfile
+      - run: yarn build
