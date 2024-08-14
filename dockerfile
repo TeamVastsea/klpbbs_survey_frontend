@@ -1,16 +1,19 @@
-FROM node:21-alpine3.18 AS builder
+FROM node:21-alpine3.18 as builder
 
-WORKDIR /usr/builder
-
-ENV NEXT_PUBLIC_API_SERVER="https://wj.klpbbs.cn"
+WORKDIR /app
 
 ADD . .
 
 RUN yarn install && \
     yarn build
-
-FROM nginx
-
-COPY --from=builder /usr/builder/out /usr/share/nginx/html
-
-EXPOSE 80
+    
+    FROM node:21-alpine3.18
+    
+WORKDIR /app
+    
+COPY --from=builder /home/node/app/node_modules ./node_modules
+COPY --from=builder /home/node/app/dist ./dist
+COPY --from=builder /home/node/app/public ./public
+COPY --from=builder /home/node/app/package.json .
+    
+CMD [ "yarn", "start" ]
