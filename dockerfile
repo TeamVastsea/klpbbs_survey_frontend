@@ -1,4 +1,4 @@
-FROM node:21-alpine3.18 as builder
+FROM node:21-alpine3.18 AS builder
 
 WORKDIR /usr/builder
 
