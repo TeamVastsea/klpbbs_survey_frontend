@@ -11,9 +11,9 @@ RUN yarn install && \
     
 WORKDIR /app
     
-COPY --from=builder /home/node/app/node_modules ./node_modules
-COPY --from=builder /home/node/app/dist ./dist
-COPY --from=builder /home/node/app/public ./public
-COPY --from=builder /home/node/app/package.json .
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json .
     
 CMD [ "yarn", "start" ]
