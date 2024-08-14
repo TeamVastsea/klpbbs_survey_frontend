@@ -13,6 +13,7 @@ WORKDIR /app
     
 COPY --from=builder /usr/builder/node_modules ./node_modules
 COPY --from=builder /usr/builder/public ./public
+COPY --from=builder /usr/builder/.next/servee ./.next/server
 COPY --from=builder /usr/builder/package.json .
     
 CMD [ "yarn", "start" ]
