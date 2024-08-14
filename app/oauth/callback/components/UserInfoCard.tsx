@@ -1,4 +1,4 @@
-import { Button, Card, Center, Container, Image, Space, Text } from '@mantine/core';
+import { Button, Card, Center, Container, Space, Text, Avatar } from '@mantine/core';
 import { Cookie } from '@/components/cookie';
 
 export default function UserInfoCard(props: UserInfoCardProps) {
@@ -20,10 +20,16 @@ export default function UserInfoCard(props: UserInfoCardProps) {
               withBorder
             >
                 <Card.Section>
-                    <Image
-                      src={avatar_url}
-                      h={300}
-                    />
+                    <br />
+                    <Center
+                        w={300}
+                        h={"auto"}
+                    >
+                        <Avatar
+                            src = {avatar_url}
+                            size = "8rem"
+                        />
+                    </Center>
                 </Card.Section>
 
                 <Center>
@@ -34,13 +40,13 @@ export default function UserInfoCard(props: UserInfoCardProps) {
 
                 <Center>
                     <Text mt="xs" c="dimmed" size="sm">
-                        用户名：{props.username}
+                        UID：{props.id}
                     </Text>
                 </Center>
 
                 <Center>
                     <Text mt="xs" c="dimmed" size="sm">
-                        用户ID：{props.id}
+                        用户名：{props.username}
                     </Text>
                 </Center>
 
@@ -49,8 +55,8 @@ export default function UserInfoCard(props: UserInfoCardProps) {
                     确认是我
                 </Button>
                 <Center>
-                    <Text mt="xs" c="dimmed" size="sm" td="underline" style={{ cursor: 'pointer' }} onClick={logOut}>
-                        这不是你? 返回登陆
+                    <Text mt="xs" c="dimmed" size="sm" style={{ cursor: 'pointer' }} onClick={logOut}>
+                        这不是你? 重新登陆。
                     </Text>
                 </Center>
             </Card>
