@@ -2,9 +2,14 @@ import { Text, Title, Button, Image, Space, Container, SimpleGrid } from '@manti
 import image from './logo.png';
 import classes from './LoginBanner.module.css';
 import { Cookie } from '@/components/cookie';
+import {useState} from "react";
+import {notifications} from "@mantine/notifications";
 
 export function LoginBanner() {
+    const [loading, setLoading] = useState(false);
+
     function getLogin() {
+        setLoading(true);
         const requestOptions = {
             method: 'POST',
         };
@@ -18,7 +23,12 @@ export function LoginBanner() {
                 window.location.href = `https://klpbbs.com/plugin.php?id=klpbbs_api:oauth2&appid=4474a21e0077bcd413dd975e5c9aacc339e1fd54&state=${result}`;
             })
             .catch((e) => {
-                throw new Error(e);
+                setLoading(false);
+                notifications.show({
+                    title: '登陆失败，请将以下信息反馈给管理员',
+                    message: e.toString(),
+                    color: "red",
+                });
             });
     }
 
@@ -43,7 +53,7 @@ export function LoginBanner() {
                             </Text>
                         </Text>
                         <Space h={30} />
-                        <Button w="100%" onClick={getLogin}>登陆</Button>
+                        <Button w="100%" onClick={getLogin} loading={loading}>登陆</Button>
                     </div>
                 </SimpleGrid>
             </div>
