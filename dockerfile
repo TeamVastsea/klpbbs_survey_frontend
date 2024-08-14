@@ -1,6 +1,6 @@
 FROM node:21-alpine3.18 as builder
 
-WORKDIR /app
+WORKDIR /usr/builder
 
 ADD . .
 
@@ -11,9 +11,8 @@ RUN yarn install && \
     
 WORKDIR /app
     
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json .
+COPY --from=builder /usr/builder/node_modules ./node_modules
+COPY --from=builder /usr/builder/public ./public
+COPY --from=builder /usr/builder/package.json .
     
 CMD [ "yarn", "start" ]
