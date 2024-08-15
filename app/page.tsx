@@ -81,14 +81,14 @@ export default function HomePage() {
                                   radius="md"
                                   onClick={() => router.push('https://github.com/orgs/TeamVastsea/teams/klpbbs_survey')}
                                 >
-                                    Github链接
+                                    Github
                                 </Button>
                                 <Button
                                   color="gray"
                                   radius="md"
-                                  onClick={() => router.push('#')}
+                                  onClick={() => router.push('/oauth')}
                                 >
-                                    进入工作台
+                                    立即使用
                                 </Button>
                             </Group>
                         </Stack>
