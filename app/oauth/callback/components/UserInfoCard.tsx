@@ -22,12 +22,12 @@ export default function UserInfoCard(props: UserInfoCardProps) {
                 <Card.Section>
                     <br />
                     <Center
-                        w={300}
-                        h={"auto"}
+                      w={300}
+                      h="auto"
                     >
                         <Avatar
-                            src = {avatar_url}
-                            size = "8rem"
+                          src={avatar_url}
+                          size="8rem"
                         />
                     </Center>
                 </Card.Section>
