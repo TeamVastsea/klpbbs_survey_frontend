@@ -5,10 +5,8 @@ import classes from './Header.module.css';
 import logo from '@/public/favicon.svg';
 
 const links = [
-  { link: '/about', label: 'Features' },
-  { link: '/pricing', label: 'Pricing' },
-  { link: '/learn', label: 'Learn' },
-  { link: '/community', label: 'Community' },
+  { link: '/oauth', label: '登录' },
+  { link: 'https://klpbbs.com', label: '论坛' },
 ];
 
 export default function Header() {
@@ -43,7 +41,7 @@ export default function Header() {
       <Container size="md" className={classes.inner}>
           <Group>
               <Image src={logo.src} w={28} h={28} />
-              <Text>CREEEEEEEPER</Text>
+              <Text>苦力怕论坛 | 问卷系统</Text>
           </Group>
         <Group gap={5} visibleFrom="xs">
           {items}

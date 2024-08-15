@@ -2,7 +2,7 @@
 
 import '@mantine/core/styles.css';
 import React from 'react';
-import {MantineProvider, ColorSchemeScript, AppShell} from '@mantine/core';
+import {MantineProvider, ColorSchemeScript, AppShell, ScrollArea} from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { theme } from '../theme';
 import '@mantine/notifications/styles.css';
@@ -25,15 +25,17 @@ export default function RootLayout({ children }: { children: any }) {
         <MantineProvider theme={theme}>
             <Notifications position="top-right" />
             <AppShell>
-                <AppShell.Header>
+                <AppShell.Header h={56}>
                     <Header />
                 </AppShell.Header>
 
                 <AppShell.Main>
-                    {children}
+                    {/*<ScrollArea>*/}
+                        {children}
+                    {/*</ScrollArea>*/}
                 </AppShell.Main>
 
-                <AppShell.Footer>
+                <AppShell.Footer mah={154}>
                     <Footer />
                 </AppShell.Footer>
             </AppShell>

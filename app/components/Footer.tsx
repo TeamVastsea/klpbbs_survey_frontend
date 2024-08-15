@@ -1,10 +1,9 @@
-import { Container, Group, Anchor, Image, Center } from '@mantine/core';
+import { Container, Group, Anchor, Image } from '@mantine/core';
 import classes from './Footer.module.css';
 import logo from '@/public/favicon.svg';
 
 const links = [
-  { link: '#', label: 'Contact' },
-  { link: '#', label: 'Privacy' },
+  { link: '/about', label: '关于我们' },
 ];
 
 export default function Footer() {
@@ -20,11 +19,22 @@ export default function Footer() {
     </Anchor>
   ));
 
+  const year = new Date().getFullYear();
+
   return (
     <div>
         <Container className={classes.inner}>
           <Image src={logo.src} w={35} h={35} />
-          <p>&copy; 2024 BluBluBlu</p>
+          <p>
+            &copy; {year}&nbsp;
+            <a href="https://github.com/TeamVastsea" target="_blank" style={{ textDecoration: 'none' }} rel="noreferrer">
+              瀚海工艺
+            </a>
+            &nbsp;|&nbsp;
+            <a href="https://klpbbs.com" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+              苦力怕论坛
+            </a>
+          </p>
           <Group className={classes.links}>{items}</Group>
         </Container>
     </div>

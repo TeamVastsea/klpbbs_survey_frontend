@@ -1,9 +1,9 @@
 import { Text, Title, Button, Image, Space, Container, SimpleGrid } from '@mantine/core';
+import { useState } from 'react';
+import { notifications } from '@mantine/notifications';
 import image from './logo.png';
 import classes from './LoginBanner.module.css';
 import { Cookie } from '@/components/cookie';
-import {useState} from "react";
-import {notifications} from "@mantine/notifications";
 
 export function LoginBanner() {
     const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ export function LoginBanner() {
                 notifications.show({
                     title: '登陆失败，请将以下信息反馈给管理员',
                     message: e.toString(),
-                    color: "red",
+                    color: 'red',
                 });
             });
     }
