@@ -2,12 +2,11 @@
 
 import '@mantine/core/styles.css';
 import React from 'react';
-import {MantineProvider, ColorSchemeScript, AppShell, ScrollArea} from '@mantine/core';
+import { MantineProvider, ColorSchemeScript, AppShell } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { theme } from '../theme';
+import { theme } from '../../theme';
 import '@mantine/notifications/styles.css';
-import Header from "@/app/components/Header";
-import Footer from "@/app/components/Footer";
+import Header from '@/components/Header';
 
 export default function RootLayout({ children }: { children: any }) {
   return (
@@ -24,20 +23,21 @@ export default function RootLayout({ children }: { children: any }) {
       <body>
         <MantineProvider theme={theme}>
             <Notifications position="top-right" />
-            <AppShell>
-                <AppShell.Header h={56}>
+            <AppShell
+              style={{
+                    scrollSnapType: 'y mandatory',
+                    overflowY: 'scroll',
+                    height: '100vh',
+                }}
+              header={{ height: 60 }}
+            >
+                <AppShell.Header>
                     <Header />
                 </AppShell.Header>
 
                 <AppShell.Main>
-                    {/*<ScrollArea>*/}
-                        {children}
-                    {/*</ScrollArea>*/}
+                    {children}
                 </AppShell.Main>
-
-                <AppShell.Footer mah={154}>
-                    <Footer />
-                </AppShell.Footer>
             </AppShell>
         </MantineProvider>
       </body>

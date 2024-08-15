@@ -8,24 +8,24 @@ import {
     IconClockHour5,
 
 } from '@tabler/icons-react';
-import classes from '@/app/backstage/components/NavBar.module.css';
+import classes from './BadgeCard.module.css';
 
 const data = [
     { link: '', label: '信息', icon: IconBellRinging },
     { link: '', label: '新建问卷', icon: IconPlus },
-    { link: '', label: '最近', icon: IconClockHour5},
-    { link: '', label: '与我合作', icon: IconUsersGroup }
+    { link: '', label: '最近', icon: IconClockHour5 },
+    { link: '', label: '与我合作', icon: IconUsersGroup },
 ];
 
 export default function NavBar() {
     const [active, setActive] = useState('Billing');
     const links = data.map((item) => (
         <a
-            className={classes.link}
-            data-active={item.label === active || undefined}
-            href={item.link}
-            key={item.label}
-            onClick={(event) => {
+          className={classes.link}
+          data-active={item.label === active || undefined}
+          href={item.link}
+          key={item.label}
+          onClick={(event) => {
             event.preventDefault();
             setActive(item.label);
             }}

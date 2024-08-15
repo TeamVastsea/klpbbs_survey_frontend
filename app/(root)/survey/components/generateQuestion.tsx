@@ -1,19 +1,18 @@
 import React from 'react';
-import { Text, Title } from '@mantine/core';
-import { SingleChoice } from '@/app/survey/components/SingleChoice';
-import { MultipleChoice } from '@/app/survey/components/MultipleChoice';
-import { FileUpload } from '@/app/survey/components/FileUpload';
-import { FillBlank } from '@/app/survey/components/FillBlank';
+import { Title, Text } from '@mantine/core';
+import { SingleChoice } from './SingleChoice';
+import { MultipleChoice } from './MultipleChoice';
+import { FileUpload } from './FileUpload';
+import { FillBlank } from './FillBlank';
 
-// eslint-disable-next-line max-len
-export function generateQuestion(data: QuestionProps, value: string | undefined, setValue: (value: string) => void) {
+export function generateQuestion(data: QuestionProps) {
     switch (data.type) {
         case 1:
             return (
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <FillBlank value={value} setValue={setValue} />
+                    <FillBlank />
                 </div>
             );
         case 2:
@@ -21,7 +20,7 @@ export function generateQuestion(data: QuestionProps, value: string | undefined,
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <SingleChoice choice={data.values} value={value} setValue={setValue} />
+                    <SingleChoice choice={data.values} />
                 </div>
             );
         case 3:
@@ -29,7 +28,7 @@ export function generateQuestion(data: QuestionProps, value: string | undefined,
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <MultipleChoice choice={data.values} value={value} setValue={setValue} />
+                    <MultipleChoice choice={data.values} />
                 </div>
             );
         case 4:
@@ -60,9 +59,4 @@ export interface QuestionProps {
 export interface Value {
     content: string
     title: string
-}
-
-export interface InputProps {
-    value: string | undefined,
-    setValue: (value: string) => void,
 }

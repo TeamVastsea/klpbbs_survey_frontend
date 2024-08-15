@@ -1,12 +1,13 @@
 'use client';
+
 import {
     Grid,
     SimpleGrid,
 } from '@mantine/core';
-import NavBar from "@/app/backstage/components/NavBar";
-import Header from "@/app/components/Header"
-import BadgeCard from "@/app/backstage/components/BadgeCard";
-import "./Style.css"
+import NavBar from './components/NavBar';
+import Header from '@/components/Header';
+import BadgeCard from './components/BadgeCard';
+import './Style.css';
 
 export default function BackStage() {
     return (

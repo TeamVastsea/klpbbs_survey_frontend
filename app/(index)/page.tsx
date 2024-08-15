@@ -3,9 +3,9 @@
 import { Button, Center, Container, Group, Image, SimpleGrid, Space, Stack, Text, Title } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { min } from '@floating-ui/utils';
-import classes from '@/app/oauth/components/LoginBanner.module.css';
-import SurveyCard from '@/app/components/SurveyCard';
-import mainPageImage from '@/public/main-page.svg';
+import classes from '../(root)/oauth/components/LoginBanner.module.css';
+import SurveyCard from '@/components/SurveyCard';
+import Footer from '@/components/Footer';
 
 export type Survey = {
     title: string;
@@ -45,12 +45,6 @@ export default function HomePage() {
     return (
         <>
             <div
-              style={{
-                    scrollSnapType: 'y mandatory',
-                    overflowY: 'scroll',
-                    height: '100vh',
-                    paddingTop: '60px',
-                }}
             >
                 <Center
                   style={{
@@ -64,40 +58,38 @@ export default function HomePage() {
                       spacing="lg"
                       style={{ maxWidth: '80%', width: '100%' }}
                     >
-                        <Center>
-                            <Stack justify="center">
-                                <Title className={classes.title}>
-                                    <Text span c="#008D57" inherit>苦</Text>
-                                    <Text span c="#13AE67" inherit>力</Text>
-                                    <Text span c="#089946" inherit>怕</Text>
-                                    论坛
-                                </Title>
-                                <Title>&#62; 问卷系统</Title>
-                                <Text fw={500} fz="lg">收集更好的数据，作出更好的决策。</Text>
-                                <Space h="md" />
-                                <Group>
-                                    <Button
-                                        color="blue"
-                                        radius="md"
-                                        onClick={() => router.push('https://github.com/orgs/TeamVastsea/teams/klpbbs_survey')}
-                                    >
-                                        Github
-                                    </Button>
-                                    <Button
-                                        color="gray"
-                                        radius="md"
-                                        onClick={() => router.push('/oauth')}
-                                    >
-                                        立即使用
-                                    </Button>
-                                </Group>
-                            </Stack>
-                        </Center>
+                        <Stack justify="center">
+                            <Title className={classes.title}>
+                                <Text span c="#008D57" inherit>苦</Text>
+                                <Text span c="#13AE67" inherit>力</Text>
+                                <Text span c="#089946" inherit>怕</Text>
+                                论坛
+                            </Title>
+                            <Title>&#62; 问卷系统</Title>
+                            <Text fw={500} fz="lg">收集更好的数据，作出更好的决策。</Text>
+                            <Space h="md" />
+                            <Group>
+                                <Button
+                                  color="blue"
+                                  radius="md"
+                                  onClick={() => router.push('https://github.com/orgs/TeamVastsea/teams/klpbbs_survey')}
+                                >
+                                    Github
+                                </Button>
+                                <Button
+                                  color="gray"
+                                  radius="md"
+                                  onClick={() => router.push('/oauth')}
+                                >
+                                    立即使用
+                                </Button>
+                            </Group>
+                        </Stack>
 
                         <Container>
                             <Image
-                              src={mainPageImage.src}
-                              alt="Main Page Image"
+                              src="favicon.svg"
+                              alt="KLPBBS logo"
                               className={classes.image}
                               style={{ maxWidth: 380, margin: '0 auto' }}
                             />
@@ -110,6 +102,7 @@ export default function HomePage() {
                         minHeight: '100vh',
                         scrollSnapAlign: 'start',
                         scrollSnapStop: 'always',
+                        paddingTop: 60,
                     }}
                 >
                     <Stack>
@@ -133,6 +126,7 @@ export default function HomePage() {
                                 ))}
                             </SimpleGrid>
                         </Center>
+                        <Footer />
                     </Stack>
                 </Center>
             </div>
