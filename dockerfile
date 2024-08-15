@@ -5,10 +5,7 @@ WORKDIR /usr/builder
 ADD . .
 
 RUN yarn install && \
-    yarn build
+    yarn build && \
+    yarn start
 
-FROM nginx
-
-COPY --from=builder /usr/builder/out /usr/share/nginx/html
-
-EXPOSE 80
+EXPOSE 3000
