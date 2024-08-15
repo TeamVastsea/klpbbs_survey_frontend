@@ -1,4 +1,5 @@
 import React from 'react';
+import { Title, Text } from '@mantine/core';
 import { SingleChoice } from '@/app/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/survey/components/MultipleChoice';
 import { FileUpload } from '@/app/survey/components/FileUpload';
@@ -19,7 +20,7 @@ export function generateQuestion(data: QuestionData) {
         case 1:
             return (
                 <div key={data.id}>
-                    <h3>{data.title}</h3>
+                    <Title order={3}>{`${data.id}. ${data.title}`}</Title>
                     <p>{data.description}</p>
                     <FillBlank />
                 </div>
@@ -27,7 +28,7 @@ export function generateQuestion(data: QuestionData) {
         case 2:
             return (
                 <div key={data.id}>
-                    <h3>{data.title}</h3>
+                    <Title order={3}>{`${data.id}. ${data.title}`}</Title>
                     <p>{data.description}</p>
                     <SingleChoice data={parsedValues} />
                 </div>
@@ -35,7 +36,7 @@ export function generateQuestion(data: QuestionData) {
         case 3:
             return (
                 <div key={data.id}>
-                    <h3>{data.title}</h3>
+                    <Title order={3}>{`${data.id}. ${data.title}`}</Title>
                     <p>{data.description}</p>
                     <MultipleChoice data={parsedValues} />
                 </div>
@@ -43,12 +44,16 @@ export function generateQuestion(data: QuestionData) {
         case 4:
             return (
                 <div key={data.id}>
-                    <h3>{data.title}</h3>
+                    <Title order={3}>{`${data.id}. ${data.title}`}</Title>
                     <p>{data.description}</p>
                     <FileUpload />
                 </div>
             );
         default:
-            return null;
+            return (
+                <div>
+                    <Text>Failed to fetch questions!</Text>
+                </div>
+            );
     }
 }
