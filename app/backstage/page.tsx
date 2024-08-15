@@ -4,7 +4,7 @@ import {
     SimpleGrid,
 } from '@mantine/core';
 import NavBar from "@/app/backstage/components/NavBar";
-import Header from "@/app/backstage/components/Header"
+import Header from "@/app/components/Header"
 import BadgeCard from "@/app/backstage/components/BadgeCard";
 import "./Style.css"
 
