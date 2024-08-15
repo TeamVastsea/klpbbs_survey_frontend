@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import {Group, Radio, Space, Stack, Text} from '@mantine/core';
+import { Group, Radio, Space, Stack, Text } from '@mantine/core';
 import classes from './SingleChoice.module.css';
-import {Value} from "@/app/survey/components/generateQuestion";
+import { Value } from '@/app/survey/components/generateQuestion';
 
 export function SingleChoice(props: ChoiceProps) {
     const [value, setValue] = useState<string | null>(null);

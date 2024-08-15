@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {Center, Title, Stack, Space} from '@mantine/core';
+import { Center, Title, Stack, Space } from '@mantine/core';
 import { generateQuestion } from '@/app/survey/components/generateQuestion';
 import questionsData from '@/app/survey/data/example.json';
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Checkbox, Group, Space, Stack, Text} from '@mantine/core';
+import { Checkbox, Group, Space, Stack, Text } from '@mantine/core';
 import classes from './MultipleChoice.module.css';
 import { ChoiceProps } from '@/app/survey/components/SingleChoice';
 
