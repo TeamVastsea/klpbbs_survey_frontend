@@ -9,7 +9,6 @@ export default function Survey() {
     const [questions, setQuestions] = useState<any[]>([]);
 
     useEffect(() => {
-        // Parse the JSON data and set it to state
         setQuestions(questionsData);
     }, []);
 
@@ -19,12 +18,13 @@ export default function Survey() {
           align="stretch"
           justify="center"
           gap="md"
+          style={{ padding: '20px 0' }}
         >
             <Center>
                 <Title>Survey</Title>
             </Center>
             <Center>
-                <Stack>
+                <Stack style={{ width: '340px' }}>
                     {questions.map((question) => generateQuestion(question))}
                 </Stack>
             </Center>
