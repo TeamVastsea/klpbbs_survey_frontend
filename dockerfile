@@ -1,11 +1,10 @@
-FROM node:21-alpine3.18 as builder
+FROM node:21-alpine3.18
 
-WORKDIR /usr/builder
+WORKDIR /app
 
 ADD . .
 
 RUN yarn install && \
-    yarn build && \
-    yarn start
+    yarn build
 
-EXPOSE 3000
+CMD [ "yarn", "start" ]
