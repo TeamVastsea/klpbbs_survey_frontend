@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Checkbox, Group, Stack, Text } from '@mantine/core';
+import {Checkbox, Group, Space, Stack, Text} from '@mantine/core';
 import classes from './MultipleChoice.module.css';
 import { ChoiceProps } from '@/app/survey/components/SingleChoice';
 
@@ -24,17 +24,19 @@ export function MultipleChoice(props: ChoiceProps) {
             <Checkbox.Group
               value={value}
               onChange={setValue}
-              label="Pick multiple options"
-              description="Choose one or more options"
+              // label="Pick multiple options"
+              // description="Choose one or more options"
             >
                 <Stack pt="md" gap="xs">
                     {cards}
                 </Stack>
             </Checkbox.Group>
 
-            <Text fz="xs" mt="md">
-                CurrentValue: {value.join(', ') || '–'}
-            </Text>
+            <Space h={40} />
+
+            {/*<Text fz="xs" mt="md">*/}
+            {/*    CurrentValue: {value.join(', ') || '–'}*/}
+            {/*</Text>*/}
         </>
     );
 }

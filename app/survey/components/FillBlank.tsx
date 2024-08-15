@@ -1,4 +1,4 @@
-import { Text, Textarea } from '@mantine/core';
+import { Space, Textarea } from '@mantine/core';
 import React, { useRef, useState } from 'react';
 
 export function FillBlank() {
@@ -12,8 +12,8 @@ export function FillBlank() {
     return (
         <>
             <Textarea
-              label="Autosize with 4 rows max"
-              placeholder="Autosize with 4 rows max"
+              // label="Autosize with 4 rows max"
+              // placeholder="Autosize with 4 rows max"
               autosize
               minRows={2}
               maxRows={4}
@@ -21,9 +21,11 @@ export function FillBlank() {
               onChange={handleChange}
             />
 
-            <Text fz="xs" mt="md">
-                CurrentValue: {currentValue || '–'}
-            </Text>
+            <Space h={40} />
+
+            {/*<Text fz="xs" mt="md">*/}
+            {/*    CurrentValue: {currentValue || '–'}*/}
+            {/*</Text>*/}
         </>
     );
 }

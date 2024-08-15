@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Group, Radio, Stack, Text } from '@mantine/core';
+import {Group, Radio, Space, Stack, Text} from '@mantine/core';
 import classes from './SingleChoice.module.css';
 import {Value} from "@/app/survey/components/generateQuestion";
 
@@ -24,17 +24,19 @@ export function SingleChoice(props: ChoiceProps) {
             <Radio.Group
               value={value}
               onChange={setValue}
-              label="Pick one option"
-              description="Choose an option"
+              // label="Pick one option"
+              // description="Choose an option"
             >
                 <Stack pt="md" gap="xs">
                     {cards}
                 </Stack>
             </Radio.Group>
 
-            <Text fz="xs" mt="md">
-                CurrentValue: {value || '–'}
-            </Text>
+            <Space h={40} />
+
+            {/*<Text fz="xs" mt="md">*/}
+            {/*    CurrentValue: {value || '–'}*/}
+            {/*</Text>*/}
         </>
     );
 }
