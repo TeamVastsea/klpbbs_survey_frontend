@@ -1,4 +1,4 @@
-import { FileInput, rem } from '@mantine/core';
+import { FileInput, rem, Space } from '@mantine/core';
 import { IconFileCv } from '@tabler/icons-react';
 
 export function FileUpload() {
@@ -8,10 +8,11 @@ export function FileUpload() {
         <>
             <FileInput
               leftSection={icon}
-              label="Attach your file"
-              placeholder="Your file"
+              // label="Attach your file"
               leftSectionPointerEvents="none"
             />
+
+            <Space h={40} />
         </>
     );
 }

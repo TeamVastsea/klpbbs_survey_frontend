@@ -1,11 +1,13 @@
-import { useState } from 'react';
 import { Checkbox, Group, Space, Stack, Text } from '@mantine/core';
 import classes from './MultipleChoice.module.css';
 import { ChoiceProps } from '@/app/survey/components/SingleChoice';
 
 export function MultipleChoice(props: ChoiceProps) {
-    const [value, setValue] = useState<string[]>([]);
     const data = props.choice;
+
+    function setValue(value: string[]) {
+        props.setValue(JSON.stringify(value));
+    }
 
     const cards = data.map(({ title, content }, index) => (
         <Checkbox.Card className={classes.root} radius="md" value={index.toString()} key={index}>
@@ -22,10 +24,8 @@ export function MultipleChoice(props: ChoiceProps) {
     return (
         <>
             <Checkbox.Group
-              value={value}
+              value={props.value === undefined ? [] : JSON.parse(props.value)}
               onChange={setValue}
-              // label="Pick multiple options"
-              // description="Choose one or more options"
             >
                 <Stack pt="md" gap="xs">
                     {cards}

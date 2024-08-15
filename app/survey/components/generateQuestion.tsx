@@ -1,18 +1,19 @@
 import React from 'react';
-import { Title, Text } from '@mantine/core';
+import { Text, Title } from '@mantine/core';
 import { SingleChoice } from '@/app/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/survey/components/MultipleChoice';
 import { FileUpload } from '@/app/survey/components/FileUpload';
 import { FillBlank } from '@/app/survey/components/FillBlank';
 
-export function generateQuestion(data: QuestionProps) {
+// eslint-disable-next-line max-len
+export function generateQuestion(data: QuestionProps, value: string | undefined, setValue: (value: string) => void) {
     switch (data.type) {
         case 1:
             return (
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <FillBlank />
+                    <FillBlank value={value} setValue={setValue} />
                 </div>
             );
         case 2:
@@ -20,7 +21,7 @@ export function generateQuestion(data: QuestionProps) {
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <SingleChoice choice={data.values} />
+                    <SingleChoice choice={data.values} value={value} setValue={setValue} />
                 </div>
             );
         case 3:
@@ -28,7 +29,7 @@ export function generateQuestion(data: QuestionProps) {
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <MultipleChoice choice={data.values} />
+                    <MultipleChoice choice={data.values} value={value} setValue={setValue} />
                 </div>
             );
         case 4:
@@ -59,4 +60,9 @@ export interface QuestionProps {
 export interface Value {
     content: string
     title: string
+}
+
+export interface InputProps {
+    value: string | undefined,
+    setValue: (value: string) => void,
 }

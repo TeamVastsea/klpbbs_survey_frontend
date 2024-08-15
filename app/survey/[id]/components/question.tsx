@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
-import { generateQuestion, QuestionProps } from '@/app/survey/components/generateQuestion';
+import { generateQuestion, InputProps, QuestionProps } from '@/app/survey/components/generateQuestion';
 
 export default function Question(props: PageQuestionProps) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
@@ -28,11 +28,11 @@ export default function Question(props: PageQuestionProps) {
 
     return (
         <>
-            {question ? generateQuestion(question) : null}
+            {question ? generateQuestion(question, props.value, props.setValue) : null}
         </>
     );
 }
 
-export interface PageQuestionProps {
+export interface PageQuestionProps extends InputProps {
     id: string,
 }
