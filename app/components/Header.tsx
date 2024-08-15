@@ -30,7 +30,15 @@ export default function Header() {
   ));
 
   return (
-    <header className={classes.header}>
+    <header
+      className={classes.header}
+      style={{
+          position: 'fixed',
+          top: 0,
+          width: '100%',
+          zIndex: 1000,
+      }}
+      >
       <Container size="md" className={classes.inner}>
         <p>Logo size 28</p>
         <Group gap={5} visibleFrom="xs">
