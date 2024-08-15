@@ -8,8 +8,8 @@ export function FileUpload() {
         <>
             <FileInput
               leftSection={icon}
-              label="Attach your CV"
-              placeholder="Your CV"
+              label="Attach your file"
+              placeholder="Your file"
               leftSectionPointerEvents="none"
             />
         </>

@@ -2,31 +2,25 @@ import { useState } from 'react';
 import { Group, Radio, Stack, Text } from '@mantine/core';
 import classes from './SingleChoice.module.css';
 
-const data = [
-    {
-        name: '@mantine/core',
-        description: 'Core components library: inputs, buttons, overlays, etc.',
-    },
-    {
-        name: '@mantine/hooks',
-        description: 'Collection of reusable hooks for React applications.',
-    },
-    {
-        name: '@mantine/notifications',
-        description: 'Notifications system',
-    },
-];
+interface Choice {
+    title: string;
+    content: string;
+}
 
-export function SingleChoice() {
+interface SingleChoiceProps {
+    data: Choice[];
+}
+
+export function SingleChoice({ data }: SingleChoiceProps) {
     const [value, setValue] = useState<string | null>(null);
 
     const cards = data.map((item) => (
-        <Radio.Card className={classes.root} radius="md" value={item.name} key={item.name}>
+        <Radio.Card className={classes.root} radius="md" value={item.title} key={item.title}>
             <Group wrap="nowrap" align="flex-start">
                 <Radio.Indicator />
                 <div>
-                    <Text className={classes.label}>{item.name}</Text>
-                    <Text className={classes.description}>{item.description}</Text>
+                    <Text className={classes.label}>{item.title}</Text>
+                    <Text className={classes.description}>{item.content}</Text>
                 </div>
             </Group>
         </Radio.Card>
@@ -37,8 +31,8 @@ export function SingleChoice() {
             <Radio.Group
               value={value}
               onChange={setValue}
-              label="Pick one package to install"
-              description="Choose a package that you will need in your application"
+              label="Pick one option"
+              description="Choose an option"
             >
                 <Stack pt="md" gap="xs">
                     {cards}

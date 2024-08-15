@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "type": 1,
+    "title": "FillBlank Question",
+    "description": "example description",
+    "condition": null
+  },
+  {
+    "id": 2,
+    "type": 2,
+    "title": "Single Choice Question",
+    "description": "example description",
+    "values": [
+      "{\"title\": \"A\", \"content\": \"Option A description\"}",
+      "{\"title\": \"B\", \"content\": \"Option B description\"}",
+      "{\"title\": \"C\", \"content\": \"Option C description\"}",
+      "{\"title\": \"D\", \"content\": \"Option D description\"}"
+    ],
+    "condition": null
+  },
+  {
+    "id": 3,
+    "type": 3,
+    "title": "Multiple Choice Question",
+    "description": "example description",
+    "values": [
+      "{\"title\": \"A\", \"content\": \"Option A description\"}",
+      "{\"title\": \"B\", \"content\": \"Option B description\"}",
+      "{\"title\": \"C\", \"content\": \"Option C description\"}",
+      "{\"title\": \"D\", \"content\": \"Option D description\"}"
+    ],
+    "condition": null
+  },
+  {
+    "id": 4,
+    "type": 4,
+    "title": "File Upload Question",
+    "description": "example description",
+    "condition": null
+  }
+]

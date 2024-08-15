@@ -2,25 +2,25 @@ import { useState } from 'react';
 import { Checkbox, Group, Stack, Text } from '@mantine/core';
 import classes from './MultipleChoice.module.css';
 
-const data = [
-    {
-        name: '@mantine/core',
-        description: 'Core components library: inputs, buttons, overlays, etc.',
-    },
-    { name: '@mantine/hooks', description: 'Collection of reusable hooks for React applications.' },
-    { name: '@mantine/notifications', description: 'Notifications system' },
-];
+interface Choice {
+    title: string;
+    content: string;
+}
 
-export function MultipleChoice() {
+interface MultipleChoiceProps {
+    data: Choice[];
+}
+
+export function MultipleChoice({ data }: MultipleChoiceProps) {
     const [value, setValue] = useState<string[]>([]);
 
     const cards = data.map((item) => (
-        <Checkbox.Card className={classes.root} radius="md" value={item.name} key={item.name}>
+        <Checkbox.Card className={classes.root} radius="md" value={item.title} key={item.title}>
             <Group wrap="nowrap" align="flex-start">
                 <Checkbox.Indicator />
                 <div>
-                    <Text className={classes.label}>{item.name}</Text>
-                    <Text className={classes.description}>{item.description}</Text>
+                    <Text className={classes.label}>{item.title}</Text>
+                    <Text className={classes.description}>{item.content}</Text>
                 </div>
             </Group>
         </Checkbox.Card>
@@ -31,8 +31,8 @@ export function MultipleChoice() {
             <Checkbox.Group
               value={value}
               onChange={setValue}
-              label="Pick packages to install"
-              description="Choose all packages that you will need in your application"
+              label="Pick multiple options"
+              description="Choose one or more options"
             >
                 <Stack pt="md" gap="xs">
                     {cards}
