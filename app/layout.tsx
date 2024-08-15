@@ -1,14 +1,13 @@
+'use client';
+
 import '@mantine/core/styles.css';
 import React from 'react';
-import { MantineProvider, ColorSchemeScript } from '@mantine/core';
+import {MantineProvider, ColorSchemeScript, AppShell} from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { theme } from '../theme';
 import '@mantine/notifications/styles.css';
-
-export const metadata = {
-  title: 'Mantine Next.js template',
-  description: 'I am using Mantine with Next.js!',
-};
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
 
 export default function RootLayout({ children }: { children: any }) {
   return (
@@ -20,11 +19,24 @@ export default function RootLayout({ children }: { children: any }) {
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
+          <title>苦力怕论坛 | 问卷系统</title>
       </head>
       <body>
         <MantineProvider theme={theme}>
             <Notifications position="top-right" />
-            {children}
+            <AppShell>
+                <AppShell.Header>
+                    <Header />
+                </AppShell.Header>
+
+                <AppShell.Main>
+                    {children}
+                </AppShell.Main>
+
+                <AppShell.Footer>
+                    <Footer />
+                </AppShell.Footer>
+            </AppShell>
         </MantineProvider>
       </body>
     </html>

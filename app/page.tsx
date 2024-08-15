@@ -45,8 +45,6 @@ export default function HomePage() {
 
     return (
         <>
-            <Header />
-
             <div
               style={{
                     scrollSnapType: 'y mandatory',
@@ -137,8 +135,6 @@ export default function HomePage() {
                     </Stack>
                 </Center>
             </div>
-
-            <Footer />
         </>
     );
 }

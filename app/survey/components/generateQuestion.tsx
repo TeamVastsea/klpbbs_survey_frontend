@@ -5,47 +5,37 @@ import { MultipleChoice } from '@/app/survey/components/MultipleChoice';
 import { FileUpload } from '@/app/survey/components/FileUpload';
 import { FillBlank } from '@/app/survey/components/FillBlank';
 
-interface QuestionData {
-    id: number;
-    type: number;
-    title: string;
-    description: string;
-    values?: string[];
-}
-
-export function generateQuestion(data: QuestionData) {
-    const parsedValues = data.values ? data.values.map((v) => JSON.parse(v)) : [];
-
+export function generateQuestion(data: QuestionProps) {
     switch (data.type) {
         case 1:
             return (
                 <div key={data.id}>
-                    <Title order={3}>{`${data.id}. ${data.title}`}</Title>
-                    <p>{data.description}</p>
+                    <Title order={3}>{`${data.content.title}`}</Title>
+                    <p>{data.content.content}</p>
                     <FillBlank />
                 </div>
             );
         case 2:
             return (
                 <div key={data.id}>
-                    <Title order={3}>{`${data.id}. ${data.title}`}</Title>
-                    <p>{data.description}</p>
-                    <SingleChoice data={parsedValues} />
+                    <Title order={3}>{`${data.content.title}`}</Title>
+                    <p>{data.content.content}</p>
+                    <SingleChoice choice={data.values} />
                 </div>
             );
         case 3:
             return (
                 <div key={data.id}>
-                    <Title order={3}>{`${data.id}. ${data.title}`}</Title>
-                    <p>{data.description}</p>
-                    <MultipleChoice data={parsedValues} />
+                    <Title order={3}>{`${data.content.title}`}</Title>
+                    <p>{data.content.content}</p>
+                    <MultipleChoice choice={data.values} />
                 </div>
             );
         case 4:
             return (
                 <div key={data.id}>
-                    <Title order={3}>{`${data.id}. ${data.title}`}</Title>
-                    <p>{data.description}</p>
+                    <Title order={3}>{`${data.content.title}`}</Title>
+                    <p>{data.content.content}</p>
                     <FileUpload />
                 </div>
             );
@@ -56,4 +46,17 @@ export function generateQuestion(data: QuestionData) {
                 </div>
             );
     }
+}
+
+export interface QuestionProps {
+    id: string
+    content: Value
+    type: number
+    values: Value[]
+    condition: any
+}
+
+export interface Value {
+    content: string
+    title: string
 }

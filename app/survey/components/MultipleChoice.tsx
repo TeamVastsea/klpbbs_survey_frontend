@@ -1,26 +1,19 @@
 import { useState } from 'react';
 import { Checkbox, Group, Stack, Text } from '@mantine/core';
 import classes from './MultipleChoice.module.css';
+import { ChoiceProps } from '@/app/survey/components/SingleChoice';
 
-interface Choice {
-    title: string;
-    content: string;
-}
-
-interface MultipleChoiceProps {
-    data: Choice[];
-}
-
-export function MultipleChoice({ data }: MultipleChoiceProps) {
+export function MultipleChoice(props: ChoiceProps) {
     const [value, setValue] = useState<string[]>([]);
+    const data = props.choice;
 
-    const cards = data.map((item) => (
-        <Checkbox.Card className={classes.root} radius="md" value={item.title} key={item.title}>
+    const cards = data.map(({ title, content }, index) => (
+        <Checkbox.Card className={classes.root} radius="md" value={index.toString()} key={index}>
             <Group wrap="nowrap" align="flex-start">
                 <Checkbox.Indicator />
                 <div>
-                    <Text className={classes.label}>{item.title}</Text>
-                    <Text className={classes.description}>{item.content}</Text>
+                    <Text className={classes.label}>{title}</Text>
+                    <Text className={classes.description}>{content}</Text>
                 </div>
             </Group>
         </Checkbox.Card>

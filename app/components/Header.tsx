@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Container, Group, Burger } from '@mantine/core';
+import {Container, Group, Burger, Image, Text} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './Header.module.css';
+import logo from '@/public/favicon.svg';
 
 const links = [
   { link: '/about', label: 'Features' },
@@ -40,7 +41,10 @@ export default function Header() {
       }}
       >
       <Container size="md" className={classes.inner}>
-        <p>Logo size 28</p>
+          <Group>
+              <Image src={logo.src} w={28} h={28} />
+              <Text>CREEEEEEEPER</Text>
+          </Group>
         <Group gap={5} visibleFrom="xs">
           {items}
         </Group>

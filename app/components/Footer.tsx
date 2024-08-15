@@ -1,5 +1,6 @@
-import { Container, Group, Anchor } from '@mantine/core';
+import { Container, Group, Anchor, Image, Center } from '@mantine/core';
 import classes from './Footer.module.css';
+import logo from '@/public/favicon.svg';
 
 const links = [
   { link: '#', label: 'Contact' },
@@ -20,12 +21,12 @@ export default function Footer() {
   ));
 
   return (
-    <div className={classes.footer}>
-      <Container className={classes.inner}>
-        <p>Logo Size 28</p>
+    <div>
+        <Container className={classes.inner}>
+          <Image src={logo.src} w={35} h={35} />
           <p>&copy; 2024 BluBluBlu</p>
-        <Group className={classes.links}>{items}</Group>
-      </Container>
+          <Group className={classes.links}>{items}</Group>
+        </Container>
     </div>
   );
 }
