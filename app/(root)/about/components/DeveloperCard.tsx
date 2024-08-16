@@ -2,7 +2,7 @@ import { Avatar, Badge, Button, Group, Stack, Text, Title } from '@mantine/core'
 
 interface DeveloperCardProps {
     name: string;
-    badge: string;
+    badges?: string[];
     description: string;
     links: { name: string; url: string }[];
     logo: string;
@@ -10,7 +10,7 @@ interface DeveloperCardProps {
 
 export default function DeveloperCard({
                                           name,
-                                          badge,
+                                          badges = [], // Provide a default empty array if badges is undefined
                                           description,
                                           links,
                                           logo,
@@ -20,7 +20,11 @@ export default function DeveloperCard({
             <Avatar src={logo} alt={name} size="8rem" />
             <Stack>
                 <Title order={3}>{name}</Title>
-                <Badge>{badge}</Badge>
+                <Group>
+                    {badges.map((badge, idx) => (
+                        <Badge key={idx}>{badge}</Badge>
+                    ))}
+                </Group>
                 <Text>{description}</Text>
                 <Group>
                     {links.map((link, idx) => (

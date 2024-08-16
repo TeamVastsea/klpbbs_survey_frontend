@@ -1,7 +1,7 @@
 [
   {
     "name": "zrll_",
-    "badge": "Full Stack Developer",
+    "badges": ["Full Stack Developer", "Mentor"],
     "description": "John is a full stack developer with 10 years of experience.",
     "links": [
       {
@@ -17,7 +17,7 @@
   },
   {
     "name": "Jane Smith",
-    "badge": "Frontend Developer",
+    "badges": ["Frontend Developer", "UI/UX Designer"],
     "description": "Jane is a skilled frontend developer with a focus on user experience.",
     "links": [
       {
