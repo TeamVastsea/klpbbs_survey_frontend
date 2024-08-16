@@ -1,12 +1,15 @@
 import React from 'react';
-import { Text, Title } from '@mantine/core';
-import { SingleChoice } from '@/app/survey/components/SingleChoice';
-import { MultipleChoice } from '@/app/survey/components/MultipleChoice';
-import { FileUpload } from '@/app/survey/components/FileUpload';
-import { FillBlank } from '@/app/survey/components/FillBlank';
+import { Title, Text } from '@mantine/core';
+import { SingleChoice } from './SingleChoice';
+import { MultipleChoice } from './MultipleChoice';
+import { FileUpload } from './FileUpload';
+import { FillBlank } from './FillBlank';
 
-// eslint-disable-next-line max-len
-export function generateQuestion(data: QuestionProps, value: string | undefined, setValue: (value: string) => void) {
+export function generateQuestion(
+    data: QuestionProps,
+    value: string | undefined,
+    setValue: (value: string) => void
+) {
     switch (data.type) {
         case 1:
             return (

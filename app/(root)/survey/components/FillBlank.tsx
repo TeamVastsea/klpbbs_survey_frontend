@@ -1,6 +1,6 @@
 import { Space, Textarea } from '@mantine/core';
 import React, { useRef } from 'react';
-import { InputProps } from '@/app/survey/components/generateQuestion';
+import type { InputProps } from './generateQuestion';
 
 export function FillBlank(proos: InputProps) {
     const ref = useRef<HTMLTextAreaElement>(null);

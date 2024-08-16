@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Center, Title, Stack, Space } from '@mantine/core';
-import { generateQuestion } from '@/app/survey/components/generateQuestion';
-import questionsData from '@/app/survey/data/example.json';
+import { Center, Title, Stack } from '@mantine/core';
+import { generateQuestion } from './components/generateQuestion';
+import questionsData from './data/example.json';
 
 export default function Survey() {
     const [questions, setQuestions] = useState<any[]>([]);
@@ -28,7 +28,6 @@ export default function Survey() {
                     {questions.map((question) => generateQuestion(question))}
                 </Stack>
             </Center>
-            <Space h={100} />
         </Stack>
     );
 }

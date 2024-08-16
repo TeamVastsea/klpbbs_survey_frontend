@@ -1,6 +1,6 @@
 import { Checkbox, Group, Space, Stack, Text } from '@mantine/core';
 import classes from './MultipleChoice.module.css';
-import { ChoiceProps } from '@/app/survey/components/SingleChoice';
+import { ChoiceProps } from './SingleChoice';
 
 export function MultipleChoice(props: ChoiceProps) {
     const data = props.choice;

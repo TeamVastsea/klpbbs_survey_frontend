@@ -2,7 +2,7 @@
 
 import { Center, Stack, Space } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
-import UserInfoCard from '@/app/oauth/callback/components/UserInfoCard';
+import UserInfoCard from './components/UserInfoCard';
 
 export default function CallbackPage() {
     const searchParams = useSearchParams();

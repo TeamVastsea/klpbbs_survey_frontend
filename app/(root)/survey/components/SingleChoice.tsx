@@ -1,6 +1,6 @@
 import { Group, Radio, Space, Stack, Text } from '@mantine/core';
 import classes from './SingleChoice.module.css';
-import { InputProps, Value } from '@/app/survey/components/generateQuestion';
+import type { InputProps, Value } from './generateQuestion';
 
 export function SingleChoice(props: ChoiceProps) {
     const data = props.choice;
@@ -33,6 +33,6 @@ export function SingleChoice(props: ChoiceProps) {
     );
 }
 
-export interface ChoiceProps extends InputProps{
+export interface ChoiceProps extends InputProps {
     choice: Value[];
 }
