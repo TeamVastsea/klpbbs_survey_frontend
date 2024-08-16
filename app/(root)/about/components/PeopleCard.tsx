@@ -8,7 +8,7 @@ interface DeveloperCardProps {
     logo: string;
 }
 
-export default function DeveloperCard({
+export default function PeopleCard({
                                           name,
                                           badges = [],
                                           links,
