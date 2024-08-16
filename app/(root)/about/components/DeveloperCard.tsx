@@ -26,12 +26,12 @@ export default function DeveloperCard({
                 <Group>
                     {links.map((link, idx) => (
                         <Button
-                            key={idx}
-                            component="a"
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            variant="light"
+                          key={idx}
+                          component="a"
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          variant="light"
                         >
                             {link.name}
                         </Button>

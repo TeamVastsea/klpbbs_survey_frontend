@@ -9,7 +9,7 @@ import DeveloperCard from './components/DeveloperCard';
 
 interface DeveloperListProps {
     name: string;
-    badges: string[]; // Updated to badges
+    badges: string[];
     links: {
         name: string;
         url: string;
@@ -45,7 +45,7 @@ export default function AboutPage() {
                                         <IconInfoCircle size={20} />
                                     </Button>
                                 </Group>
-                                {index < developerList.length - 1 && <Divider />} {/* Add a divider except after the last item */}
+                                {index < developerList.length - 1 && <Divider />}
                             </Stack>
                         ))}
                     </Stack>
@@ -55,7 +55,7 @@ export default function AboutPage() {
                     <Modal opened={opened} onClose={close} title={selectedDeveloper.name}>
                         <DeveloperCard
                           name={selectedDeveloper.name}
-                          badges={selectedDeveloper.badges} // Updated to badges
+                          badges={selectedDeveloper.badges}
                           links={selectedDeveloper.links}
                           logo={selectedDeveloper.logo}
                         />
