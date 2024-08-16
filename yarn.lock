@@ -5438,6 +5438,7 @@ __metadata:
   resolution: "mantine-next-template@workspace:."
   dependencies:
     "@babel/core": "npm:^7.24.7"
+    "@floating-ui/utils": "npm:^0.2.7"
     "@mantine/core": "npm:7.12.1"
     "@mantine/hooks": "npm:7.12.1"
     "@mantine/notifications": "npm:^7.12.1"
