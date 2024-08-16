@@ -7,6 +7,7 @@ import { Notifications } from '@mantine/notifications';
 import { theme } from '@/theme';
 import '@mantine/notifications/styles.css';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function RootLayout({ children }: { children: any }) {
   return (
@@ -20,15 +21,12 @@ export default function RootLayout({ children }: { children: any }) {
         />
           <title>苦力怕论坛 | 问卷系统</title>
       </head>
-      <body>
+      <body style={{
+        overflow: 'hidden',
+      }}>
         <MantineProvider theme={theme}>
             <Notifications position="top-right" />
             <AppShell
-              style={{
-                    scrollSnapType: 'y mandatory',
-                    overflowY: 'scroll',
-                    height: '100vh',
-                }}
               header={{ height: 60 }}
             >
                 <AppShell.Header>
@@ -36,8 +34,11 @@ export default function RootLayout({ children }: { children: any }) {
                 </AppShell.Header>
 
                 <AppShell.Main>
-                    {children}
+                  {children}
                 </AppShell.Main>
+                <AppShell.Footer mah={120}>
+                  <Footer />
+                </AppShell.Footer>
             </AppShell>
         </MantineProvider>
       </body>

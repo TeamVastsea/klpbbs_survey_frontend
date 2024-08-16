@@ -45,6 +45,11 @@ export default function HomePage() {
     return (
         <>
             <div
+              style={{
+                  scrollSnapType: 'y mandatory',
+                  overflowY: 'scroll',
+                  height: '100vh',
+                }}
             >
                 <Center
                   style={{
@@ -102,8 +107,8 @@ export default function HomePage() {
                         minHeight: '100vh',
                         scrollSnapAlign: 'start',
                         scrollSnapStop: 'always',
-                        paddingTop: 60,
                     }}
+                  pb={120}
                 >
                     <Stack>
                         <Center>
@@ -126,7 +131,6 @@ export default function HomePage() {
                                 ))}
                             </SimpleGrid>
                         </Center>
-                        <Footer />
                     </Stack>
                 </Center>
             </div>
