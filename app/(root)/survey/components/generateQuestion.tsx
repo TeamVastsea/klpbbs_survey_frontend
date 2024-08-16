@@ -57,7 +57,7 @@ export interface QuestionProps {
     content: Value
     type: number
     values: Value[]
-    condition: any
+    condition: string | null
 }
 
 export interface Value {

@@ -28,11 +28,15 @@ export default function Question(props: PageQuestionProps) {
 
     return (
         <>
-            {question ? generateQuestion(question, props.value, props.setValue) : null}
+            {question ?
+                props.checkAccess(question.condition as string) ?
+                    generateQuestion(question, props.value, props.setValue) : null
+                : null}
         </>
     );
 }
 
 export interface PageQuestionProps extends InputProps {
     id: string,
+    checkAccess: (ruleStr: string) => boolean,
 }

@@ -15,6 +15,47 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
         setAnswers(newAnswers);
     };
 
+    type ConditionType = 'and' | 'or' | 'not';
+    interface Condition {
+        id: string;
+        value: any;
+    }
+    interface Rule {
+        type: ConditionType;
+        conditions: Condition[];
+    }
+
+    function checkAccess(ruleStr: string | null): boolean {
+        if (ruleStr == null) {
+            return true;
+        }
+
+        const rules: Rule[] = JSON.parse(ruleStr);
+
+        for (const rule of rules) {
+            const results = rule.conditions.map((condition) => {
+                if (condition.value instanceof Array) {
+                    const value: string[] = JSON.parse(getAnswerGetter(condition.id) || '[]');
+                    for (const v of condition.value) {
+                        if (value.includes(v)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                return getAnswerGetter(condition.id) === JSON.stringify(condition.value);
+            });
+            if ((rule.type === 'and' && results.every(Boolean)) ||
+                (rule.type === 'or' && results.some(Boolean)) ||
+                (rule.type === 'not' && !results.every(Boolean))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     const getAnswerGetter = (id: string) => answers.get(id) || undefined;
 
     useEffect(() => {
@@ -47,7 +88,8 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
                           id={question}
                           key={index}
                           value={getAnswerGetter(question)}
-                          setValue={getAnswerSetter(question)} />)}
+                          setValue={getAnswerSetter(question)}
+                          checkAccess={checkAccess} />)}
                 <Space h={50} />
                 <Button>{questions?.next == null ? '提交' : '下一页'}</Button>
                 <Space h={180} />
