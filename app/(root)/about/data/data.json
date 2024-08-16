@@ -1,0 +1,34 @@
+[
+  {
+    "name": "zrll_",
+    "badge": "Full Stack Developer",
+    "description": "John is a full stack developer with 10 years of experience.",
+    "links": [
+      {
+        "name": "LinkedIn",
+        "url": "https://example.com"
+      },
+      {
+        "name": "GitHub",
+        "url": "https://example.com"
+      }
+    ],
+    "logo": "https://avatars.githubusercontent.com/u/97330394?v=4"
+  },
+  {
+    "name": "Jane Smith",
+    "badge": "Frontend Developer",
+    "description": "Jane is a skilled frontend developer with a focus on user experience.",
+    "links": [
+      {
+        "name": "Portfolio",
+        "url": "https://example.com"
+      },
+      {
+        "name": "Twitter",
+        "url": "https://example.com"
+      }
+    ],
+    "logo": "https://avatars.githubusercontent.com/u/97330394?v=4"
+  }
+]
