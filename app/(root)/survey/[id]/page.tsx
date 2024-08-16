@@ -3,11 +3,50 @@
 import { Button, Container, Space, Stack } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
+import { useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
 
 export default function SurveyPage({ params }: { params: { id: string } }) {
     const [questions, setQuestion] = useState<PageResponse | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
+    const searchParams = useSearchParams();
+
+    const answerId: string | null = searchParams.get('answer');
+    const surveyId: string | null = searchParams.get('survey');
+
+    function save() {
+        const myHeaders = new Headers();
+        myHeaders.append('token', '111');
+        myHeaders.append('Content-Type', 'application/json');
+
+        const answerObject: any = {};
+        answers.forEach((value, key) => {
+            answerObject[key] = value;
+        });
+
+        const raw: any = {
+            survey: surveyId,
+            content: answerObject,
+        };
+
+        if (answerId) {
+            raw.id = answerId;
+        }
+
+        const bodyContent = JSON.stringify(raw);
+
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            headers: myHeaders,
+            body: bodyContent,
+            redirect: 'follow',
+        };
+
+        fetch('http://127.0.0.1:25000/api/answer', requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+    }
 
     const getAnswerSetter = (id: string) => (value: string) => {
         const newAnswers = new Map(answers);
@@ -91,7 +130,7 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
                           setValue={getAnswerSetter(question)}
                           checkAccess={checkAccess} />)}
                 <Space h={50} />
-                <Button>{questions?.next == null ? '提交' : '下一页'}</Button>
+                <Button onClick={save}>{questions?.next == null ? '提交' : '下一页'}</Button>
                 <Space h={180} />
             </Container>
         </Stack>
