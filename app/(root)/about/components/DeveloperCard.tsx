@@ -1,4 +1,5 @@
 import { Avatar, Badge, Button, Group, Stack, Title } from '@mantine/core';
+import { useState, useEffect } from 'react';
 
 interface DeveloperCardProps {
     name: string;
@@ -13,12 +14,40 @@ export default function DeveloperCard({
                                           links,
                                           logo,
                                       }: DeveloperCardProps) {
+    const [isSmallScreen, setIsSmallScreen] = useState<boolean>(window.innerWidth <= 425);
+
+    useEffect(() => {
+        const handleResize = () => setIsSmallScreen(window.innerWidth <= 425);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
-        <Group>
-            <Avatar src={logo} alt={name} size="8rem" />
+        <Group style={{
+            display: 'flex',
+            flexDirection: isSmallScreen ? 'column' : 'row',
+            alignItems: isSmallScreen ? 'center' : 'flex-start',
+            justifyContent: isSmallScreen ? 'center' : 'flex-start',
+            textAlign: isSmallScreen ? 'center' : 'left',
+        }}>
+            <Avatar
+              src={logo}
+              alt={name}
+              size="8rem"
+              style={{
+                    marginBottom: isSmallScreen ? '1rem' : 'initial',
+                    marginLeft: isSmallScreen ? 'auto' : 'initial',
+                    marginRight: isSmallScreen ? 'auto' : 'initial',
+                }}
+            />
             <Stack>
                 <Title order={3}>{name}</Title>
-                <Group>
+                <Group
+                  style={{
+                        justifyContent: isSmallScreen ? 'center' : 'flex-start',
+                        marginBottom: '1rem',
+                    }}
+                >
                     {badges.map((badge, idx) => (
                         <Badge key={idx}>{badge}</Badge>
                     ))}

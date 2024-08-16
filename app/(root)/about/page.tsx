@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, Center, Divider, Group, Modal, Stack, Text, Title } from '@mantine/core';
+import { Button, Center, Divider, Group, Modal, Stack, Text, Title, Container } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import developerList from './data/data.json';
@@ -28,24 +28,22 @@ export default function AboutPage() {
 
     return (
         <Center style={{ paddingTop: '2rem' }}>
-            <Stack>
-                <Center>
-                    <Stack gap="md" style={{ width: '100%' }}>
+            <Container size="md">
+                <Stack>
+                    <Center>
+                        <Title>关于我们</Title>
+                    </Center>
+                    <Stack gap="md">
                         <Center>
-                            <Title>关于我们</Title>
+                            <Text>这里是我们全部的开发人员</Text>
                         </Center>
-                        <Stack>
-                            <Center>
-                                <Text>这里是我们全部的开发人员</Text>
-                            </Center>
-                            <Center>
-                                <Text fw={700}>(排名不分先后)</Text>
-                            </Center>
-                        </Stack>
+                        <Center>
+                            <Text fw={700}>(排名不分先后)</Text>
+                        </Center>
                         {developerList.map((developer, index) => (
                             <Stack key={index}>
-                                <Group grow style={{ width: '100%' }}>
-                                    <Text ta="left">{developer.name}</Text>
+                                <Group style={{ width: '100%' }}>
+                                    <Text ta="left" style={{ flexGrow: 1 }}>{developer.name}</Text>
                                     <Button variant="subtle" onClick={() => handleDeveloperClick(developer)}>
                                         <IconInfoCircle size={20} />
                                     </Button>
@@ -54,19 +52,19 @@ export default function AboutPage() {
                             </Stack>
                         ))}
                     </Stack>
-                </Center>
 
-                {selectedDeveloper && (
-                    <Modal opened={opened} onClose={close} title="详细信息">
-                        <DeveloperCard
-                          name={selectedDeveloper.name}
-                          badges={selectedDeveloper.badges}
-                          links={selectedDeveloper.links}
-                          logo={selectedDeveloper.logo}
-                        />
-                    </Modal>
-                )}
-            </Stack>
+                    {selectedDeveloper && (
+                        <Modal opened={opened} onClose={close} title="详细信息">
+                            <DeveloperCard
+                              name={selectedDeveloper.name}
+                              badges={selectedDeveloper.badges}
+                              links={selectedDeveloper.links}
+                              logo={selectedDeveloper.logo}
+                            />
+                        </Modal>
+                    )}
+                </Stack>
+            </Container>
         </Center>
     );
 }
