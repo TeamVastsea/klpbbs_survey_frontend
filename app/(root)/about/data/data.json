@@ -15,7 +15,7 @@
     "logo": "https://avatars.githubusercontent.com/u/46812903"
   },
   {
-    "name": "Snowball_233 (雪球)",
+    "name": "Snowball_233",
     "badges": ["前端", "CI/CD", "运维", "文档"],
     "links": [
       {
@@ -30,7 +30,7 @@
     "logo": "https://avatars.githubusercontent.com/u/97330394"
   },
   {
-    "name": "M397749490 (猪头)",
+    "name": "M397749490",
     "badges": ["CI/CD", "运维"],
     "links": [
       {
@@ -45,7 +45,7 @@
     "logo": "https://user.klpbbs.com/data/avatar/000/03/29/80_avatar_big.jpg"
   },
   {
-    "name": "damesck (大妈)",
+    "name": "damesck",
     "badges": ["前端", "文档"],
     "links": [
       {
@@ -60,7 +60,7 @@
     "logo": "https://user.klpbbs.com/data/avatar/000/00/61/73_avatar_big.jpg"
   },
   {
-    "name": "GaoNeng-wWw (高能)",
+    "name": "GaoNeng-wWw",
     "badges": ["前端"],
     "links": [
       {
@@ -84,6 +84,17 @@
       }
     ],
     "logo": "https://user.klpbbs.com/data/avatar/000/00/00/01_avatar_big.jpg"
+  },
+  {
+    "name": "苏晴晴",
+    "badges": ["题目编写"],
+    "links": [
+      {
+        "name": "苦力怕论坛",
+        "url": "https://klpbbs.com/?158683"
+      }
+    ],
+    "logo": "https://user.klpbbs.com/data/avatar/000/15/86/83_avatar_big.jpg"
   },
   {
     "name": "水稻本尊",

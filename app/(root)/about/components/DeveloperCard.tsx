@@ -9,7 +9,7 @@ interface DeveloperCardProps {
 
 export default function DeveloperCard({
                                           name,
-                                          badges = [], // Provide a default empty array if badges is undefined
+                                          badges = [],
                                           links,
                                           logo,
                                       }: DeveloperCardProps) {

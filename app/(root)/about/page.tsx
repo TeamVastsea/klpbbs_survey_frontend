@@ -34,9 +34,14 @@ export default function AboutPage() {
                         <Center>
                             <Title>关于我们</Title>
                         </Center>
-                        <Center>
-                            <Text>这里是我们全部的开发人员</Text>
-                        </Center>
+                        <Stack>
+                            <Center>
+                                <Text>这里是我们全部的开发人员</Text>
+                            </Center>
+                            <Center>
+                                <Text fw={700}>(排名不分先后)</Text>
+                            </Center>
+                        </Stack>
                         {developerList.map((developer, index) => (
                             <Stack key={index}>
                                 <Group grow style={{ width: '100%' }}>
@@ -52,7 +57,7 @@ export default function AboutPage() {
                 </Center>
 
                 {selectedDeveloper && (
-                    <Modal opened={opened} onClose={close} title={selectedDeveloper.name}>
+                    <Modal opened={opened} onClose={close} title="详细信息">
                         <DeveloperCard
                           name={selectedDeveloper.name}
                           badges={selectedDeveloper.badges}
