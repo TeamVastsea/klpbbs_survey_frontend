@@ -9,11 +9,10 @@ import DeveloperCard from './components/DeveloperCard';
 
 interface DeveloperListProps {
     name: string;
-    badge: string;
-    description: string;
+    badges: string[]; // Updated to badges
     links: {
         name: string;
-        url: string
+        url: string;
     }[];
     logo: string;
 }
@@ -56,8 +55,7 @@ export default function AboutPage() {
                     <Modal opened={opened} onClose={close} title={selectedDeveloper.name}>
                         <DeveloperCard
                           name={selectedDeveloper.name}
-                          badge={selectedDeveloper.badge}
-                          description={selectedDeveloper.description}
+                          badges={selectedDeveloper.badges} // Updated to badges
                           links={selectedDeveloper.links}
                           logo={selectedDeveloper.logo}
                         />

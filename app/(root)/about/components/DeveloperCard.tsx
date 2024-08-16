@@ -1,9 +1,8 @@
-import { Avatar, Badge, Button, Group, Stack, Text, Title } from '@mantine/core';
+import { Avatar, Badge, Button, Group, Stack, Title } from '@mantine/core';
 
 interface DeveloperCardProps {
     name: string;
     badges?: string[];
-    description: string;
     links: { name: string; url: string }[];
     logo: string;
 }
@@ -11,7 +10,6 @@ interface DeveloperCardProps {
 export default function DeveloperCard({
                                           name,
                                           badges = [], // Provide a default empty array if badges is undefined
-                                          description,
                                           links,
                                           logo,
                                       }: DeveloperCardProps) {
@@ -25,16 +23,15 @@ export default function DeveloperCard({
                         <Badge key={idx}>{badge}</Badge>
                     ))}
                 </Group>
-                <Text>{description}</Text>
                 <Group>
                     {links.map((link, idx) => (
                         <Button
-                          key={idx}
-                          component="a"
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          variant="light"
+                            key={idx}
+                            component="a"
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            variant="light"
                         >
                             {link.name}
                         </Button>
