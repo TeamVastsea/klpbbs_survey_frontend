@@ -27,7 +27,7 @@ export default function Footer() {
           <Image src={logo.src} w={35} h={35} />
           <p>
             &copy; {year}&nbsp;
-            <a href="https://github.com/TeamVastsea" target="_blank" style={{ textDecoration: 'none' }} rel="noreferrer">
+            <a href="https://github.com/TeamVastsea" target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
               瀚海工艺
             </a>
             &nbsp;|&nbsp;
