@@ -24,24 +24,16 @@ export default function RootLayout({ children }: { children: any }) {
       <body>
         <MantineProvider theme={theme}>
             <Notifications position="top-right" />
-            <AppShell
-              style={{
-                    scrollSnapType: 'y mandatory',
-                    overflowY: 'scroll',
-                    height: '100vh',
-                }}
-              header={{ height: 60 }}
-              footer={{ height: 80 }}
-            >
+            <AppShell header={{ height: 60 }}>
                 <AppShell.Header>
                     <Header />
                 </AppShell.Header>
 
-                <AppShell.Main>
+                <AppShell.Main pb={120}>
                     {children}
                 </AppShell.Main>
 
-                <AppShell.Footer>
+                <AppShell.Footer mah={120}>
                   <Footer />
                 </AppShell.Footer>
             </AppShell>
