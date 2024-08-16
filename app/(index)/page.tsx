@@ -3,7 +3,7 @@
 import { Button, Center, Container, Group, Image, SimpleGrid, Space, Stack, Text, Title } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { min } from '@floating-ui/utils';
-import classes from '../(root)/oauth/components/LoginBanner.module.css';
+import classes from '@/styles/common.module.css';
 import SurveyCard from '@/components/SurveyCard';
 import Footer from '@/components/Footer';
 

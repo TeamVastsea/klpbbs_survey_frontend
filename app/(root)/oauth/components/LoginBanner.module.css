@@ -1,3 +1,4 @@
+@import url("@/styles/common.module.css");
 .wrapper {
     display: flex;
     align-items: center;
@@ -19,14 +20,6 @@
         padding-right: 0;
         margin-top: var(--mantine-spacing-xl);
     }
-}
-
-.title {
-    color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
-    font-family: "Greycliff CF",
-    var(--mantine-font-family), serif;
-    line-height: 1;
-    margin-bottom: var(--mantine-spacing-md);
 }
 
 .controls {
