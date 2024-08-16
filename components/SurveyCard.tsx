@@ -1,5 +1,5 @@
 import { Badge, Button, Card, Group, Image, Text } from '@mantine/core';
-import { Survey } from '@/app/page';
+import { Survey } from '@/app/(index)/page';
 
 export default function SurveyCard(props: SurveyCardProps) {
     const { survey } = props;
