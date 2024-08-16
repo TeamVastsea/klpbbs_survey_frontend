@@ -6,6 +6,7 @@ import { min } from '@floating-ui/utils';
 import classes from '@/styles/common.module.css';
 import SurveyCard from '@/components/SurveyCard';
 import Footer from '@/components/Footer';
+import mainPageImage from '@/public/main-page.svg';
 
 export type Survey = {
     title: string;
@@ -63,38 +64,40 @@ export default function HomePage() {
                       spacing="lg"
                       style={{ maxWidth: '80%', width: '100%' }}
                     >
-                        <Stack justify="center">
-                            <Title className={classes.title}>
-                                <Text span c="#008D57" inherit>苦</Text>
-                                <Text span c="#13AE67" inherit>力</Text>
-                                <Text span c="#089946" inherit>怕</Text>
-                                论坛
-                            </Title>
-                            <Title>&#62; 问卷系统</Title>
-                            <Text fw={500} fz="lg">收集更好的数据，作出更好的决策。</Text>
-                            <Space h="md" />
-                            <Group>
-                                <Button
-                                  color="blue"
-                                  radius="md"
-                                  onClick={() => router.push('https://github.com/orgs/TeamVastsea/teams/klpbbs_survey')}
-                                >
-                                    Github
-                                </Button>
-                                <Button
-                                  color="gray"
-                                  radius="md"
-                                  onClick={() => router.push('/oauth')}
-                                >
-                                    立即使用
-                                </Button>
-                            </Group>
-                        </Stack>
+                        <Center>
+                            <Stack justify="center">
+                                <Title className={classes.title}>
+                                    <Text span c="#008D57" inherit>苦</Text>
+                                    <Text span c="#13AE67" inherit>力</Text>
+                                    <Text span c="#089946" inherit>怕</Text>
+                                    论坛
+                                </Title>
+                                <Title>&#62; 问卷系统</Title>
+                                <Text fw={500} fz="lg">收集更好的数据，作出更好的决策。</Text>
+                                <Space h="md" />
+                                <Group>
+                                    <Button
+                                        color="blue"
+                                        radius="md"
+                                        onClick={() => router.push('https://github.com/orgs/TeamVastsea/teams/klpbbs_survey')}
+                                    >
+                                        Github
+                                    </Button>
+                                    <Button
+                                        color="gray"
+                                        radius="md"
+                                        onClick={() => router.push('/oauth')}
+                                    >
+                                        立即使用
+                                    </Button>
+                                </Group>
+                            </Stack>
+                        </Center>
 
                         <Container>
                             <Image
-                              src="favicon.svg"
-                              alt="KLPBBS logo"
+                              src={mainPageImage.src}
+                              alt="Main Page Image"
                               className={classes.image}
                               style={{ maxWidth: 380, margin: '0 auto' }}
                             />
