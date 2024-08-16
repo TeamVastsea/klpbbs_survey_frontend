@@ -17,6 +17,7 @@
     "test": "npm run prettier:check && npm run lint && npm run typecheck && npm run jest"
   },
   "dependencies": {
+    "@floating-ui/utils": "^0.2.7",
     "@mantine/core": "7.12.1",
     "@mantine/hooks": "7.12.1",
     "@mantine/notifications": "^7.12.1",

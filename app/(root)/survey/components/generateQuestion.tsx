@@ -5,14 +5,18 @@ import { MultipleChoice } from './MultipleChoice';
 import { FileUpload } from './FileUpload';
 import { FillBlank } from './FillBlank';
 
-export function generateQuestion(data: QuestionProps) {
+export function generateQuestion(
+    data: QuestionProps,
+    value: string | undefined,
+    setValue: (value: string) => void
+) {
     switch (data.type) {
         case 1:
             return (
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <FillBlank />
+                    <FillBlank value={value} setValue={setValue} />
                 </div>
             );
         case 2:
@@ -20,7 +24,7 @@ export function generateQuestion(data: QuestionProps) {
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <SingleChoice choice={data.values} />
+                    <SingleChoice choice={data.values} value={value} setValue={setValue} />
                 </div>
             );
         case 3:
@@ -28,7 +32,7 @@ export function generateQuestion(data: QuestionProps) {
                 <div key={data.id}>
                     <Title order={3}>{`${data.content.title}`}</Title>
                     <p>{data.content.content}</p>
-                    <MultipleChoice choice={data.values} />
+                    <MultipleChoice choice={data.values} value={value} setValue={setValue} />
                 </div>
             );
         case 4:
@@ -59,4 +63,9 @@ export interface QuestionProps {
 export interface Value {
     content: string
     title: string
+}
+
+export interface InputProps {
+    value: string | undefined,
+    setValue: (value: string) => void,
 }

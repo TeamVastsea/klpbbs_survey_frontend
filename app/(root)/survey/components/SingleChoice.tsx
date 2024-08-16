@@ -1,10 +1,8 @@
-import { useState } from 'react';
-import { Group, Radio, Stack, Text } from '@mantine/core';
+import { Group, Radio, Space, Stack, Text } from '@mantine/core';
 import classes from './SingleChoice.module.css';
-import type { Value } from './generateQuestion';
+import type { InputProps, Value } from './generateQuestion';
 
 export function SingleChoice(props: ChoiceProps) {
-    const [value, setValue] = useState<string | null>(null);
     const data = props.choice;
 
     const cards = data.map(({ title, content }, index) => (
@@ -22,23 +20,19 @@ export function SingleChoice(props: ChoiceProps) {
     return (
         <>
             <Radio.Group
-              value={value}
-              onChange={setValue}
-              label="Pick one option"
-              description="Choose an option"
+              value={props.value}
+              onChange={props.setValue}
             >
                 <Stack pt="md" gap="xs">
                     {cards}
                 </Stack>
             </Radio.Group>
 
-            <Text fz="xs" mt="md">
-                CurrentValue: {value || '–'}
-            </Text>
+            <Space h={40} />
         </>
     );
 }
 
-export interface ChoiceProps {
+export interface ChoiceProps extends InputProps {
     choice: Value[];
 }
