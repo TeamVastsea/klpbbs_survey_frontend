@@ -1,17 +1,8 @@
 .inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: var(--mantine-spacing-sm);
-  padding-bottom: var(--mantine-spacing-sm);
-
-  @media (max-width: $mantine-breakpoint-xs) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--mantine-spacing-sm);
+    padding-bottom: var(--mantine-spacing-sm);
     flex-direction: column;
-  }
-}
-
-.links {
-  @media (max-width: $mantine-breakpoint-xs) {
-    margin-top: var(--mantine-spacing-md);
-  }
 }
