@@ -9,27 +9,29 @@ interface DeveloperCardProps {
 }
 
 export default function PeopleCard({
-                                          name,
-                                          badges = [],
-                                          links,
-                                          logo,
-                                      }: DeveloperCardProps) {
-    const [isSmallScreen, setIsSmallScreen] = useState<boolean>(window.innerWidth <= 425);
+                                       name,
+                                       badges = [],
+                                       links,
+                                       logo,
+                                   }: DeveloperCardProps) {
+    const [isSmallScreen, setIsSmallScreen] = useState<boolean>(window.innerWidth <= 430);
 
     useEffect(() => {
-        const handleResize = () => setIsSmallScreen(window.innerWidth <= 425);
+        const handleResize = () => setIsSmallScreen(window.innerWidth <= 430);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     return (
-        <Group style={{
-            display: 'flex',
-            flexDirection: isSmallScreen ? 'column' : 'row',
-            alignItems: isSmallScreen ? 'center' : 'flex-start',
-            justifyContent: isSmallScreen ? 'center' : 'flex-start',
-            textAlign: isSmallScreen ? 'center' : 'left',
-        }}>
+        <Group
+          style={{
+                display: 'flex',
+                flexDirection: isSmallScreen ? 'column' : 'row',
+                alignItems: isSmallScreen ? 'center' : 'flex-start',
+                justifyContent: isSmallScreen ? 'center' : 'flex-start',
+                textAlign: isSmallScreen ? 'center' : 'left',
+            }}
+        >
             <Avatar
               src={logo}
               alt={name}
@@ -52,7 +54,11 @@ export default function PeopleCard({
                         <Badge key={idx}>{badge}</Badge>
                     ))}
                 </Group>
-                <Group>
+                <Group
+                  style={{
+                        justifyContent: isSmallScreen ? 'center' : 'flex-start',
+                    }}
+                >
                     {links.map((link, idx) => (
                         <Button
                           key={idx}
