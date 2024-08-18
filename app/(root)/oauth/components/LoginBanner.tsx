@@ -20,10 +20,6 @@ export function LoginBanner() {
                 //set cookie
                 Cookie.setCookie('token', result, 7);
 
-                const user = JSON.parse(result);
-                Cookie.setCookie('uid', user.uid, 7);
-                Cookie.setCookie('username', user.username, 7);
-
                 window.location.href = `https://klpbbs.com/plugin.php?id=klpbbs_api:oauth2&appid=4474a21e0077bcd413dd975e5c9aacc339e1fd54&state=${result}`;
             })
             .catch((e) => {
