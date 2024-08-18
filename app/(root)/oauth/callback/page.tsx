@@ -21,7 +21,15 @@ export default function CallbackPage() {
             });
         })
         .then(() => {
-            fetch(`https://wj.klpbbs.cn/api/user?token=${state}`)
+            const myHeaders = new Headers();
+            myHeaders.append('token', '');
+
+            const requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+            };
+
+            fetch('https://wj.klpbbs.cn/api/user', requestOptions)
                 .then(response => response.text())
                 .then(result => {
                     const user = JSON.parse(result);
