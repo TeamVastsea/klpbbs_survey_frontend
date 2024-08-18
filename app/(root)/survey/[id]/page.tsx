@@ -44,8 +44,15 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
 
         fetch('http://127.0.0.1:25000/api/answer', requestOptions)
             .then(response => response.text())
+            // eslint-disable-next-line no-console
             .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+            .catch(e => {
+                notifications.show({
+                    title: '获取试题失败，请将以下信息反馈给管理员',
+                    message: e.toString(),
+                    color: 'red',
+                });
+            });
     }
 
     const getAnswerSetter = (id: string) => (value: string) => {

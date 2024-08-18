@@ -1,4 +1,4 @@
-import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
+import { Card, Image, Text, Group, Badge, Button } from '@mantine/core';
 import classes from './BadgeCard.module.css';
 
 const mockdata = {
