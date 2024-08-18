@@ -1,6 +1,6 @@
-import { useState, MouseEvent } from 'react';
+import React, { useState, MouseEvent } from 'react';
 import { Burger, Container, Group, Image, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useRouter } from 'next/navigation';
 import classes from './Header.module.css';
 import logo from '@/public/favicon.svg';
 
@@ -16,23 +16,17 @@ const links: Link[] = [
     { link: '/about', label: '关于' },
 ];
 
-export default function Header() {
-    const [opened, { toggle }] = useDisclosure(false);
-    const [active, setActive] = useState<string>(links[0].link);
-
-    const handleLinkClick = (event: MouseEvent<HTMLAnchorElement>, link: string) => {
-        event.preventDefault();
-        setActive(link);
-        window.open(link, '_blank', 'noopener,noreferrer');
-    };
+export default function Header({ opened, toggle }: HeaderProps) {
+    const router = useRouter();
 
     const items = links.map((link) => (
         <a
           key={link.label}
           href={link.link}
           className={classes.link}
-          data-active={active === link.link || undefined}
-          onClick={(event) => handleLinkClick(event, link.link)}
+          onClick={() => router.push(link.link)}
+          target={link.link.startsWith('http') ? '_blank' : '_self'}
+          rel="noreferrer"
         >
             {link.label}
         </a>
@@ -60,4 +54,9 @@ export default function Header() {
             </Container>
         </header>
     );
+}
+
+export interface HeaderProps {
+    opened: boolean;
+    toggle: () => void;
 }
