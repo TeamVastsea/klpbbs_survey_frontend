@@ -18,7 +18,7 @@ const links: Link[] = [
 
 export default function Header({ opened, toggle }: HeaderProps) {
     const router = useRouter();
-    const [username, setUsername] = useState<string | undefined>(undefined);
+    const [username, setUsername] = useState<string | null>(null);
     const [uid, setUid] = useState<string | undefined>(undefined);
 
     useEffect(() => {
@@ -29,7 +29,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
             setUid(uid_);
             setUsername(username_);
         } else {
-            setUsername('null');
+            setUsername(null);
         }
     }, []);
 
@@ -48,70 +48,55 @@ export default function Header({ opened, toggle }: HeaderProps) {
         window.location.reload();
     };
 
-    const items = username === undefined ? null : [
-        ...(username ? [
-            <Menu
-              key="greeting"
-              width={200}
-              shadow="md"
-              transitionProps={{
-                    transition: 'rotate-right',
-                    duration: 150,
-                }}>
-                <Menu.Target>
-                    <Text
-                      className={classes.link}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`你好, ${username}`}
-                      inherit
-                    >
-                        你好, {username}
-                    </Text>
-                </Menu.Target>
-                <Menu.Dropdown>
-                    <Menu.Item>
-                        用户名: {username}
-                    </Menu.Item>
-                    <Menu.Item>
-                        UID: {uid}
-                    </Menu.Item>
-                    <Menu.Item
-                      onClick={handleLogout}
-                      style={{ color: 'red' }}
-                      aria-label="Logout"
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => e.key === 'Enter' && handleLogout()}
-                    >
-                        退出登录
-                    </Menu.Item>
-                </Menu.Dropdown>
-            </Menu>,
-        ] : [
-            <Button
-              key="login"
-              className={classes.loginButton}
-              onClick={() => handleClick('/oauth')}
-              aria-label="Login"
-            >
-                登录
-            </Button>,
-        ]),
-        ...links.map((link) => (
-            <a
-              key={link.label}
-              className={classes.link}
-              onClick={() => handleClick(link.link)}
-              onKeyDown={(e) => e.key === 'Enter' && handleClick(link.link)}
-              role="button"
-              tabIndex={0}
-              aria-label={link.label}
-            >
-                {link.label}
-            </a>
-        )),
-    ];
+    const userItems = username === null ? (
+        <Button
+          key="login"
+          className={classes.loginButton}
+          onClick={() => handleClick('/oauth')}
+          aria-label="Login"
+        >
+            登录
+        </Button>
+    ) : (
+        <Menu
+          key="greeting"
+          width={200}
+          shadow="md"
+          transitionProps={{
+                transition: 'rotate-right',
+                duration: 150,
+            }}>
+            <Menu.Target>
+                <Text
+                  className={classes.link}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`你好, ${username}`}
+                  inherit
+                >
+                    你好, {username}
+                </Text>
+            </Menu.Target>
+            <Menu.Dropdown>
+                <Menu.Item>
+                    用户名: {username}
+                </Menu.Item>
+                <Menu.Item>
+                    UID: {uid}
+                </Menu.Item>
+                <Menu.Item
+                  onClick={handleLogout}
+                  style={{ color: 'red' }}
+                  aria-label="Logout"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handleLogout()}
+                >
+                    退出登录
+                </Menu.Item>
+            </Menu.Dropdown>
+        </Menu>
+    );
 
     return (
         <header
@@ -128,11 +113,22 @@ export default function Header({ opened, toggle }: HeaderProps) {
                     <Image src={logo.src} w={28} h={28} />
                     <Text>苦力怕论坛 | 问卷系统</Text>
                 </Group>
-                {username !== undefined && (
-                    <Group gap={5} visibleFrom="xs">
-                        {items}
-                    </Group>
-                )}
+                <Group gap={5} visibleFrom="xs">
+                    {userItems}
+                    {links.map((link) => (
+                        <a
+                          key={link.label}
+                          className={classes.link}
+                          onClick={() => handleClick(link.link)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleClick(link.link)}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={link.label}
+                        >
+                            {link.label}
+                        </a>
+                    ))}
+                </Group>
                 <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
             </Container>
         </header>

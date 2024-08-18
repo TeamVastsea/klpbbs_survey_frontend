@@ -1,7 +1,7 @@
 'use client';
 
 import { Center, Space, Stack, Table, Title, Text } from '@mantine/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import surveyData from './data/surveys.json';
 import listStyle from './list.module.css';
 import { Cookie } from '@/components/cookie';
@@ -9,13 +9,28 @@ import { Cookie } from '@/components/cookie';
 export default function SurveyList() {
     const loginStatus = Cookie.getCookie('status');
 
+    useEffect(() => {
+        if (loginStatus !== 'ok') {
+            setTimeout(() => {
+                window.location.href = '/oauth';
+            }, 3000);
+        }
+    }, [loginStatus]);
+
     if (loginStatus !== 'ok') {
         return (
-            <Center>
-                <Text c="red" size="xl">
-                    您还未登录，请登录苦力怕论坛账户。
-                </Text>
-            </Center>
+            <Stack>
+                <Center>
+                    <Text c="red" size="xl">
+                        您还未登录，请登录苦力怕论坛账户
+                    </Text>
+                </Center>
+                <Center>
+                    <Text c="red" size="md">
+                        您将于 3 秒后跳转至登录页面
+                    </Text>
+                </Center>
+            </Stack>
         );
     }
 
