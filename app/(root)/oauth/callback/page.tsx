@@ -2,14 +2,31 @@
 
 import { Center, Stack, Space } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
-import { toKeyAlias } from '@babel/types';
+import { notifications } from '@mantine/notifications';
 import UserInfoCard from './components/UserInfoCard';
 import { Cookie } from '@/components/cookie';
 
 export default function CallbackPage() {
     const searchParams = useSearchParams();
 
+    const state = searchParams.get('state');
     const token = searchParams.get('token');
+
+    fetch(`https://wj.klpbbs.cn/api/oauth?state=${state}&token=${token}`)
+        .then(() => {
+            notifications.show({
+                title: '账户激活成功',
+                message: undefined,
+                color: 'green',
+            });
+        })
+        .catch(e => {
+            notifications.show({
+                title: '账户激活失败，请将以下信息反馈给管理员',
+                message: e.toString(),
+                color: 'red',
+            });
+        });
 
     fetch(`https://wj.klpbbs.cn/api/user?token=${token}`)
         .then(response => response.text())
