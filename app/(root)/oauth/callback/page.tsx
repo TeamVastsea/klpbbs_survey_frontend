@@ -20,6 +20,16 @@ export default function CallbackPage() {
                 color: 'green',
             });
         })
+        .then(() => {
+            fetch(`https://wj.klpbbs.cn/api/user?token=${state}`)
+                .then(response => response.text())
+                .then(result => {
+                    const user = JSON.parse(result);
+
+                    Cookie.setCookie('uid', user.uid, 7);
+                    Cookie.setCookie('username', user.username, 7);
+                });
+        })
         .catch(e => {
             notifications.show({
                 title: '账户激活失败，请将以下信息反馈给管理员',
@@ -27,18 +37,6 @@ export default function CallbackPage() {
                 color: 'red',
             });
         });
-
-    fetch(`https://wj.klpbbs.cn/api/user?token=${state}`)
-        .then(response => response.text())
-        .then(result => {
-            const user = JSON.parse(result);
-
-            Cookie.setCookie('uid', user.uid, 7);
-            Cookie.setCookie('username', user.username, 7);
-        })
-        .catch(
-            error => console.log('error', error)
-        );
 
     const uid = Cookie.getCookie('uid');
     const username = Cookie.getCookie('username');
