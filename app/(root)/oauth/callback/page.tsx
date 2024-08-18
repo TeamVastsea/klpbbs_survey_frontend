@@ -22,7 +22,7 @@ export default function CallbackPage() {
         })
         .then(() => {
             const myHeaders = new Headers();
-            myHeaders.append('token', '');
+            myHeaders.append('token', state as string);
 
             const requestOptions = {
                 method: 'GET',
