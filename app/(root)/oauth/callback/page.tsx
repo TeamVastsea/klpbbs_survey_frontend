@@ -32,6 +32,7 @@ export default function CallbackPage() {
                 .then(result => {
                     const user = JSON.parse(result);
 
+                    Cookie.setCookie('status', 'ok', 7);
                     Cookie.setCookie('uid', user.uid, 7);
                     Cookie.setCookie('username', user.username, 7);
 

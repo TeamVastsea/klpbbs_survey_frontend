@@ -1,33 +1,28 @@
 import { Button, Card, Center, Container, Space, Text, Avatar } from '@mantine/core';
+import { useRouter } from 'next/navigation';
 import { Cookie } from '@/components/cookie';
 
 export default function UserInfoCard(props: UserInfoCardProps) {
+    const router = useRouter();
     const id_str = props.id.padStart(9, '0');
     const avatar_url = `https://user.klpbbs.com/data/avatar/${id_str.substring(0, 3)}/${id_str.substring(3, 5)}/${id_str.substring(5, 7)}/${id_str.substring(7, 9)}_avatar_big.jpg`;
 
     function logOut() {
         Cookie.clearCookie('token');
-
         window.location.href = '/oauth';
+    }
+
+    function handleConfirm() {
+        router.push('/list');
     }
 
     return (
         <Container w="100%">
-            <Card
-              padding="xl"
-              component="a"
-              withBorder
-            >
+            <Card padding="xl" component="a" withBorder>
                 <Card.Section>
                     <br />
-                    <Center
-                      w={300}
-                      h="auto"
-                    >
-                        <Avatar
-                          src={avatar_url}
-                          size="8rem"
-                        />
+                    <Center w={300} h="auto">
+                        <Avatar src={avatar_url} size="8rem" />
                     </Center>
                 </Card.Section>
 
@@ -50,7 +45,7 @@ export default function UserInfoCard(props: UserInfoCardProps) {
                 </Center>
 
                 <Space h={10} />
-                <Button fullWidth>
+                <Button fullWidth onClick={handleConfirm}>
                     确认是我
                 </Button>
                 <Center>
@@ -64,6 +59,6 @@ export default function UserInfoCard(props: UserInfoCardProps) {
 }
 
 export interface UserInfoCardProps {
-    username: string,
-    id: string,
+    username: string;
+    id: string;
 }

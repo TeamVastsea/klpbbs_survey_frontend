@@ -1,11 +1,24 @@
 'use client';
 
-import { Center, Space, Stack, Table, Title } from '@mantine/core';
+import { Center, Space, Stack, Table, Title, Text } from '@mantine/core';
 import React from 'react';
 import surveyData from './data/surveys.json';
 import listStyle from './list.module.css';
+import { Cookie } from '@/components/cookie';
 
 export default function SurveyList() {
+    const loginStatus = Cookie.getCookie('status');
+
+    if (loginStatus !== 'ok') {
+        return (
+            <Center>
+                <Text c="red" size="xl">
+                    您还未登录，请登录苦力怕论坛账户。
+                </Text>
+            </Center>
+        );
+    }
+
     const rows = surveyData.map((survey) => (
         <Table.Tr key={survey.id}>
             <Table.Td className={listStyle.list}>{survey.id}</Table.Td>
@@ -15,7 +28,7 @@ export default function SurveyList() {
               style={{
                     maxWidth: '200px',
                     wordWrap: 'break-word',
-                    flexGrow: 1, // Allow this column to grow and shrink
+                    flexGrow: 1,
                 }}
             >
                 {survey.description}
@@ -26,7 +39,7 @@ export default function SurveyList() {
             <Table.Td
               style={{
                     width: '70px',
-                    minWidth: '70px', // Ensure this column doesn't shrink below 70px
+                    minWidth: '70px',
                     textAlign: 'center',
                 }}
               className={listStyle.list}
@@ -62,7 +75,7 @@ export default function SurveyList() {
                             <Table.Th
                               style={{
                                     width: '70px',
-                                    minWidth: '70px', // Fixed width and minWidth
+                                    minWidth: '70px',
                                     textAlign: 'center',
                                 }}
                               className={listStyle.list}

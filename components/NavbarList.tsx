@@ -17,15 +17,18 @@ const links: Link[] = [
 
 export function NavbarList() {
     const router = useRouter();
-    const [username, setUsername] = useState<string | null>(null);
-    const [uid, setUid] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | undefined>(undefined);
+    const [uid, setUid] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-        const uid_ = Cookie.getCookie('uid');
-        const username_ = Cookie.getCookie('username');
-        if (uid_ && username_) {
+        const status = Cookie.getCookie('status');
+        if (status === 'ok') {
+            const uid_ = Cookie.getCookie('uid');
+            const username_ = decodeURIComponent(Cookie.getCookie('username') || '');
             setUid(uid_);
-            setUsername(decodeURIComponent(username_));
+            setUsername(username_);
+        } else {
+            setUsername('null');
         }
     }, []);
 

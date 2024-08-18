@@ -18,15 +18,18 @@ const links: Link[] = [
 
 export default function Header({ opened, toggle }: HeaderProps) {
     const router = useRouter();
-    const [username, setUsername] = useState<string | null>(null);
-    const [uid, setUid] = useState<string | null>(null);
+    const [username, setUsername] = useState<string | undefined>(undefined);
+    const [uid, setUid] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-        const uid_ = Cookie.getCookie('uid');
-        const username_ = Cookie.getCookie('username');
-        if (uid_ && username_) {
+        const status = Cookie.getCookie('status');
+        if (status === 'ok') {
+            const uid_ = Cookie.getCookie('uid');
+            const username_ = decodeURIComponent(Cookie.getCookie('username') || '');
             setUid(uid_);
-            setUsername(decodeURIComponent(username_));
+            setUsername(username_);
+        } else {
+            setUsername('null');
         }
     }, []);
 
@@ -41,10 +44,11 @@ export default function Header({ opened, toggle }: HeaderProps) {
     const handleLogout = () => {
         Cookie.clearCookie('uid');
         Cookie.clearCookie('username');
+        Cookie.clearCookie('status');
         window.location.reload();
     };
 
-    const items = [
+    const items = username === undefined ? null : [
         ...(username ? [
             <Menu
               key="greeting"
@@ -53,7 +57,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
               transitionProps={{
                     transition: 'rotate-right',
                     duration: 150,
-            }}>
+                }}>
                 <Menu.Target>
                     <Text
                       className={classes.link}
@@ -124,9 +128,11 @@ export default function Header({ opened, toggle }: HeaderProps) {
                     <Image src={logo.src} w={28} h={28} />
                     <Text>苦力怕论坛 | 问卷系统</Text>
                 </Group>
-                <Group gap={5} visibleFrom="xs">
-                    {items}
-                </Group>
+                {username !== undefined && (
+                    <Group gap={5} visibleFrom="xs">
+                        {items}
+                    </Group>
+                )}
                 <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
             </Container>
         </header>
