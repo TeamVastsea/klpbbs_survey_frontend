@@ -28,7 +28,7 @@ export default function CallbackPage() {
             });
         });
 
-    fetch(`https://wj.klpbbs.cn/api/user?token=${token}`)
+    fetch(`https://wj.klpbbs.cn/api/user?token=${state}`)
         .then(response => response.text())
         .then(result => {
             const user = JSON.parse(result);
