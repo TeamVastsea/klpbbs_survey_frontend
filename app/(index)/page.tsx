@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Avatar,
     Button,
     Center,
     Container,
@@ -17,6 +18,7 @@ import { min } from '@floating-ui/utils';
 import classes from '@/styles/common.module.css';
 import SurveyCard from '@/components/SurveyCard';
 import mainPageImage from '@/public/main-page.svg';
+import github from '@/public/github.svg';
 
 export type Survey = {
     title: string;
@@ -97,11 +99,18 @@ export default function HomePage() {
                                 <Group>
                                     <Button
                                       color="blue"
-                                      onClick={() =>
-                                            router.push('https://github.com/orgs/TeamVastsea/teams/klpbbs_survey')
-                                        }
+                                      component="a"
+                                      href="https://github.com/orgs/TeamVastsea/teams/klpbbs_survey"
+                                      target="_blank"
                                     >
-                                        Github
+                                        <Group gap="xs">
+                                            <Avatar
+                                              src={github.src}
+                                              alt="Github"
+                                              size="1.1rem"
+                                            />
+                                            Github
+                                        </Group>
                                     </Button>
                                     <Button color="gray" onClick={() => router.push('/oauth')}>
                                         立即使用

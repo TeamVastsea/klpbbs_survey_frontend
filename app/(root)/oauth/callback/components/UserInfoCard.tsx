@@ -55,7 +55,7 @@ export default function UserInfoCard(props: UserInfoCardProps) {
                 </Button>
                 <Center>
                     <Text mt="xs" c="dimmed" size="sm" style={{ cursor: 'pointer' }} onClick={logOut}>
-                        这不是你? 重新登陆。
+                        这不是你? 重新登录
                     </Text>
                 </Center>
             </Card>
