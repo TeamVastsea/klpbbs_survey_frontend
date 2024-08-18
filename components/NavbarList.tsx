@@ -1,7 +1,8 @@
-import { Group, Space, Stack } from '@mantine/core';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Group, Space, Stack, Menu, Button, Text } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import classes from '@/components/Header.module.css';
+import { Cookie } from '@/components/cookie';
 
 interface Link {
     link: string;
@@ -10,13 +11,29 @@ interface Link {
 
 const links: Link[] = [
     { link: '/', label: '首页' },
-    { link: '/oauth', label: '登录' },
     { link: 'https://klpbbs.com', label: '主站' },
     { link: '/about', label: '关于' },
 ];
 
 export function NavbarList() {
     const router = useRouter();
+    const [username, setUsername] = useState<string | null>(null);
+    const [uid, setUid] = useState<string | null>(null);
+
+    useEffect(() => {
+        const uid_ = Cookie.getCookie('uid');
+        const username_ = Cookie.getCookie('username');
+        if (uid_ && username_) {
+            setUid(uid_);
+            setUsername(decodeURIComponent(username_));
+        }
+    }, []);
+
+    const handleLogout = () => {
+        Cookie.clearCookie('uid');
+        Cookie.clearCookie('username');
+        window.location.reload();
+    };
 
     const items = links.map((link) => (
         <a
@@ -36,6 +53,51 @@ export function NavbarList() {
             <Space w={10} />
             <Stack>
                 <Space w={10} />
+                {username ? (
+                    <Menu
+                      shadow="md"
+                      width={200}
+                      position="right-start"
+                    >
+                        <Menu.Target>
+                            <Text
+                              className={classes.link}
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`你好, ${username}`}
+                              inherit
+                            >
+                                你好, {username}
+                            </Text>
+                        </Menu.Target>
+                        <Menu.Dropdown>
+                            <Menu.Item>
+                                用户名: {username}
+                            </Menu.Item>
+                            <Menu.Item>
+                                UID: {uid}
+                            </Menu.Item>
+                            <Menu.Item
+                              onClick={handleLogout}
+                              style={{ color: 'red' }}
+                              aria-label="Logout"
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => e.key === 'Enter' && handleLogout()}
+                            >
+                                退出登录
+                            </Menu.Item>
+                        </Menu.Dropdown>
+                    </Menu>
+                ) : (
+                    <Button
+                      className={classes.loginButton}
+                      onClick={() => router.push('/oauth')}
+                      aria-label="Login"
+                    >
+                        登录
+                    </Button>
+                )}
                 {items}
             </Stack>
         </Group>
