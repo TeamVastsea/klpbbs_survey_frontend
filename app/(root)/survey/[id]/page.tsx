@@ -6,13 +6,14 @@ import { notifications } from '@mantine/notifications';
 import { useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
 
-export default function SurveyPage({ params }: { params: { id: string } }) {
-    const [questions, setQuestion] = useState<PageResponse | undefined>(undefined);
+export default function SurveyPage({ params }: { params: { id: number } }) {
+    const [currentPage, setCurrentPage] = useState<number | null>(null);
+    const [nextPage, setNextPage] = useState<number | null>(null);
+    const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const searchParams = useSearchParams();
 
     const answerId: string | null = searchParams.get('answer');
-    const surveyId: string | null = searchParams.get('survey');
 
     function save() {
         const myHeaders = new Headers();
@@ -21,12 +22,13 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
 
         const answerObject: any = {};
         answers.forEach((value, key) => {
-            answerObject[key] = value;
+          answerObject[key] = value;
         });
 
-        const raw: any = {
-            survey: surveyId,
-            content: answerObject,
+        const surveyID = Number(params.id);
+        const raw: SaveRequest = {
+          survey: surveyID,
+          content: answerObject,
         };
 
         if (answerId) {
@@ -42,17 +44,21 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
             redirect: 'follow',
         };
 
-        fetch('http://127.0.0.1:25000/api/answer', requestOptions)
+        fetch('https://wj.klpbbs.cn/api/answer', requestOptions)
             .then(response => response.text())
             // eslint-disable-next-line no-console
             .then(result => console.log(result))
             .catch(e => {
                 notifications.show({
-                    title: '获取试题失败，请将以下信息反馈给管理员',
+                    title: '提交答案失败，请将以下信息反馈给管理员',
                     message: e.toString(),
                     color: 'red',
                 });
             });
+
+        if (nextPage !== null) {
+            setCurrentPage(nextPage);
+        }
     }
 
     const getAnswerSetter = (id: string) => (value: string) => {
@@ -61,15 +67,7 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
         setAnswers(newAnswers);
     };
 
-    type ConditionType = 'and' | 'or' | 'not';
-    interface Condition {
-        id: string;
-        value: any;
-    }
-    interface Rule {
-        type: ConditionType;
-        conditions: Condition[];
-    }
+    const getAnswerGetter = (id: string) => answers.get(id) || undefined;
 
     function checkAccess(ruleStr: string | null): boolean {
         if (ruleStr == null) {
@@ -87,22 +85,21 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
                             return true;
                         }
                     }
-
                     return false;
                 }
 
                 return getAnswerGetter(condition.id) === JSON.stringify(condition.value);
             });
+
             if ((rule.type === 'and' && results.every(Boolean)) ||
                 (rule.type === 'or' && results.some(Boolean)) ||
                 (rule.type === 'not' && !results.every(Boolean))) {
                 return true;
             }
         }
+
         return false;
     }
-
-    const getAnswerGetter = (id: string) => answers.get(id) || undefined;
 
     useEffect(() => {
         const myHeaders = new Headers();
@@ -114,39 +111,97 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
             redirect: 'follow',
         };
 
-        fetch(`https://wj.klpbbs.cn/api/question?page=${params.id}`, requestOptions)
+        fetch(`https://wj.klpbbs.cn/api/survey/${params.id}`, requestOptions)
             .then(response => response.text())
             .then(result => {
-                const response: PageResponse = JSON.parse(result);
-                setQuestion(response);
+                const response: SurveyResponse = JSON.parse(result);
+                setCurrentPage(response.page); // 初始化当前页
             })
             .catch(error => {
-                notifications.show({ title: 'Error', message: error.toString(), color: 'red' });
+                notifications.show({
+                    title: '获取试题失败，请将以下信息反馈给管理员',
+                    message: error.toString(),
+                    color: 'red',
+                });
             });
-    }, []);
+    }, [params.id]);
+
+    useEffect(() => {
+        if (currentPage !== null) {
+            const myHeaders = new Headers();
+            myHeaders.append('token', '111');
+
+            const requestOptions: RequestInit = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow',
+            };
+
+            fetch(`https://wj.klpbbs.cn/api/question?page=${currentPage}`, requestOptions)
+                .then(response => response.text())
+                .then(result => {
+                    const response: PageResponse = JSON.parse(result);
+                    setQuestions(response);
+                    setNextPage(response.next);
+                });
+        }
+    }, [currentPage]);
 
     return (
         <Stack>
             <Container maw={1600} w="90%">
                 <Space h={100} />
-                    {questions?.content.map((question, index) =>
-                        <Question
-                          id={question}
-                          key={index}
-                          value={getAnswerGetter(question)}
-                          setValue={getAnswerSetter(question)}
-                          checkAccess={checkAccess} />)}
+                {questions?.content.map((question, index) => (
+                    <Question
+                      id={question}
+                      key={index}
+                      value={getAnswerGetter(question)}
+                      setValue={getAnswerSetter(question)}
+                      checkAccess={checkAccess}
+                    />
+                ))}
                 <Space h={50} />
-                <Button onClick={save}>{questions?.next == null ? '提交' : '下一页'}</Button>
+                <Button onClick={save}>{nextPage == null ? '提交' : '下一页'}</Button>
                 <Space h={180} />
             </Container>
         </Stack>
     );
 }
 
+interface SurveyResponse {
+    id: number;
+    title: string;
+    budge: string;
+    description: string;
+    image: string;
+    page: number;
+    start_date: string;
+    end_date: string;
+}
+
 export interface PageResponse {
-    id: string
-    title: string
-    content: string[]
-    next: any
+    id: string;
+    title: string;
+    budge: string;
+    content: string[];
+    next: number | null;
+}
+
+type ConditionType = 'and' | 'or' | 'not';
+
+interface Condition {
+    id: string;
+    value: any;
+}
+
+interface Rule {
+    type: ConditionType;
+    conditions: Condition[];
+}
+
+interface SaveRequest {
+    survey: number;
+    content: any;
+    id?: string;
+    complete?: boolean;
 }
