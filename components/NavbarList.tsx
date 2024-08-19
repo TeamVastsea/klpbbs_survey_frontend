@@ -17,7 +17,7 @@ const links: Link[] = [
 
 export function NavbarList() {
     const router = useRouter();
-    const [username, setUsername] = useState<string | undefined>(undefined);
+    const [username, setUsername] = useState<string | null>(null);
     const [uid, setUid] = useState<string | undefined>(undefined);
 
     useEffect(() => {
@@ -28,27 +28,37 @@ export function NavbarList() {
             setUid(uid_);
             setUsername(username_);
         } else {
-            setUsername('null');
+            setUsername(null);
         }
     }, []);
+
+    const handleClick = (link: string) => {
+        if (link.startsWith('http')) {
+            window.open(link, '_blank', 'noreferrer');
+        } else {
+            router.push(link);
+        }
+    };
 
     const handleLogout = () => {
         Cookie.clearCookie('uid');
         Cookie.clearCookie('username');
+        Cookie.clearCookie('status');
         window.location.reload();
     };
 
     const items = links.map((link) => (
-        <a
+        <Button
           key={link.label}
-          href={link.link}
           className={classes.link}
-          onClick={() => router.push(link.link)}
-          target={link.link.startsWith('http') ? '_blank' : '_self'}
-          rel="noreferrer"
+          onClick={() => handleClick(link.link)}
+          onKeyDown={(e) => e.key === 'Enter' && handleClick(link.link)}
+          tabIndex={0}
+          aria-label={link.label}
+          color="white"
         >
             {link.label}
-        </a>
+        </Button>
     ));
 
     return (

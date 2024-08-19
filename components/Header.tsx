@@ -116,17 +116,17 @@ export default function Header({ opened, toggle }: HeaderProps) {
                 <Group gap={5} visibleFrom="xs">
                     {userItems}
                     {links.map((link) => (
-                        <a
+                        <Button
                           key={link.label}
                           className={classes.link}
                           onClick={() => handleClick(link.link)}
                           onKeyDown={(e) => e.key === 'Enter' && handleClick(link.link)}
-                          role="button"
                           tabIndex={0}
                           aria-label={link.label}
+                          color="white"
                         >
                             {link.label}
-                        </a>
+                        </Button>
                     ))}
                 </Group>
                 <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />

@@ -20,10 +20,6 @@
     font-size: var(--mantine-font-size-sm);
     font-weight: 500;
 
-    &:hover {
-        background-color: var(--mantine-color-gray-0);
-    }
-
     [data-active] {
         background-color: var(--mantine-color-blue-filled);
         color: var(--mantine-color-white);
