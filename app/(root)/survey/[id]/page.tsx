@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Container, Space, Stack } from '@mantine/core';
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
