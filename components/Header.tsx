@@ -14,6 +14,7 @@ const links: Link[] = [
     { link: '/', label: '首页' },
     { link: 'https://klpbbs.com', label: '主站' },
     { link: '/about', label: '关于' },
+    { link: '/tos', label: '条款' },
 ];
 
 export default function Header({ opened, toggle }: HeaderProps) {
