@@ -1,38 +1,21 @@
 'use client';
 
-import { Center, Space, Stack, Table, Title, Text } from '@mantine/core';
+import { Center, Space, Stack, Table, Title } from '@mantine/core';
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import surveyData from './data/surveys.json';
 import listStyle from './list.module.css';
 import { Cookie } from '@/components/cookie';
 
 export default function SurveyList() {
-    const loginStatus = Cookie.getCookie('status');
+    const router = useRouter();
 
     useEffect(() => {
-        if (loginStatus !== 'ok') {
-            setTimeout(() => {
-                window.location.href = '/oauth';
-            }, 3000);
+        const status = Cookie.getCookie('status');
+        if (status === 'ok') { /* empty */ } else {
+            router.push('/oauth');
         }
-    }, [loginStatus]);
-
-    if (loginStatus !== 'ok') {
-        return (
-            <Stack>
-                <Center>
-                    <Text c="red" size="xl">
-                        您还未登录，请登录苦力怕论坛账户
-                    </Text>
-                </Center>
-                <Center>
-                    <Text c="red" size="md">
-                        您将于 3 秒后跳转至登录页面
-                    </Text>
-                </Center>
-            </Stack>
-        );
-    }
+    }, []);
 
     const rows = surveyData.map((survey) => (
         <Table.Tr key={survey.id}>
@@ -47,9 +30,6 @@ export default function SurveyList() {
                 }}
             >
                 {survey.description}
-            </Table.Td>
-            <Table.Td className={listStyle.list}>
-                {new Date(survey.start_date).toLocaleDateString()}
             </Table.Td>
             <Table.Td
               style={{
@@ -86,7 +66,6 @@ export default function SurveyList() {
                             <Table.Th className={listStyle.list}>ID</Table.Th>
                             <Table.Th className={listStyle.list}>标题</Table.Th>
                             <Table.Th className={listStyle.list}>描述</Table.Th>
-                            <Table.Th className={listStyle.list}>起始时间</Table.Th>
                             <Table.Th
                               style={{
                                     width: '70px',
