@@ -1,6 +1,5 @@
-'use client';
-
 import { useEffect, useState } from 'react';
+import { Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { generateQuestion, InputProps, QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 
@@ -31,20 +30,27 @@ export default function Question(props: PageQuestionProps) {
                     color: 'red',
                 })
             );
-    }, []);
+    }, [props.id, props.setProps]);
 
     return (
         <>
-            {question ?
-                props.checkAccess(question.condition as string) ?
-                    generateQuestion(question, props.value, props.setValue) : null
-                : null}
+            {question && props.checkAccess(question.condition as string) ? (
+                <>
+                    {generateQuestion(question, props.value, props.setValue)}
+                    {props.isUnanswered && (
+                        <Text c="red" size="sm">
+                            该项目未作答
+                        </Text>
+                    )}
+                </>
+            ) : null}
         </>
     );
 }
 
 export interface PageQuestionProps extends InputProps {
-    id: string,
-    checkAccess: (ruleStr: string) => boolean,
-    setProps: (value: QuestionProps) => void,
+    id: string;
+    checkAccess: (ruleStr: string | null) => boolean;
+    setProps: (value: QuestionProps) => void;
+    isUnanswered: boolean;
 }

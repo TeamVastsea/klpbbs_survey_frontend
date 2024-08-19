@@ -22,7 +22,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         myHeaders.append('token', '111');
         myHeaders.append('Content-Type', 'application/json');
 
-        const answerObject: any = {};
+        const answerObject: Record<string, string> = {};
         answers.forEach((value, key) => {
             answerObject[key] = value;
         });
@@ -54,30 +54,30 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return;
         }
 
-            const bodyContent = JSON.stringify(raw);
+        const bodyContent = JSON.stringify(raw);
 
-            const requestOptions: RequestInit = {
-                method: 'POST',
-                headers: myHeaders,
-                body: bodyContent,
-                redirect: 'follow',
-            };
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            headers: myHeaders,
+            body: bodyContent,
+            redirect: 'follow',
+        };
 
-            fetch('https://wj.klpbbs.cn/api/answer', requestOptions)
-                .then(response => response.text())
-                // eslint-disable-next-line no-console
-                .then(result => console.log(result))
-                .catch(e => {
-                    notifications.show({
-                        title: '提交答案失败，请将以下信息反馈给管理员',
-                        message: e.toString(),
-                        color: 'red',
-                    });
+        fetch('https://wj.klpbbs.cn/api/answer', requestOptions)
+            .then(response => response.text())
+            // eslint-disable-next-line no-console
+            .then(result => console.log(result))
+            .catch(e => {
+                notifications.show({
+                    title: '提交答案失败，请将以下信息反馈给管理员',
+                    message: e.toString(),
+                    color: 'red',
                 });
+            });
 
-            if (nextPage !== null) {
-                setCurrentPage(nextPage);
-            }
+        if (nextPage !== null) {
+            setCurrentPage(nextPage);
+        }
     }
 
     const getAnswerSetter = (id: string) => (value: string) => {
@@ -100,8 +100,8 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         const rules: Rule[] = JSON.parse(ruleStr);
 
         for (const rule of rules) {
-            const results = rule.conditions.map((condition) => {
-                if (condition.value instanceof Array) {
+            const results = rule.conditions.map((condition: Condition) => {
+                if (Array.isArray(condition.value)) {
                     const value: string[] = JSON.parse(getAnswerGetter(condition.id) || '[]');
                     for (const v of condition.value) {
                         if (value.includes(v)) {
@@ -174,7 +174,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         <Stack>
             <Container maw={1600} w="90%">
                 <Space h={100} />
-                {questions?.content.map((question, index) => (
+                {questions?.content.map((question: string, index: number) => (
                     <Question
                       id={question}
                       key={index}
@@ -182,6 +182,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                       setValue={getAnswerSetter(question)}
                       setProps={getPropsSetter(question)}
                       checkAccess={checkAccess}
+                      isUnanswered={!answers.has(question)} // Pass the isUnanswered prop
                     />
                 ))}
                 <Space h={50} />
