@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Container, Title, Space, Center, Stack } from '@mantine/core';
+import { Container, Title, Space, Center, Stack, Text } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 
 export default function TosPage() {
@@ -26,19 +26,19 @@ export default function TosPage() {
                 <Space h="xs" />
                 <Title order={3} onClick={() => router.push('/tos/PrivacyPolicy')} style={{ cursor: 'pointer' }}>
                     隐私政策
-                    <Title order={4}>Privacy Policy (PP)</Title>
+                    <Text size="lg" fw={700}>Privacy Policy (PP)</Text>
                 </Title>
                 <Title order={3} onClick={() => router.push('/tos/EULA')} style={{ cursor: 'pointer' }}>
                     最终用户许可协议
-                    <Title order={4}>End User License Agreement (EULA)</Title>
+                    <Text size="lg" fw={700}>End User License Agreement (EULA)</Text>
                 </Title>
-                <Title order={3} onClick={() => router.push('/tos/EULA')} style={{ cursor: 'pointer' }}>
+                <Title order={3} onClick={() => window.open('https://klpbbs.com/thread-65605-1-1.html', '_blank')} style={{ cursor: 'pointer' }}>
                     苦力怕论坛总坛规
-                    <Title order={4}>KLPBBS General Rules</Title>
+                    <Text size="lg" fw={700}>KLPBBS General Rules</Text>
                 </Title>
                 <Title order={3} onClick={() => router.push('/tos/OpenSourceLicense')} style={{ cursor: 'pointer' }}>
                     开源许可证
-                    <Title order={4}>Open Source License</Title>
+                    <Text size="lg" fw={700}>Open Source License (OSL)</Text>
                 </Title>
             </Stack>
         </Container>
