@@ -22,6 +22,7 @@ export default function Question(props: PageQuestionProps) {
             .then(result => {
                 const response: QuestionProps = JSON.parse(result);
                 setQuestion(response);
+                props.setProps(response);
             })
             .catch(error =>
                 notifications.show({
@@ -45,4 +46,5 @@ export default function Question(props: PageQuestionProps) {
 export interface PageQuestionProps extends InputProps {
     id: string,
     checkAccess: (ruleStr: string) => boolean,
+    setProps: (value: QuestionProps) => void,
 }

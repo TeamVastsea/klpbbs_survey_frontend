@@ -1,10 +1,11 @@
 'use client';
 
 import { Button, Container, Space, Stack } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import { notifications } from '@mantine/notifications';
 import { useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
+import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [currentPage, setCurrentPage] = useState<number | null>(null);
@@ -12,6 +13,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const searchParams = useSearchParams();
+    const questionsProps = useRef(new Map<string, QuestionProps>());
 
     const answerId: string | null = searchParams.get('answer');
 
@@ -22,43 +24,60 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
         const answerObject: any = {};
         answers.forEach((value, key) => {
-          answerObject[key] = value;
+            answerObject[key] = value;
         });
 
         const surveyID = Number(params.id);
         const raw: SaveRequest = {
-          survey: surveyID,
-          content: answerObject,
+            survey: surveyID,
+            content: answerObject,
         };
 
         if (answerId) {
             raw.id = answerId;
         }
 
-        const bodyContent = JSON.stringify(raw);
-
-        const requestOptions: RequestInit = {
-            method: 'POST',
-            headers: myHeaders,
-            body: bodyContent,
-            redirect: 'follow',
-        };
-
-        fetch('https://wj.klpbbs.cn/api/answer', requestOptions)
-            .then(response => response.text())
-            // eslint-disable-next-line no-console
-            .then(result => console.log(result))
-            .catch(e => {
-                notifications.show({
-                    title: '提交答案失败，请将以下信息反馈给管理员',
-                    message: e.toString(),
-                    color: 'red',
-                });
-            });
-
-        if (nextPage !== null) {
-            setCurrentPage(nextPage);
+        let flag = false;
+        for (const q of questions?.content || []) {
+            if ((!answers.has(q) || answers.get(q) === undefined)
+                && checkAccess(questionsProps.current.get(q)?.condition || null)
+                && questionsProps.current.get(q)?.required) {
+                flag = true;
+            }
         }
+        if (flag) {
+            notifications.show({
+                title: '请填写所有题目',
+                message: '请填写所有题目后再提交',
+                color: 'red',
+            });
+            return;
+        }
+
+            const bodyContent = JSON.stringify(raw);
+
+            const requestOptions: RequestInit = {
+                method: 'POST',
+                headers: myHeaders,
+                body: bodyContent,
+                redirect: 'follow',
+            };
+
+            fetch('https://wj.klpbbs.cn/api/answer', requestOptions)
+                .then(response => response.text())
+                // eslint-disable-next-line no-console
+                .then(result => console.log(result))
+                .catch(e => {
+                    notifications.show({
+                        title: '提交答案失败，请将以下信息反馈给管理员',
+                        message: e.toString(),
+                        color: 'red',
+                    });
+                });
+
+            if (nextPage !== null) {
+                setCurrentPage(nextPage);
+            }
     }
 
     const getAnswerSetter = (id: string) => (value: string) => {
@@ -68,6 +87,10 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     };
 
     const getAnswerGetter = (id: string) => answers.get(id) || undefined;
+
+    const getPropsSetter = (id: string) => (value: QuestionProps) => {
+        questionsProps.current.set(id, value);
+    };
 
     function checkAccess(ruleStr: string | null): boolean {
         if (ruleStr == null) {
@@ -157,6 +180,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                       key={index}
                       value={getAnswerGetter(question)}
                       setValue={getAnswerSetter(question)}
+                      setProps={getPropsSetter(question)}
                       checkAccess={checkAccess}
                     />
                 ))}
