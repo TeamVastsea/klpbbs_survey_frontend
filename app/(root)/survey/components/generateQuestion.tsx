@@ -10,11 +10,18 @@ export function generateQuestion(
     value: string | undefined,
     setValue: (value: string) => void
 ) {
+    const titleContent = (
+        <Title order={3}>
+            {`${data.content.title}`}
+            {data.required && <span style={{ color: 'red' }}> *</span>}
+        </Title>
+    );
+
     switch (data.type) {
         case 1:
             return (
                 <div key={data.id}>
-                    <Title order={3}>{`${data.content.title}`}</Title>
+                    {titleContent}
                     <p>{data.content.content}</p>
                     <FillBlank value={value} setValue={setValue} />
                 </div>
@@ -22,7 +29,7 @@ export function generateQuestion(
         case 2:
             return (
                 <div key={data.id}>
-                    <Title order={3}>{`${data.content.title}`}</Title>
+                    {titleContent}
                     <p>{data.content.content}</p>
                     <SingleChoice choice={data.values} value={value} setValue={setValue} />
                 </div>
@@ -30,7 +37,7 @@ export function generateQuestion(
         case 3:
             return (
                 <div key={data.id}>
-                    <Title order={3}>{`${data.content.title}`}</Title>
+                    {titleContent}
                     <p>{data.content.content}</p>
                     <MultipleChoice choice={data.values} value={value} setValue={setValue} />
                 </div>
@@ -38,7 +45,7 @@ export function generateQuestion(
         case 4:
             return (
                 <div key={data.id}>
-                    <Title order={3}>{`${data.content.title}`}</Title>
+                    {titleContent}
                     <p>{data.content.content}</p>
                     <FileUpload />
                 </div>
@@ -58,6 +65,7 @@ export interface QuestionProps {
     type: number
     values: Value[]
     condition: string | null
+    required: boolean | null
 }
 
 export interface Value {

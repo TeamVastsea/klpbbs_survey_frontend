@@ -115,7 +115,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             .then(response => response.text())
             .then(result => {
                 const response: SurveyResponse = JSON.parse(result);
-                setCurrentPage(response.page); // 初始化当前页
+                setCurrentPage(response.page);
             })
             .catch(error => {
                 notifications.show({
