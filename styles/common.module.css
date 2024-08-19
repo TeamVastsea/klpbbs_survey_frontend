@@ -5,3 +5,13 @@
     line-height: 1;
     margin-bottom: var(--mantine-spacing-md);
 }
+
+.imageContainer {
+    display: block;
+}
+
+@media (max-width: 770px) {
+    .imageContainer {
+        display: none;
+    }
+}

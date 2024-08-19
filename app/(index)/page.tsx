@@ -85,7 +85,7 @@ export default function HomePage() {
                             </Group>
                         </Stack>
                     </Center>
-                    <Container>
+                    <Container className={classes.imageContainer}>
                         <Image
                           src={mainPageImage.src}
                           alt="Main Page Image"
