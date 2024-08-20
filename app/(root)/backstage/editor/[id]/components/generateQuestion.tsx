@@ -23,7 +23,7 @@ export function generateQuestion(
                 <div key={data.id}>
                     {titleContent}
                     <p>{data.content.content}</p>
-                    <FillBlank value={value} setValue={setValue} />
+                    <FillBlank value={value} setValue={setValue} disabled />
                 </div>
             );
         case 2:
@@ -31,7 +31,7 @@ export function generateQuestion(
                 <div key={data.id}>
                     {titleContent}
                     <p>{data.content.content}</p>
-                    <SingleChoice choice={data.values} value={value} setValue={setValue} />
+                    <SingleChoice choice={data.values} value={value} setValue={setValue} disabled />
                 </div>
             );
         case 3:
@@ -39,7 +39,11 @@ export function generateQuestion(
                 <div key={data.id}>
                     {titleContent}
                     <p>{data.content.content}</p>
-                    <MultipleChoice choice={data.values} value={value} setValue={setValue} />
+                    <MultipleChoice
+                      choice={data.values}
+                      value={value}
+                      setValue={setValue}
+                      disabled />
                 </div>
             );
         case 4:
@@ -65,6 +69,9 @@ export interface QuestionProps {
     type: number
     values: Value[]
     condition: string | null
+    answer: string | null
+    allScore: number | null
+    subScore: number | null
     required: boolean | null
 }
 
@@ -76,5 +83,4 @@ export interface Value {
 export interface InputProps {
     value: string | undefined,
     setValue: (value: string) => void,
-    disabled?: boolean;
 }

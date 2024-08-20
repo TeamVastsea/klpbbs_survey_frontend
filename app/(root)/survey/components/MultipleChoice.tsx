@@ -10,7 +10,7 @@ export function MultipleChoice(props: ChoiceProps) {
     }
 
     const cards = data.map(({ title, content }, index) => (
-        <Checkbox.Card className={classes.root} radius="md" value={index.toString()} key={index}>
+        <Checkbox.Card className={classes.root} radius="md" value={index.toString()} key={index} disabled={props.disabled}>
             <Group wrap="nowrap" align="flex-start">
                 <Checkbox.Indicator />
                 <div>

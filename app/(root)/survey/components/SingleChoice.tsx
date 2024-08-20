@@ -6,7 +6,7 @@ export function SingleChoice(props: ChoiceProps) {
     const data = props.choice;
 
     const cards = data.map(({ title, content }, index) => (
-        <Radio.Card className={classes.root} radius="md" value={index.toString()} key={index}>
+        <Radio.Card className={classes.root} radius="md" value={index.toString()} key={index} disabled={props.disabled}>
             <Group wrap="nowrap" align="flex-start">
                 <Radio.Indicator />
                 <div>
