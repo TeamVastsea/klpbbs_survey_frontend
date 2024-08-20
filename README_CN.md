@@ -1,13 +1,19 @@
- <center class="half">
-<img width="128" src="./public/favicon.svg" alt="logo"><br /><br />
+<div align="center">
+    <img width="128" src="./public/favicon.svg" alt="logo">
+    <h1> 苦力怕论坛 | 问卷系统 </h1>
+</div>
 
-# 苦力怕论坛 | 问卷系统
+<p align="center">
+    <img src="https://img.shields.io/github/license/TeamVastsea/klpbbs_survey_frontend" alt="GitHub License">
+    <img src="https://github.com/TeamVastsea/klpbbs_survey_frontend/actions/workflows/docker-image.yml/badge.svg" alt="Docker Image CI">
+</p>
 
-![GitHub License](https://img.shields.io/github/license/TeamVastsea/klpbbs_survey_frontend)
-[![Docker Image CI](https://github.com/TeamVastsea/klpbbs_survey_frontend/actions/workflows/docker-image.yml/badge.svg)](https://github.com/TeamVastsea/klpbbs_survey_frontend/actions/workflows/docker-image.yml)
-
-**[English](./README.md) | 中文**
-</center>
+<p align="center">
+    <b>
+        <a href="./README.md">English</a>
+	 | 简体中文
+    </b>
+</p>
 
 为了让论坛用户能够更加简单、快速地填写问卷，苦力怕论坛与瀚海工艺团队的多位开发者共同合作，合力打造了一个无缝集成的问卷系统
 
