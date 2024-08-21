@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, Select, Space, Stack } from '@mantine/core';
+import { Button, Checkbox, Input, NumberInput, Select, Space, Stack } from '@mantine/core';
 import React, { useState } from 'react';
 import { QuestionProps } from '@/app/(root)/backstage/editor/[id]/components/generateQuestion';
 
@@ -62,11 +62,19 @@ export default function EditCard(props: EditCardProps) {
         });
     };
 
-    const changeAllScore = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const changeAllScore = (e: number | string) => {
         setEdit(true);
         props.setQuestion({
             ...props.question,
-            allScore: Number(e.target.value), // 更新总分字段
+            all_points: Number(e), // 更新总分字段
+        });
+    };
+
+    const changeSubScore = (e: number | string) => {
+        setEdit(true);
+        props.setQuestion({
+            ...props.question,
+            sub_points: Number(e), // 更新总分字段
         });
     };
 
@@ -80,6 +88,8 @@ export default function EditCard(props: EditCardProps) {
 
     function save() {
         setEdit(false);
+
+        // TODO: save to server
     }
 
     function mapType(type: number) {
@@ -118,6 +128,7 @@ export default function EditCard(props: EditCardProps) {
             </Input.Wrapper>
 
             <Input.Wrapper label="条件">
+                {/* TODO: add condition editor */}
                 <Input placeholder="条件" value={props.question.condition == null ? '' : props.question.condition} onChange={changeCondition} />
             </Input.Wrapper>
 
@@ -131,6 +142,7 @@ export default function EditCard(props: EditCardProps) {
             {(props.question.type === 2 || props.question.type === 3) && (
                 <>
                     <Input.Wrapper label="选项">
+                        {/* TODO: add options editor */}
                         <Input
                           value={JSON.stringify(props.question.values)}
                           onChange={changeOption}
@@ -138,20 +150,28 @@ export default function EditCard(props: EditCardProps) {
                     </Input.Wrapper>
 
                     <Input.Wrapper label="答案">
+                        {/* TODO: add answer editor */}
                         <Input
                           value={JSON.stringify(props.question.answer)}
                           onChange={changeAnswer}
                         />
                     </Input.Wrapper>
 
-                    <Input.Wrapper label="总分">
-                        <Input
-                          value={props.question.allScore?.toString()}
-                          onChange={changeAllScore}
-                        />
-                    </Input.Wrapper>
+                    <NumberInput
+                      label="总分"
+                      value={props.question.all_points ?? 0}
+                      onChange={changeAllScore}
+                    />
                 </>
             )}
+
+            {props.question.type === 3 &&
+                <NumberInput
+                  label="半分"
+                  value={props.question.sub_points ?? 0}
+                  onChange={changeSubScore}
+                />
+            }
 
             <Checkbox
               checked={props.question.required ?? false}

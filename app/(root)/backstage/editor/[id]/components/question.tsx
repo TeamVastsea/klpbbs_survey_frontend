@@ -5,6 +5,7 @@ import { notifications } from '@mantine/notifications';
 import { Card, Stack } from '@mantine/core';
 import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 import { PageQuestionProps } from '@/app/(root)/survey/[id]/components/question';
+import EditCard from "@/app/(root)/backstage/editor/[id]/components/EditCard";
 // import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
 
 export default function Question(props: PageQuestionProps) {
@@ -12,7 +13,7 @@ export default function Question(props: PageQuestionProps) {
 
     useEffect(() => {
         const myHeaders = new Headers();
-        myHeaders.append('token', '111');
+        myHeaders.append('token', '222');
 
         const requestOptions: RequestInit = {
             method: 'GET',
@@ -20,7 +21,7 @@ export default function Question(props: PageQuestionProps) {
             redirect: 'follow',
         };
 
-        fetch(`https://wj.klpbbs.cn/api/question/${props.id}`, requestOptions)
+        fetch(`https://wj.klpbbs.cn/api/question/admin/${props.id}`, requestOptions)
             .then(response => response.text())
             .then(result => {
                 const response: QuestionProps = JSON.parse(result);
@@ -40,8 +41,7 @@ export default function Question(props: PageQuestionProps) {
         <Card withBorder>
             <Stack gap="xs">
                 {question ?
-                    // <EditCard question={question} setQuestion={setQuestion} />
-                    <>Placeholder</> : null}
+                    <EditCard question={question} setQuestion={setQuestion} /> : null}
             </Stack>
         </Card>
     );

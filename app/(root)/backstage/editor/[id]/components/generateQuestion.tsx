@@ -70,8 +70,8 @@ export interface QuestionProps {
     values: Value[]
     condition: string | null
     answer: string | null
-    allScore: number | null
-    subScore: number | null
+    all_points: number | null
+    sub_points: number | null
     required: boolean | null
 }
 
