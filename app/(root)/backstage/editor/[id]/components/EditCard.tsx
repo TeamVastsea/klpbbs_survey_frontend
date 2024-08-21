@@ -1,6 +1,6 @@
 import { Button, Checkbox, Input, NumberInput, Select, Space, Stack } from '@mantine/core';
 import React, { useState } from 'react';
-import { QuestionProps } from '@/app/(root)/backstage/editor/[id]/components/generateQuestion';
+import {QuestionProps} from "@/app/(root)/survey/components/generateQuestion";
 
 export default function EditCard(props: EditCardProps) {
     const [edit, setEdit] = useState(false);

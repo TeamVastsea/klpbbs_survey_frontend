@@ -65,6 +65,9 @@ export interface QuestionProps {
     type: number
     values: Value[]
     condition: string | null
+    answer: string | null
+    all_points: number | null
+    sub_points: number | null
     required: boolean | null
 }
 
