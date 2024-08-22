@@ -3,6 +3,7 @@
 import { Center, Container, SimpleGrid, Space, Stack, Title } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { min } from '@floating-ui/utils';
+import { notifications } from '@mantine/notifications';
 import BadgeCard from '@/app/(root)/backstage/components/BadgeCard';
 import SurveyApi, { SurveyInfo } from '@/api/SurveyApi';
 
@@ -12,7 +13,13 @@ export default function EditorPage() {
     useEffect(() => {
         SurveyApi.getList(0, 10, '')
             .then(r => setSurveys(r))
-            .catch(error => console.error('Failed to fetch surveys:', error));
+            .catch(e => {
+                notifications.show({
+                    title: '获取问卷列表失败，请将以下信息反馈给管理员',
+                    message: e.toString(),
+                    color: 'red',
+                });
+            });
     }, []);
 
     return (
@@ -32,7 +39,11 @@ export default function EditorPage() {
                 >
                     {surveys.map((survey: SurveyInfo) => (
                         <Center key={survey.id}>
-                            <BadgeCard survey={survey} showBadge />
+                            <BadgeCard
+                              id={survey.id}
+                              survey={survey}
+                              showBadge
+                            />
                         </Center>
                     ))}
                 </SimpleGrid>
