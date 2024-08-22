@@ -3,10 +3,12 @@
 import { Card, Image, Text, Badge, Button, Modal, ActionIcon, ScrollArea, Space, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSettings2 } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 import { SurveyInfo } from '@/api/SurveyApi';
 
-export default function BadgeCard({ survey, showBadge }: BadgeCardProps) {
+export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardProps) {
     const [opened, { open, close }] = useDisclosure();
+    const router = useRouter();
 
     console.log(survey);
     return (
@@ -58,7 +60,7 @@ export default function BadgeCard({ survey, showBadge }: BadgeCardProps) {
                   mt="md"
                   radius="md"
                   onClick={() => {
-                        window.location.href = `/backstage/editor/${survey.id}`;
+                        router.push(routeAdmin ? `/backstage/editor/${survey.id}` : `/survey/${survey.id}`);
                   }}
                 >
                     查看详情
@@ -73,5 +75,6 @@ export default function BadgeCard({ survey, showBadge }: BadgeCardProps) {
 
 interface BadgeCardProps {
     survey: SurveyInfo;
-    showBadge: boolean | undefined;
+    routeAdmin: boolean;
+    showBadge?: boolean;
 }
