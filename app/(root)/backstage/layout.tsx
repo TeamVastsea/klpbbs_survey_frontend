@@ -1,12 +1,22 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Watermark from '@/app/(root)/backstage/components/Watermark';
 import { Cookie } from '@/components/cookie';
 
 export default function BackStageLayout({ children }: { children: React.ReactNode }) {
-    const userName = decodeURI(Cookie.getCookie('username') || '');
-    const userId = Cookie.getCookie('uid') || '';
+    const [userName, setUserName] = useState('');
+    const [userId, setUserId] = useState('');
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const userNameFromCookie = Cookie.getCookie('username') || '';
+            const userIdFromCookie = Cookie.getCookie('uid') || '';
+
+            setUserName(decodeURI(userNameFromCookie));
+            setUserId(userIdFromCookie);
+        }
+    }, []);
 
     return (
         <div>
