@@ -15,17 +15,17 @@
     </b>
 </p>
 
-为了让论坛用户能够更加简单、快速地填写问卷，苦力怕论坛与瀚海工艺团队的多位开发者共同合作，合力打造了一个无缝集成的问卷系统
+为了让论坛用户能够更加简单、快速地填写问卷, 苦力怕论坛与瀚海工艺团队的多位开发者共同合作, 合力打造了一个无缝集成的问卷系统
 
-使用此程序，论坛用户可以使用苦力怕论坛账号快速登录，而无需重复注册或创建新的账号，极大地优化了用户体验
+使用此程序, 论坛用户可以使用苦力怕论坛账号快速登录, 而无需重复注册或创建新的账号, 极大地优化了用户体验
 
 ## 许可
 
-本项目使用 MIT 协议授权，详见 [许可证文件](./LICENSE)
+本项目使用 MIT 协议授权, 详见 [许可证文件](./LICENSE)
 
 ## 贡献
 
-如果你在使用过程中发现任何问题，可以 [提交 Issue](https://github.com/TeamVastsea/klpbbs_survey_frontend/issues/new) 或自行 [Fork](https://github.com/TeamVastsea/klpbbs_survey_frontend/fork) 修改后提交 Pull Request
+如果你在使用过程中发现任何问题, 可以 [提交 Issue](https://github.com/TeamVastsea/klpbbs_survey_frontend/issues/new) 或自行 [Fork](https://github.com/TeamVastsea/klpbbs_survey_frontend/fork) 修改后提交 Pull Request
 
 ## 感谢
 
