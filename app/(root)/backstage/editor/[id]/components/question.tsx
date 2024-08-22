@@ -5,8 +5,7 @@ import { notifications } from '@mantine/notifications';
 import { Card, Stack } from '@mantine/core';
 import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 import { PageQuestionProps } from '@/app/(root)/survey/[id]/components/question';
-import EditCard from "@/app/(root)/backstage/editor/[id]/components/EditCard";
-// import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
+import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
 
 export default function Question(props: PageQuestionProps) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
