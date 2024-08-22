@@ -1,12 +1,14 @@
 import { Button, Checkbox, Input, NumberInput, Select, Space, Stack } from '@mantine/core';
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
+import { QuestionProps, Value } from '@/app/(root)/survey/components/generateQuestion';
 import AnswerEditor from '@/app/(root)/backstage/editor/[id]/components/AnswerEditor';
+import OptionsEditor from '@/app/(root)/backstage/editor/[id]/components/OptionsEditor';
 
 export default function EditCard(props: EditCardProps) {
     const [edit, setEdit] = useState(false);
     const [answerOpened, { open: answerOpen, close: answerClose }] = useDisclosure(false);
+    const [optionsOpened, { open: optionsOpen, close: optionsClose }] = useDisclosure(false);
 
     const changeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEdit(true);
@@ -48,11 +50,11 @@ export default function EditCard(props: EditCardProps) {
         }
     };
 
-    const changeOption = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const changeOption = (e: Value[]) => {
         setEdit(true);
         props.setQuestion({
             ...props.question,
-            values: JSON.parse(e.target.value),
+            values: e,
         });
     };
 
@@ -145,12 +147,17 @@ export default function EditCard(props: EditCardProps) {
             {(props.question.type === 2 || props.question.type === 3) && (
                 <>
                     <Input.Wrapper label="选项">
-                        {/* TODO: add options editor */}
-                        <Input
-                          value={JSON.stringify(props.question.values)}
-                          onChange={changeOption}
-                        />
+                        <Input component="button" pointer onClick={optionsOpen}>
+                            <Input.Placeholder>
+                                {JSON.stringify(props.question.values)}
+                            </Input.Placeholder>
+                        </Input>
                     </Input.Wrapper>
+                    <OptionsEditor
+                      options={props.question.values}
+                      setOptions={changeOption}
+                      opened={optionsOpened}
+                      close={optionsClose} />
 
                     <Input.Wrapper label="答案">
                         <Input component="button" pointer onClick={answerOpen}>

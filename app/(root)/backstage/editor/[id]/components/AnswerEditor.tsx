@@ -1,4 +1,4 @@
-import {Button, Group, Modal, Stack, Text} from '@mantine/core';
+import { Button, Modal, Text } from '@mantine/core';
 import { Value } from '@/app/(root)/survey/components/generateQuestion';
 import { SingleChoice } from '@/app/(root)/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/(root)/survey/components/MultipleChoice';
