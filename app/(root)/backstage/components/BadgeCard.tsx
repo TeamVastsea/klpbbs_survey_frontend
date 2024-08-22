@@ -4,13 +4,26 @@ import { Card, Image, Text, Badge, Button, Modal, ActionIcon, ScrollArea, Space,
 import { useDisclosure } from '@mantine/hooks';
 import { IconSettings2 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import SurveyEditor from './SurveyBasicContentsEditor'; // Import the SurveyEditor component
 import { SurveyInfo } from '@/api/SurveyApi';
 
 export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardProps) {
     const [opened, { open, close }] = useDisclosure();
+    const [editingSurvey, setEditingSurvey] = useState<SurveyInfo | null>(null);
     const router = useRouter();
 
-    console.log(survey);
+    const handleSave = (updatedSurvey: SurveyInfo) => {
+        console.log('Updated Survey:', updatedSurvey);
+        setEditingSurvey(null);
+        close();
+    };
+
+    const handleEdit = () => {
+        setEditingSurvey(survey);
+        open();
+    };
+
     return (
         <>
             <Card withBorder w={292.5}>
@@ -25,12 +38,12 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
 
                 {showBadge && (
                     <ActionIcon
-                      onClick={open}
+                      onClick={handleEdit}
                       style={{
                             position: 'absolute',
                             top: 10,
                             right: 10,
-                    }}
+                        }}
                       size="lg"
                     >
                         <IconSettings2 />
@@ -61,13 +74,20 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
                   radius="md"
                   onClick={() => {
                         router.push(routeAdmin ? `/backstage/editor/${survey.id}` : `/survey/${survey.id}`);
-                  }}
+                    }}
                 >
                     查看详情
                 </Button>
             </Card>
 
             <Modal opened={opened} onClose={close} title={`编辑 ${survey.title} 基本信息`}>
+                {editingSurvey && (
+                    <SurveyEditor
+                      survey={editingSurvey}
+                      onSave={handleSave}
+                      onCancel={() => setEditingSurvey(null)}
+                    />
+                )}
             </Modal>
         </>
     );
