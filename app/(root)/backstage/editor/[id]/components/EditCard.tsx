@@ -102,9 +102,9 @@ export default function EditCard(props: EditCardProps) {
             case 1:
                 return '文本';
             case 2:
-                return '多选';
-            case 3:
                 return '单选';
+            case 3:
+                return '多选';
             default:
                 return '';
         }
@@ -114,9 +114,9 @@ export default function EditCard(props: EditCardProps) {
         switch (type) {
             case '文本':
                 return 1;
-            case '多选':
-                return 2;
             case '单选':
+                return 2;
+            case '多选':
                 return 3;
             default:
                 return 0;
