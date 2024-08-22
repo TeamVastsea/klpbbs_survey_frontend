@@ -1,9 +1,12 @@
 import { Button, Checkbox, Input, NumberInput, Select, Space, Stack } from '@mantine/core';
 import React, { useState } from 'react';
-import {QuestionProps} from "@/app/(root)/survey/components/generateQuestion";
+import { useDisclosure } from '@mantine/hooks';
+import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
+import AnswerEditor from '@/app/(root)/backstage/editor/[id]/components/AnswerEditor';
 
 export default function EditCard(props: EditCardProps) {
     const [edit, setEdit] = useState(false);
+    const [answerOpened, { open: answerOpen, close: answerClose }] = useDisclosure(false);
 
     const changeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEdit(true);
@@ -53,12 +56,12 @@ export default function EditCard(props: EditCardProps) {
         });
     };
 
-    const changeAnswer = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const changeAnswer = (e: string | undefined) => {
         setEdit(true);
 
         props.setQuestion({
             ...props.question,
-            answer: JSON.parse(e.target.value), // 更新答案字段
+            answer: e, // 更新答案字段
         });
     };
 
@@ -150,12 +153,18 @@ export default function EditCard(props: EditCardProps) {
                     </Input.Wrapper>
 
                     <Input.Wrapper label="答案">
-                        {/* TODO: add answer editor */}
-                        <Input
-                          value={JSON.stringify(props.question.answer)}
-                          onChange={changeAnswer}
-                        />
+                        <Input component="button" pointer onClick={answerOpen}>
+                            <Input.Placeholder>{props.question.answer}</Input.Placeholder>
+                        </Input>
                     </Input.Wrapper>
+                    <AnswerEditor
+                      answer={props.question.answer}
+                      setAnswer={changeAnswer}
+                      opened={answerOpened}
+                      close={answerClose}
+                      options={props.question.values}
+                      type={props.question.type}
+                    />
 
                     <NumberInput
                       label="总分"

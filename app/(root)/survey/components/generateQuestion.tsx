@@ -64,11 +64,11 @@ export interface QuestionProps {
     content: Value
     type: number
     values: Value[]
-    condition: string | null
-    answer: string | null
-    all_points: number | null
-    sub_points: number | null
-    required: boolean | null
+    condition: string | undefined
+    answer: string | undefined
+    all_points: number | undefined
+    sub_points: number | undefined
+    required: boolean | undefined
 }
 
 export interface Value {
