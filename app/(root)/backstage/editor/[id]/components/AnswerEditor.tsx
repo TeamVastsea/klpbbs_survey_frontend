@@ -4,7 +4,6 @@ import { SingleChoice } from '@/app/(root)/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/(root)/survey/components/MultipleChoice';
 
 export default function AnswerEditor(props: AnswerEditorProps) {
-    // const [value, setValue] = useState('');
     const dispatchType = (type: number) => {
         switch (type) {
             case 2:

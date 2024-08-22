@@ -2,16 +2,15 @@
 
 import { Center, Container, SimpleGrid, Space, Stack, Title } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { min } from '@floating-ui/utils'; // Only import the min function
+import { min } from '@floating-ui/utils';
 import BadgeCard from '@/app/(root)/backstage/components/BadgeCard';
 import SurveyApi, { SurveyInfo } from '@/api/SurveyApi';
 
 export default function EditorPage() {
-    const [surveys, setSurveys] = useState<SurveyInfo[]>([]); // Use SurveyInfo[] type
+    const [surveys, setSurveys] = useState<SurveyInfo[]>([]);
 
-    // Fetch survey list on component mount
     useEffect(() => {
-        SurveyApi.getList(0, 10, '') // Fetch the first page, 10 surveys
+        SurveyApi.getList(0, 10, '')
             .then(r => setSurveys(r))
             .catch(error => console.error('Failed to fetch surveys:', error));
     }, []);
