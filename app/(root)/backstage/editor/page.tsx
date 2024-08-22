@@ -33,7 +33,7 @@ export default function EditorPage() {
                 >
                     {surveys.map((survey: SurveyInfo) => (
                         <Center key={survey.id}>
-                            <BadgeCard survey={survey} />
+                            <BadgeCard survey={survey} showBadge />
                         </Center>
                     ))}
                 </SimpleGrid>

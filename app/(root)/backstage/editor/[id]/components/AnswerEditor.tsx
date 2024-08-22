@@ -24,10 +24,8 @@ export default function AnswerEditor(props: AnswerEditorProps) {
 
     return (
         <Modal opened={props.opened} onClose={props.close} title="答案编辑器">
-            {/*<Stack>*/}
-                {dispatchType(props.type)}
-                <Button onClick={() => props.setAnswer(undefined)} fullWidth color="red">清空</Button>
-            {/*</Stack>*/}
+            {dispatchType(props.type)}
+            <Button onClick={() => props.setAnswer(undefined)} fullWidth color="red">清空</Button>
         </Modal>
     );
 }

@@ -25,6 +25,7 @@
     "@mdx-js/react": "^3.0.1",
     "@next/bundle-analyzer": "^14.2.4",
     "@next/mdx": "^14.2.5",
+    "@tabler/icons": "^3.12.0",
     "@tabler/icons-react": "^3.6.0",
     "@testing-library/jest-dom": "^6.4.8",
     "@types/mdx": "^2.0.13",
