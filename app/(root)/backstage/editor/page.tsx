@@ -40,7 +40,6 @@ export default function EditorPage() {
                     {surveys.map((survey: SurveyInfo) => (
                         <Center key={survey.id}>
                             <BadgeCard
-                              id={survey.id}
                               survey={survey}
                               showBadge
                             />

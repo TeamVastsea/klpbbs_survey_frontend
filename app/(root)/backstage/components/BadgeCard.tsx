@@ -1,11 +1,14 @@
+'use client';
+
 import { Card, Image, Text, Badge, Button, Modal, ActionIcon, ScrollArea, Space, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSettings2 } from '@tabler/icons-react';
 import { SurveyInfo } from '@/api/SurveyApi';
 
-export default function BadgeCard({ id, survey, showBadge }: BadgeCardProps) {
+export default function BadgeCard({ survey, showBadge }: BadgeCardProps) {
     const [opened, { open, close }] = useDisclosure();
 
+    console.log(survey);
     return (
         <>
             <Card withBorder w={292.5}>
@@ -55,21 +58,20 @@ export default function BadgeCard({ id, survey, showBadge }: BadgeCardProps) {
                   mt="md"
                   radius="md"
                   onClick={() => {
-                        window.location.href = `/backstage/editor/${id}`;
+                        window.location.href = `/backstage/editor/${survey.id}`;
                   }}
                 >
                     查看详情
                 </Button>
             </Card>
 
-            <Modal opened={opened} onClose={close} title={`编辑 ${survey.title}`}>
-
+            <Modal opened={opened} onClose={close} title={`编辑 ${survey.title} 基本信息`}>
             </Modal>
         </>
     );
 }
+
 interface BadgeCardProps {
-    id: number;
     survey: SurveyInfo;
     showBadge: boolean | undefined;
 }
