@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Watermark from '@/app/(root)/backstage/components/Watermark';
 import { Cookie } from '@/components/cookie';
+import Tools from '@/app/(root)/backstage/components/Tools';
 
 export default function BackStageLayout({ children }: { children: React.ReactNode }) {
     const [userName, setUserName] = useState('');
@@ -26,6 +27,7 @@ export default function BackStageLayout({ children }: { children: React.ReactNod
               gap={5}
             >
                 {children}
+                <Tools />
             </Watermark>
         </div>
     );
