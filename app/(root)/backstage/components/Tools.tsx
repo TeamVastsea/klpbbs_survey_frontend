@@ -1,4 +1,4 @@
-import { Button, Group, Collapse, Box, Menu, Center, Stack, Space, Tooltip, Divider } from '@mantine/core';
+import { Button, Group, Collapse, Box, Menu, Center, Stack, Space, Tooltip } from '@mantine/core';
 import { IconCategory2, IconHome, IconLogout } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { Cookie } from '@/components/cookie';
@@ -11,7 +11,7 @@ export default function Tools() {
     }
 
     function logOut() {
-        Cookie.clearCookie('token');
+        Cookie.clearAllCookies();
         goHome();
     }
 
@@ -38,7 +38,7 @@ export default function Tools() {
                         <Menu.Item>
                             <Center>
                                 <Tooltip label="退出登录" zIndex={1200}>
-                                    <IconLogout onClick={logOut} style={{ cursor: 'pointer' }}/>
+                                    <IconLogout onClick={logOut} style={{ cursor: 'pointer' }} />
                                 </Tooltip>
                             </Center>
                         </Menu.Item>

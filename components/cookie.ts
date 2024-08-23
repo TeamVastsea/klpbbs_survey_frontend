@@ -20,6 +20,14 @@ export class Cookie {
     static clearCookie(name: string): void {
         const exp = new Date();
         exp.setTime(exp.getTime() + -1);
-        document.cookie = `${name}=${encodeURIComponent('')};expires=${exp.toUTCString()}`;
+        document.cookie = `${name}=${encodeURIComponent('')};expires=${exp.toUTCString()};path=/`;
+    }
+
+    static clearAllCookies(): void {
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+            const cookieName = cookie.split('=')[0].trim();
+            Cookie.clearCookie(cookieName);
+        }
     }
 }
