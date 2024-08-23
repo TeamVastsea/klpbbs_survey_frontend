@@ -1,4 +1,18 @@
-import { Badge, Button, Card, Center, Group, Image, ScrollArea, Stack, Textarea, TextInput } from '@mantine/core';
+'use client';
+
+import {
+    Badge,
+    Button,
+    Card,
+    Center,
+    Group,
+    Image,
+    ScrollArea,
+    Stack,
+    Switch,
+    Textarea,
+    TextInput,
+} from '@mantine/core';
 import { useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { SurveyInfo } from '@/api/SurveyApi';
@@ -27,6 +41,12 @@ export default function SurveyBasicContentsEditor({
         new Date(handleTimeStamp.utc2cst(new Date(survey.end_date).getTime()))
     );
 
+    // Switch states
+    const [allowSubmit, setAllowSubmit] = useState(survey.allow_submit);
+    const [allowView, setAllowView] = useState(survey.allow_view);
+    const [allowJudge, setAllowJudge] = useState(survey.allow_judge);
+    const [allowReSubmit, setAllowReSubmit] = useState(survey.allow_re_submit);
+
     const handleSave = () => {
         onSave({
             ...survey,
@@ -36,6 +56,10 @@ export default function SurveyBasicContentsEditor({
             image,
             start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString(), // Convert to string
             end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString(), // Convert to string
+            allow_submit: allowSubmit,
+            allow_view: allowView,
+            allow_judge: allowJudge,
+            allow_re_submit: allowReSubmit,
         });
     };
 
@@ -44,6 +68,7 @@ export default function SurveyBasicContentsEditor({
             <Stack>
                 <ScrollArea h={600}>
                     <Card withBorder radius="md">
+                        {/* Title and Description */}
                         <Card.Section withBorder inheritPadding py="xs">
                             <TextInput
                               label="标题"
@@ -64,6 +89,7 @@ export default function SurveyBasicContentsEditor({
                             />
                         </Card.Section>
 
+                        {/* Budge and Image */}
                         <Card.Section withBorder inheritPadding py="xs">
                             <Group justify="space-between">
                                 <Textarea
@@ -92,14 +118,10 @@ export default function SurveyBasicContentsEditor({
                         </Card.Section>
 
                         <Card.Section withBorder inheritPadding py="xs">
-                            <Image
-                              src={image}
-                              alt={title}
-                              h={200.5}
-                              w={391}
-                            />
+                            <Image src={image} alt={title} h={200.5} w={391} />
                         </Card.Section>
 
+                        {/* DateTime Pickers */}
                         <Card.Section withBorder inheritPadding py="xs">
                             <Stack>
                                 <DateTimePicker
@@ -116,9 +138,36 @@ export default function SurveyBasicContentsEditor({
                                 />
                             </Stack>
                         </Card.Section>
+
+                        {/* Switches */}
+                        <Card.Section withBorder inheritPadding py="xs">
+                            <Stack>
+                                <Switch
+                                  checked={allowSubmit}
+                                  onChange={(e) => setAllowSubmit(e.currentTarget.checked)}
+                                  label="允许提交"
+                                />
+                                <Switch
+                                  checked={allowView}
+                                  onChange={(e) => setAllowView(e.currentTarget.checked)}
+                                  label="允许查看"
+                                />
+                                <Switch
+                                  checked={allowJudge}
+                                  onChange={(e) => setAllowJudge(e.currentTarget.checked)}
+                                  label="允许评判"
+                                />
+                                <Switch
+                                  checked={allowReSubmit}
+                                  onChange={(e) => setAllowReSubmit(e.currentTarget.checked)}
+                                  label="允许重新提交"
+                                />
+                            </Stack>
+                        </Card.Section>
                     </Card>
                 </ScrollArea>
 
+                {/* Buttons */}
                 <Center>
                     <Group mt="md">
                         <Button onClick={onCancel} variant="outline">

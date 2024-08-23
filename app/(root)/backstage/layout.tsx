@@ -11,8 +11,8 @@ export default function BackStageLayout({ children }: { children: React.ReactNod
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const userNameFromCookie = Cookie.getCookie('username') || '';
-            const userIdFromCookie = Cookie.getCookie('uid') || '';
+            const userNameFromCookie = Cookie.getCookie('username') || 'Default';
+            const userIdFromCookie = Cookie.getCookie('uid') || 'Default';
 
             setUserName(decodeURI(userNameFromCookie));
             setUserId(userIdFromCookie);
