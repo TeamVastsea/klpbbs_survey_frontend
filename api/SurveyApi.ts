@@ -32,6 +32,26 @@ export default class SurveyApi {
 
         return result;
     };
+
+    public static editSurvey = async (survey: SurveyInfo) => {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'PUT',
+            headers: myHeaders,
+            body: JSON.stringify(survey),
+        };
+
+        const res = await fetch('https://wj.klpbbs.cn/api/survey', requestOptions);
+
+        if (!res.ok) {
+            throw new Error('Failed to edit survey');
+        }
+
+        const result: SurveyInfo = await res.json();
+        return result;
+    };
 }
 
 export interface SurveyInfo {

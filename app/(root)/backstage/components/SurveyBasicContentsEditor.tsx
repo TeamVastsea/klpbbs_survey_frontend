@@ -15,21 +15,18 @@ import {
 } from '@mantine/core';
 import { useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
-import { SurveyInfo } from '@/api/SurveyApi';
+import { notifications } from '@mantine/notifications';
+import SurveyApi, { SurveyInfo } from '@/api/SurveyApi';
 
 // UTC -> CST (8 hours)
 const ADDED_TIME_STAMP = 28800000;
 
 const handleTimeStamp = {
-    utc2cst: (timestamp: number) => new Date(timestamp + ADDED_TIME_STAMP), // Convert UTC to CST
-    cst2utc: (timestamp: number) => new Date(timestamp - ADDED_TIME_STAMP), // Convert CST back to UTC
+    utc2cst: (timestamp: number) => new Date(timestamp + ADDED_TIME_STAMP),
+    cst2utc: (timestamp: number) => new Date(timestamp - ADDED_TIME_STAMP),
 };
 
-export default function SurveyBasicContentsEditor({
-                                                      survey,
-                                                      onSave,
-                                                      onCancel,
-                                                  }: SurveyEditorProps) {
+export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps) {
     const [title, setTitle] = useState(survey.title);
     const [description, setDescription] = useState(survey.description);
     const [image, setImage] = useState(survey.image);
@@ -40,26 +37,60 @@ export default function SurveyBasicContentsEditor({
     const [endTime, setEndTime] = useState(
         new Date(handleTimeStamp.utc2cst(new Date(survey.end_date).getTime()))
     );
-
-    // Switch states
     const [allowSubmit, setAllowSubmit] = useState(survey.allow_submit);
     const [allowView, setAllowView] = useState(survey.allow_view);
     const [allowJudge, setAllowJudge] = useState(survey.allow_judge);
     const [allowReSubmit, setAllowReSubmit] = useState(survey.allow_re_submit);
 
     const handleSave = () => {
-        onSave({
+        const updatedSurvey: SurveyInfo = {
             ...survey,
             title,
             description,
             budge,
             image,
-            start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString(), // Convert to string
-            end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString(), // Convert to string
+            start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString(),
+            end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString(),
             allow_submit: allowSubmit,
             allow_view: allowView,
             allow_judge: allowJudge,
             allow_re_submit: allowReSubmit,
+        };
+
+        SurveyApi.editSurvey(updatedSurvey)
+            .then(() => {
+                notifications.show({
+                    title: '问卷更新成功',
+                    message: '问卷信息已成功更新。',
+                    color: 'green',
+                });
+            })
+            .catch((error) => {
+                console.error(error);
+                notifications.show({
+                    title: '更新问卷失败，请将以下信息反馈给管理员',
+                    message: error.toString(),
+                    color: 'red',
+                });
+            });
+    };
+
+    const handleCancel = () => {
+        setTitle(survey.title);
+        setDescription(survey.description);
+        setImage(survey.image);
+        setBudge(survey.budge);
+        setStartTime(new Date(handleTimeStamp.utc2cst(new Date(survey.start_date).getTime())));
+        setEndTime(new Date(handleTimeStamp.utc2cst(new Date(survey.end_date).getTime())));
+        setAllowSubmit(survey.allow_submit);
+        setAllowView(survey.allow_view);
+        setAllowJudge(survey.allow_judge);
+        setAllowReSubmit(survey.allow_re_submit);
+
+        notifications.show({
+            title: '编辑取消',
+            message: '已取消对问卷的编辑。',
+            color: 'yellow',
         });
     };
 
@@ -68,7 +99,6 @@ export default function SurveyBasicContentsEditor({
             <Stack>
                 <ScrollArea h={600}>
                     <Card withBorder radius="md">
-                        {/* Title and Description */}
                         <Card.Section withBorder inheritPadding py="xs">
                             <TextInput
                               label="标题"
@@ -89,7 +119,6 @@ export default function SurveyBasicContentsEditor({
                             />
                         </Card.Section>
 
-                        {/* Budge and Image */}
                         <Card.Section withBorder inheritPadding py="xs">
                             <Group justify="space-between">
                                 <Textarea
@@ -121,25 +150,23 @@ export default function SurveyBasicContentsEditor({
                             <Image src={image} alt={title} h={200.5} w={391} />
                         </Card.Section>
 
-                        {/* DateTime Pickers */}
                         <Card.Section withBorder inheritPadding py="xs">
                             <Stack>
                                 <DateTimePicker
                                   label="开始时间"
                                   value={startTime}
                                   valueFormat="YYYY/MM/DD hh:mm"
-                                  onChange={(value) => value && setStartTime(value)} // Handle Date object directly
+                                  onChange={(value) => value && setStartTime(value)}
                                 />
                                 <DateTimePicker
                                   label="结束时间"
                                   value={endTime}
                                   valueFormat="YYYY/MM/DD hh:mm"
-                                  onChange={(value) => value && setEndTime(value)} // Handle Date object directly
+                                  onChange={(value) => value && setEndTime(value)}
                                 />
                             </Stack>
                         </Card.Section>
 
-                        {/* Switches */}
                         <Card.Section withBorder inheritPadding py="xs">
                             <Stack>
                                 <Switch
@@ -167,10 +194,9 @@ export default function SurveyBasicContentsEditor({
                     </Card>
                 </ScrollArea>
 
-                {/* Buttons */}
                 <Center>
                     <Group mt="md">
-                        <Button onClick={onCancel} variant="outline">
+                        <Button onClick={handleCancel} variant="outline">
                             取消
                         </Button>
                         <Button onClick={handleSave}>
@@ -185,6 +211,4 @@ export default function SurveyBasicContentsEditor({
 
 interface SurveyEditorProps {
     survey: SurveyInfo;
-    onSave: (updatedSurvey: SurveyInfo) => void;
-    onCancel: () => void;
 }
