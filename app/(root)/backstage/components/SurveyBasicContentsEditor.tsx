@@ -1,7 +1,15 @@
-import {Badge, Button, Card, Center, Group, Image, ScrollArea, Space, Stack, Textarea, TextInput} from '@mantine/core';
+import { Badge, Button, Card, Center, Group, Image, ScrollArea, Stack, Textarea, TextInput } from '@mantine/core';
 import { useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { SurveyInfo } from '@/api/SurveyApi';
+
+// UTC -> CST (8 hours)
+const ADDED_TIME_STAMP = 28800000;
+
+const handleTimeStamp = {
+    utc2cst: (timestamp: number) => new Date(timestamp + ADDED_TIME_STAMP), // Convert UTC to CST
+    cst2utc: (timestamp: number) => new Date(timestamp - ADDED_TIME_STAMP), // Convert CST back to UTC
+};
 
 export default function SurveyBasicContentsEditor({
                                                       survey,
@@ -12,8 +20,12 @@ export default function SurveyBasicContentsEditor({
     const [description, setDescription] = useState(survey.description);
     const [image, setImage] = useState(survey.image);
     const [budge, setBudge] = useState(survey.budge);
-    const [startTime, setStartTime] = useState(new Date(survey.start_date));
-    const [endTime, setEndTime] = useState(new Date(survey.end_date));
+    const [startTime, setStartTime] = useState(
+        new Date(handleTimeStamp.utc2cst(new Date(survey.start_date).getTime()))
+    );
+    const [endTime, setEndTime] = useState(
+        new Date(handleTimeStamp.utc2cst(new Date(survey.end_date).getTime()))
+    );
 
     const handleSave = () => {
         onSave({
@@ -22,6 +34,8 @@ export default function SurveyBasicContentsEditor({
             description,
             budge,
             image,
+            start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString(), // Convert to string
+            end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString(), // Convert to string
         });
     };
 
@@ -62,9 +76,7 @@ export default function SurveyBasicContentsEditor({
                                 />
                                 <Stack>
                                     <Badge variant="light">
-                                        <Center>
-                                            {budge}
-                                        </Center>
+                                        <Center>{budge}</Center>
                                     </Badge>
                                 </Stack>
                             </Group>
@@ -93,13 +105,16 @@ export default function SurveyBasicContentsEditor({
                                 <DateTimePicker
                                   label="开始时间"
                                   value={startTime}
-                                  onChange={(value) => console.log(value)} />
+                                  valueFormat="YYYY/MM/DD hh:mm"
+                                  onChange={(value) => value && setStartTime(value)} // Handle Date object directly
+                                />
                                 <DateTimePicker
                                   label="结束时间"
                                   value={endTime}
-                                  onChange={(value) => console.log(value)} />
+                                  valueFormat="YYYY/MM/DD hh:mm"
+                                  onChange={(value) => value && setEndTime(value)} // Handle Date object directly
+                                />
                             </Stack>
-
                         </Card.Section>
                     </Card>
                 </ScrollArea>
