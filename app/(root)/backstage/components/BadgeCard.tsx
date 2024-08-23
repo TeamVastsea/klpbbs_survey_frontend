@@ -5,18 +5,13 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconSettings2 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import SurveyEditor from './SurveyBasicContentsEditor'; // Import the SurveyEditor component
+import SurveyBasicContentsEditor from './SurveyBasicContentsEditor'; // Correct import
 import { SurveyInfo } from '@/api/SurveyApi';
 
 export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardProps) {
     const [opened, { open, close }] = useDisclosure();
     const [editingSurvey, setEditingSurvey] = useState<SurveyInfo>(survey);
     const router = useRouter();
-
-    const handleSave = (updatedSurvey: SurveyInfo) => {
-        console.log('Updated Survey:', updatedSurvey);
-        close();
-    };
 
     const handleEdit = () => {
         setEditingSurvey(survey);
@@ -80,10 +75,8 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
             </Card>
 
             <Modal opened={opened} onClose={close} title={`编辑 ${survey.title} 基本信息`}>
-                <SurveyEditor
-                  survey={editingSurvey}
-                  onSave={handleSave}
-                  onCancel={close}
+                <SurveyBasicContentsEditor
+                  survey={editingSurvey} // Pass only `survey`
                 />
             </Modal>
         </>
