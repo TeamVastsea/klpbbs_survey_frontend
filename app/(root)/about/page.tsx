@@ -81,6 +81,10 @@ export default function AboutPage() {
                             />
                         </Modal>
                     )}
+
+                    <Center>
+                        <Text>同时感谢所有为本项目及问卷作出贡献的人</Text>
+                    </Center>
                 </Stack>
             </Container>
         </Center>
