@@ -19,7 +19,6 @@ export default function Watermark({
         const ctx = canvas.getContext('2d');
 
         if (ctx) {
-            ctx.font = font;
             const { width } = ctx.measureText(text);
             const canvasSize = Math.max(100, width) + gap * devicePixelRatio;
             canvas.width = canvasSize;
@@ -27,9 +26,10 @@ export default function Watermark({
 
             ctx.translate(canvas.width / 2, canvas.height / 2);
             ctx.rotate((-45 * Math.PI) / 180);
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
+            ctx.font = font;
             ctx.fillText(text, 0, 0);
 
             return {

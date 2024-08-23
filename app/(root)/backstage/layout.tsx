@@ -23,8 +23,8 @@ export default function BackStageLayout({ children }: { children: React.ReactNod
         <div>
             <Watermark
               text={`${userName} ${userId}`}
-              fontSize={20}
-              gap={5}
+              fontSize={40}
+              gap={200}
             >
                 {children}
                 <Tools />
