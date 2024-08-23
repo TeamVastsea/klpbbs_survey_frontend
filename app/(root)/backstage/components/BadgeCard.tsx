@@ -10,12 +10,11 @@ import { SurveyInfo } from '@/api/SurveyApi';
 
 export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardProps) {
     const [opened, { open, close }] = useDisclosure();
-    const [editingSurvey, setEditingSurvey] = useState<SurveyInfo | null>(null);
+    const [editingSurvey, setEditingSurvey] = useState<SurveyInfo>(survey);
     const router = useRouter();
 
     const handleSave = (updatedSurvey: SurveyInfo) => {
         console.log('Updated Survey:', updatedSurvey);
-        setEditingSurvey(null);
         close();
     };
 
@@ -81,13 +80,11 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
             </Card>
 
             <Modal opened={opened} onClose={close} title={`编辑 ${survey.title} 基本信息`}>
-                {editingSurvey && (
-                    <SurveyEditor
-                      survey={editingSurvey}
-                      onSave={handleSave}
-                      onCancel={() => setEditingSurvey(null)}
-                    />
-                )}
+                <SurveyEditor
+                  survey={editingSurvey}
+                  onSave={handleSave}
+                  onCancel={close}
+                />
             </Modal>
         </>
     );

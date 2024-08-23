@@ -1,6 +1,7 @@
 'use client';
 
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import React from 'react';
 import { MantineProvider, ColorSchemeScript, AppShell } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
