@@ -16,8 +16,10 @@ import {
 import { notifications } from '@mantine/notifications';
 import { DateTimePicker } from '@mantine/dates';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import SurveyApi, { NewSurveyInfo } from '@/api/SurveyApi';
 import ConfirmationModal from './components/Confirmation';
+import QuestionApi from '@/api/QuestionApi';
 
 const ADDED_TIME_STAMP = 28800000; // 8 hours for CST
 
@@ -36,27 +38,44 @@ export default function NewSurveyPage() {
     const [allowView, setAllowView] = useState(false);
     const [allowJudge, setAllowJudge] = useState(false);
     const [allowReSubmit, setAllowReSubmit] = useState(false);
-
+    const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const router = useRouter();
 
-    const handleConfirm = () => {
+    const checkFull = () => {
         if (!title || !description || !image || !startTime || !endTime) {
             notifications.show({
                 title: '表单填写不完整',
                 message: '存在未填写字段, 请检查并重新提交',
                 color: 'red',
             });
+            return false;
+        }
+        return true;
+    };
+
+    const handleConfirm = async () => {
+        if (!startTime || !endTime) {
+            notifications.show({
+                title: '未选择时间',
+                message: '请确保选择了开始时间和结束时间',
+                color: 'red',
+            });
+            setLoading(false);
             return;
         }
+        setLoading(true);
+
+        const page: string = await QuestionApi.createPage('');
 
         const newSurvey: NewSurveyInfo = {
             title,
             description,
             budge,
             image,
-            page: 0,
-            start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString().split('.')[0] || '',
-            end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString().split('.')[0] || '',
+            page,
+            start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString().split('.')[0],
+            end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString().split('.')[0],
             allow_submit: allowSubmit,
             allow_view: allowView,
             allow_judge: allowJudge,
@@ -64,12 +83,14 @@ export default function NewSurveyPage() {
         };
 
         SurveyApi.newSurvey(newSurvey)
-            .then(() => {
+            .then((res) => {
                 notifications.show({
                     title: '问卷创建成功',
-                    message: '新问卷已成功创建。',
+                    message: '新问卷已成功创建',
                     color: 'green',
                 });
+
+                router.push(`/backstage/editor/${res}`);
             })
             .catch((error) => {
                 notifications.show({
@@ -77,6 +98,7 @@ export default function NewSurveyPage() {
                     message: error.toString(),
                     color: 'red',
                 });
+                setLoading(false);
             })
             .finally(() => {
                 setIsModalOpen(false);
@@ -177,9 +199,18 @@ export default function NewSurveyPage() {
                     </Card>
                 </Paper>
 
-                <Button onClick={() => setIsModalOpen(true)}>点击创建</Button>
+                <Button
+                  loading={loading}
+                  onClick={() => {
+                    if (checkFull()) {
+                        setIsModalOpen(true);
+                    }
+                }}>
+                    点击创建
+                </Button>
 
                 <ConfirmationModal
+                  loading={loading}
                   isOpen={isModalOpen}
                   closeModal={() => setIsModalOpen(false)}
                   confirmAction={handleConfirm}

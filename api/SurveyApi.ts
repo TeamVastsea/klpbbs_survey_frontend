@@ -72,7 +72,8 @@ export default class SurveyApi {
             throw new Error('Failed to create new survey');
         }
 
-        const result: SurveyInfo = await res.json();
+        const result: string = await res.text();
+        console.log(result);
         return result;
     };
 }
@@ -85,7 +86,7 @@ export interface SurveyInfo {
     budge: string;
     description: string;
     image: string;
-    page: number;
+    page: string;
     start_date: string;
     end_date: string;
     allow_submit: boolean;

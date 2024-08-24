@@ -4,12 +4,14 @@ interface ConfirmationModalProps {
     isOpen: boolean;
     closeModal: () => void;
     confirmAction: () => void;
+    loading: boolean;
 }
 
 export default function ConfirmationModal({
                                               isOpen,
                                               closeModal,
                                               confirmAction,
+    loading,
                                           }: ConfirmationModalProps) {
     return (
         <Modal opened={isOpen} onClose={closeModal} title="确认操作">
@@ -22,7 +24,7 @@ export default function ConfirmationModal({
                     <Button variant="outline" onClick={closeModal}>
                         取消
                     </Button>
-                    <Button color="red" onClick={confirmAction}>
+                    <Button color="red" onClick={confirmAction} loading={loading}>
                         确认
                     </Button>
                 </Group>
