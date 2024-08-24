@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Container, Space, Stack } from '@mantine/core';
+import { Button, Container, Space, Stack, Title } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useSearchParams } from 'next/navigation';
@@ -16,7 +16,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     const searchParams = useSearchParams();
     const questionsProps = useRef(new Map<string, QuestionProps>());
 
-    const answerId: string | null = searchParams.get('answer');
+    const answerId = useRef(searchParams.get('answer'));
 
     function save() {
         const myHeaders = new Headers();
@@ -34,8 +34,9 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             content: answerObject,
         };
 
-        if (answerId) {
-            raw.id = answerId;
+        // console.log('before', answerId);
+        if (answerId.current != null) {
+            raw.id = Number(answerId.current);
         }
 
         let flag = false;
@@ -65,16 +66,19 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             };
 
             fetch(`${SERVER_URL}/api/answer`, requestOptions)
-                .then(response => response.text())
-                // eslint-disable-next-line no-console
-                .then(result => console.log(result))
-                .catch(e => {
-                    notifications.show({
-                        title: '提交答案失败，请将以下信息反馈给管理员',
-                        message: e.toString(),
-                        color: 'red',
-                    });
+              .then((response) => response.text())
+              // eslint-disable-next-line no-console
+              .then((result) => {
+                answerId.current = result;
+                // console.log(answerId);
+              })
+              .catch((e) => {
+                notifications.show({
+                  title: '提交答案失败，请将以下信息反馈给管理员',
+                  message: e.toString(),
+                  color: 'red',
                 });
+              });
 
             if (nextPage !== null) {
                 setCurrentPage(nextPage);
@@ -165,6 +169,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 .then(response => response.text())
                 .then(result => {
                     const response: PageResponse = JSON.parse(result);
+                    // console.log(response);
                     setQuestions(response);
                     setNextPage(response.next);
                 });
@@ -175,6 +180,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         <Stack>
             <Container maw={1600} w="90%">
                 <Space h={100} />
+                <Title>{questions?.title}</Title>
                 {questions?.content.map((question, index) => (
                     <Question
                       id={question}
@@ -227,6 +233,6 @@ interface Rule {
 interface SaveRequest {
     survey: number;
     content: any;
-    id?: string;
+    id?: number;
     complete?: boolean;
 }

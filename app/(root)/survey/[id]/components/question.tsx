@@ -32,7 +32,7 @@ export default function Question(props: PageQuestionProps) {
                     color: 'red',
                 })
             );
-    }, []);
+    }, [props.id]);
 
     return (
         <>
