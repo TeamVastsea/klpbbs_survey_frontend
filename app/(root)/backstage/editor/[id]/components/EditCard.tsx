@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, NumberInput, Select, Space, Stack } from '@mantine/core';
+import { Button, Checkbox, Group, Input, NumberInput, Select, Space, Stack } from '@mantine/core';
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { QuestionProps, Value } from '@/app/(root)/survey/components/generateQuestion';
@@ -94,7 +94,7 @@ export default function EditCard(props: EditCardProps) {
     function save() {
         setEdit(false);
 
-        // TODO: save to server
+        props.save && props.save();
     }
 
     function mapType(type: number) {
@@ -196,7 +196,10 @@ export default function EditCard(props: EditCardProps) {
             />
 
             <Space h={20} />
-            <Button onClick={save} disabled={!edit}>保存</Button>
+            <Group justify="flex-end">
+                <Button onClick={save} disabled={!edit}>保存</Button>
+                {props.cancel && <Button onClick={props.cancel}>取消</Button>}
+            </Group>
         </Stack>
     );
 }
@@ -204,4 +207,7 @@ export default function EditCard(props: EditCardProps) {
 export interface EditCardProps {
     question: QuestionProps;
     setQuestion: (value: QuestionProps) => void;
+    save?: () => void;
+    cancel?: () => void;
+    allowCancel?: boolean;
 }

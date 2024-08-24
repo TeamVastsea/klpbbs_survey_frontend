@@ -7,13 +7,14 @@ import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 import { PageQuestionProps } from '@/app/(root)/survey/[id]/components/question';
 import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
 import { SERVER_URL } from '@/api/BackendApi';
+import { Cookie } from '@/components/cookie';
 
 export default function Question(props: PageQuestionProps) {
-    const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
+    const [question, setQuestion] = useState<QuestionProps>();
 
     useEffect(() => {
         const myHeaders = new Headers();
-        myHeaders.append('token', '222');
+        myHeaders.append('token', Cookie.getCookie('token'));
 
         const requestOptions: RequestInit = {
             method: 'GET',
