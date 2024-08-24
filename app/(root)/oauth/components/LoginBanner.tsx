@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import image from './logo.png';
 import classes from './LoginBanner.module.css';
 import { Cookie } from '@/components/cookie';
+import { SERVER_URL } from '@/api/BackendApi';
 
 export function LoginBanner() {
     const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ export function LoginBanner() {
             method: 'POST',
         };
 
-        fetch('https://wj.klpbbs.cn/api/user', requestOptions)
+        fetch(`${SERVER_URL}/api/user`, requestOptions)
             .then(response => response.text())
             .then(result => {
                 //set cookie

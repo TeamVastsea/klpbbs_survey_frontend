@@ -1,4 +1,5 @@
 import { Cookie } from '@/components/cookie';
+import { SERVER_URL } from '@/api/BackendApi';
 
 export default class SurveyApi {
     public static getList = async (page: number = 0, size: number = 10, search: string = '') => {
@@ -10,7 +11,7 @@ export default class SurveyApi {
             headers: myHeaders,
         };
 
-        const res = await fetch(`https://wj.klpbbs.cn/api/survey?page=${page}&size=${size}&search=${search}`, requestOptions);
+        const res = await fetch(`${SERVER_URL}/api/survey?page=${page}&size=${size}&search=${search}`, requestOptions);
 
         const result: SurveyInfo[] = JSON.parse(await res.text());
 
@@ -26,7 +27,7 @@ export default class SurveyApi {
             headers: myHeaders,
         };
 
-        const res = await fetch(`https://wj.klpbbs.cn/api/survey/${id}`, requestOptions);
+        const res = await fetch(`${SERVER_URL}/api/survey/${id}`, requestOptions);
 
         const result: SurveyInfo = JSON.parse(await res.text());
 
@@ -43,7 +44,7 @@ export default class SurveyApi {
             body: JSON.stringify(survey),
         };
 
-        const res = await fetch('https://wj.klpbbs.cn/api/survey', requestOptions);
+        const res = await fetch(`${SERVER_URL}/api/survey`, requestOptions);
 
         if (!res.ok) {
             throw new Error('Failed to edit survey');

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { generateQuestion, InputProps, QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
+import { SERVER_URL } from '@/api/BackendApi';
 
 export default function Question(props: PageQuestionProps) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
@@ -17,7 +18,7 @@ export default function Question(props: PageQuestionProps) {
             redirect: 'follow',
         };
 
-        fetch(`https://wj.klpbbs.cn/api/question/${props.id}`, requestOptions)
+        fetch(`${SERVER_URL}/api/question/${props.id}`, requestOptions)
             .then(response => response.text())
             .then(result => {
                 const response: QuestionProps = JSON.parse(result);

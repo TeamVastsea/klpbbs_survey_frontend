@@ -6,6 +6,7 @@ import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import UserInfoCard from './components/UserInfoCard';
 import { Cookie } from '@/components/cookie';
+import { SERVER_URL } from '@/api/BackendApi';
 
 export default function CallbackPage() {
     const searchParams = useSearchParams();
@@ -17,7 +18,7 @@ export default function CallbackPage() {
     const state = searchParams.get('state');
     const token = searchParams.get('token');
 
-    fetch(`https://wj.klpbbs.cn/api/oauth?state=${state}&token=${token}`)
+    fetch(`${SERVER_URL}/api/oauth?state=${state}&token=${token}`)
         .then(() => {
             const myHeaders = new Headers();
             myHeaders.append('token', state as string);
@@ -27,7 +28,7 @@ export default function CallbackPage() {
                 headers: myHeaders,
             };
 
-            fetch('https://wj.klpbbs.cn/api/user', requestOptions)
+            fetch(`${SERVER_URL}/api/user`, requestOptions)
                 .then(response => response.text())
                 .then(result => {
                     Cookie.clearAllCookies();

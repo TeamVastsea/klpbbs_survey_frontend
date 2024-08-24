@@ -6,6 +6,7 @@ import { Card, Stack } from '@mantine/core';
 import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 import { PageQuestionProps } from '@/app/(root)/survey/[id]/components/question';
 import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
+import { SERVER_URL } from '@/api/BackendApi';
 
 export default function Question(props: PageQuestionProps) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
@@ -20,7 +21,7 @@ export default function Question(props: PageQuestionProps) {
             redirect: 'follow',
         };
 
-        fetch(`https://wj.klpbbs.cn/api/question/admin/${props.id}`, requestOptions)
+        fetch(`${SERVER_URL}/api/question/admin/${props.id}`, requestOptions)
             .then(response => response.text())
             .then(result => {
                 const response: QuestionProps = JSON.parse(result);

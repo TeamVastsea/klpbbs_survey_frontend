@@ -6,6 +6,7 @@ import { notifications } from '@mantine/notifications';
 import { useSearchParams } from 'next/navigation';
 import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 import Question from '@/app/(root)/backstage/editor/[id]/components/question';
+import { SERVER_URL } from '@/api/BackendApi';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [currentPage, setCurrentPage] = useState<number | null>(null);
@@ -63,7 +64,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             redirect: 'follow',
         };
 
-        fetch('https://wj.klpbbs.cn/api/answer', requestOptions)
+        fetch(`${SERVER_URL}/api/answer`, requestOptions)
             .then(response => response.text())
             // eslint-disable-next-line no-console
             .then(result => console.log(result))
@@ -134,7 +135,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             redirect: 'follow',
         };
 
-        fetch(`https://wj.klpbbs.cn/api/survey/${params.id}`, requestOptions)
+        fetch(`${SERVER_URL}/api/survey/${params.id}`, requestOptions)
             .then(response => response.text())
             .then(result => {
                 const response: SurveyResponse = JSON.parse(result);
@@ -160,7 +161,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 redirect: 'follow',
             };
 
-            fetch(`https://wj.klpbbs.cn/api/question?page=${currentPage}`, requestOptions)
+            fetch(`${SERVER_URL}/api/question?page=${currentPage}`, requestOptions)
                 .then(response => response.text())
                 .then(result => {
                     const response: PageResponse = JSON.parse(result);
