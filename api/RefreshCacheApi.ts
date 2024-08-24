@@ -2,7 +2,7 @@ import { Cookie } from '@/components/cookie';
 import { SERVER_URL } from '@/api/BackendApi';
 
 export default class RefreshCacheApi {
-    public static refreshCache = async (type?: string) => {
+    public static refreshCache = async (type?: string): Promise<void> => {
         const myHeaders = new Headers();
         myHeaders.append('token', Cookie.getCookie('token'));
 

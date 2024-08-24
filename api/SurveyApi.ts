@@ -18,7 +18,7 @@ export default class SurveyApi {
         return result;
     };
 
-    public static getSurvey = async (id: number) => {
+    public static getSurvey = async (id: number): Promise<SurveyInfo> => {
         const myHeaders = new Headers();
         myHeaders.append('token', Cookie.getCookie('token'));
 
@@ -73,7 +73,6 @@ export default class SurveyApi {
         }
 
         const result: string = await res.text();
-        console.log(result);
         return result;
     };
 }

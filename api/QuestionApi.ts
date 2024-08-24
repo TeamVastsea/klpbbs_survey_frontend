@@ -44,6 +44,26 @@ export default class QuestionApi {
         const result: string = await res.text();
         return result;
     };
+
+    public static fetchPage = async (page: string): Promise<Page> => {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/question?page=${page}`, requestOptions);
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch question sheet');
+        }
+
+        const result: Page = await res.json();
+
+        return result;
+    };
 }
 
 export interface QuestionContent {
@@ -58,4 +78,11 @@ export interface Answer {
     all_points: number;
     sub_points: number;
     answer: string;
+}
+
+export interface Page {
+    id: string;
+    title: string;
+    content: Array<string>;
+    next: string | null;
 }
