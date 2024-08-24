@@ -37,9 +37,12 @@ export default function Question(props: PageQuestionProps) {
     return (
         <>
             {question ?
-                props.checkAccess(question.condition as string) ?
-                    generateQuestion(question, props.value, props.setValue, props.disabled) : null
+                !props.checkAccess(question.condition as string)
+                    ? '(隐藏题目, 用户无需作答)'
+                    : null
                 : null}
+            {question ?
+                generateQuestion(question, props.value, props.setValue, props.disabled) : null}
         </>
     );
 }
@@ -48,5 +51,5 @@ export interface PageQuestionProps extends InputProps {
     id: string,
     checkAccess: (ruleStr: string) => boolean,
     setProps: (value: QuestionProps) => void,
-    disabled?: boolean,
+    disabled: boolean,
 }

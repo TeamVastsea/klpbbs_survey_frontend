@@ -218,19 +218,19 @@ export interface PageResponse {
     next: number | null;
 }
 
-type ConditionType = 'and' | 'or' | 'not';
+export type ConditionType = 'and' | 'or' | 'not';
 
-interface Condition {
+export interface Condition {
     id: string;
     value: any;
 }
 
-interface Rule {
+export interface Rule {
     type: ConditionType;
     conditions: Condition[];
 }
 
-interface SaveRequest {
+export interface SaveRequest {
     survey: number;
     content: any;
     id?: number;
