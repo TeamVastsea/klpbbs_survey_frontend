@@ -30,6 +30,8 @@ export default function CallbackPage() {
             fetch('https://wj.klpbbs.cn/api/user', requestOptions)
                 .then(response => response.text())
                 .then(result => {
+                    Cookie.clearAllCookies();
+
                     const user = JSON.parse(result);
 
                     Cookie.setCookie('status', 'ok', 7);

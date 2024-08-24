@@ -8,7 +8,7 @@ export default function UserInfoCard(props: UserInfoCardProps) {
     const avatar_url = `https://user.klpbbs.com/data/avatar/${id_str.substring(0, 3)}/${id_str.substring(3, 5)}/${id_str.substring(5, 7)}/${id_str.substring(7, 9)}_avatar_big.jpg`;
 
     function logOut() {
-        Cookie.clearCookie('token');
+        Cookie.clearAllCookies();
         window.location.href = '/oauth';
     }
 
