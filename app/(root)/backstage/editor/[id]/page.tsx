@@ -307,7 +307,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             <Space h={180} />
             </Container>
         </Stack>
-  );
+    );
 }
 
 interface SurveyResponse {
