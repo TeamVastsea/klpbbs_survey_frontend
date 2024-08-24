@@ -39,7 +39,7 @@ export default function Backstage() {
                             <Button
                               size="xl"
                               leftSection={<IconFilePlus />}
-                              onClick={() => handleNavigation('/editor/new')}
+                              onClick={() => handleNavigation('/backstage/new')}
                             >
                                 新建问卷
                             </Button>
