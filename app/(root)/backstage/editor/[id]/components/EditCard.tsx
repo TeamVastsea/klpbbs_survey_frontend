@@ -63,7 +63,7 @@ export default function EditCard(props: EditCardProps) {
 
         props.setQuestion({
             ...props.question,
-            answer: e, // 更新答案字段
+            answer: e,
         });
     };
 
@@ -71,7 +71,7 @@ export default function EditCard(props: EditCardProps) {
         setEdit(true);
         props.setQuestion({
             ...props.question,
-            all_points: Number(e), // 更新总分字段
+            all_points: Number(e),
         });
     };
 
@@ -79,7 +79,7 @@ export default function EditCard(props: EditCardProps) {
         setEdit(true);
         props.setQuestion({
             ...props.question,
-            sub_points: Number(e), // 更新总分字段
+            sub_points: Number(e),
         });
     };
 
