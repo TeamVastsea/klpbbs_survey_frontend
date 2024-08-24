@@ -129,5 +129,5 @@ dist
 
 .DS_Store
 
-.idea
+.idea/
 .vscode/
