@@ -49,8 +49,8 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
             description,
             budge,
             image,
-            start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString(),
-            end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString(),
+            start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString().split('.')[0],
+            end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString().split('.')[0],
             allow_submit: allowSubmit,
             allow_view: allowView,
             allow_judge: allowJudge,
@@ -197,7 +197,7 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
                 <Center>
                     <Group mt="md">
                         <Button onClick={handleCancel} variant="outline">
-                            取消
+                            原始
                         </Button>
                         <Button onClick={handleSave}>
                             保存

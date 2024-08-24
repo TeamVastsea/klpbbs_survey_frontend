@@ -32,12 +32,12 @@ export default function CallbackPage() {
                 .then(response => response.text())
                 .then(result => {
                     Cookie.clearAllCookies();
-
                     const user = JSON.parse(result);
 
                     Cookie.setCookie('status', 'ok', 7);
                     Cookie.setCookie('uid', user.uid, 7);
                     Cookie.setCookie('username', user.username, 7);
+                    Cookie.setCookie('token', state as string, 7);
 
                     setUid(user.uid);
                     setUsername(user.username);

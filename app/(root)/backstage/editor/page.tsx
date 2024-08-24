@@ -41,8 +41,8 @@ export default function EditorPage() {
                         <Center key={survey.id}>
                             <BadgeCard
                               survey={survey}
-                              routeAdmin
                               showBadge
+                              routeAdmin
                             />
                         </Center>
                     ))}

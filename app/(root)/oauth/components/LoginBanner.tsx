@@ -17,6 +17,8 @@ export function LoginBanner() {
             method: 'POST',
         };
 
+        console.log(SERVER_URL);
+
         fetch(`${SERVER_URL}/api/user`, requestOptions)
             .then(response => response.text())
             .then(result => {

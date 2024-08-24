@@ -36,6 +36,7 @@ export default class SurveyApi {
 
     public static editSurvey = async (survey: SurveyInfo) => {
         const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
         myHeaders.append('token', Cookie.getCookie('token'));
 
         const requestOptions: RequestInit = {
@@ -53,7 +54,30 @@ export default class SurveyApi {
         const result: SurveyInfo = await res.json();
         return result;
     };
+
+    public static newSurvey = async (survey: NewSurveyInfo) => {
+        const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            headers: myHeaders,
+            body: JSON.stringify(survey),
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/survey`, requestOptions);
+
+        if (!res.ok) {
+            throw new Error('Failed to create new survey');
+        }
+
+        const result: SurveyInfo = await res.json();
+        return result;
+    };
 }
+
+export type NewSurveyInfo = Omit<SurveyInfo, 'id'>;
 
 export interface SurveyInfo {
     id: number;
