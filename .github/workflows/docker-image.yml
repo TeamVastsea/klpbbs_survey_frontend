@@ -32,6 +32,16 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/klpbbs-survey-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Login to ACR
+        uses: aliyun/acr-login@v1
+        with:
+          login-server: https://registry.cn-guangzhou.aliyuncs.com
+          username: "${{ secrets.REGISTRY_USERNAME }}"
+          password: "${{ secrets.REGISTRY_PASSWORD }}"
+      - name: Build and push image
+        run: |
+          docker build -t registry.cn-guangzhou.aliyuncs.com/teavastsea/klpbbs-survey-frontend:latest .
+          docker push registry.cn-guangzhou.aliyuncs.com/teamvastsea/klpbbs-survey-frontend:latest
   deploy:
     name: Deploy
     needs: build_docker
