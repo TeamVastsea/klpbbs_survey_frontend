@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation';
 import classes from '@/styles/common.module.css';
 import mainPageImage from '@/public/main-page.svg';
 import github from '@/public/github.svg';
+import { Cookie } from '@/components/cookie';
 
 export type Survey = {
     title: string;
@@ -28,6 +29,15 @@ export type Survey = {
 
 export default function HomePage() {
     const router = useRouter();
+
+    const handleButtonClick = () => {
+        const status = Cookie.getCookie('status');
+        if (status === 'ok') {
+            router.push('/list');
+        } else {
+            router.push('/oauth');
+        }
+    };
 
     return (
         <>
@@ -79,7 +89,7 @@ export default function HomePage() {
                                         Github
                                     </Group>
                                 </Button>
-                                <Button color="gray" onClick={() => router.push('/oauth')}>
+                                <Button color="gray" onClick={handleButtonClick}>
                                     立即使用
                                 </Button>
                             </Group>
