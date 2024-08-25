@@ -1,15 +1,14 @@
 'use client';
 
-import { Button, Center, Container, Group, Space, Stack, Title } from '@mantine/core';
-import { useEffect, useRef, useState } from 'react';
+import { Button, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
+import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useSearchParams } from 'next/navigation';
-import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 import Question from '@/app/(root)/backstage/editor/[id]/components/question';
 import { SERVER_URL } from '@/api/BackendApi';
 import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
 import { Cookie } from '@/components/cookie';
-import QuestionApi, { QuestionContent } from '@/api/QuestionApi';
+import QuestionApi, { QuestionContent, QuestionProps } from '@/api/QuestionApi';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [currentPage, setCurrentPage] = useState<number | null>(null);
@@ -262,49 +261,54 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
     return (
         <Stack>
-            <Container maw={1600} w="90%">
-            <Space h={50} />
             <Center>
-                <Title>{`编辑页面 ${params.id}`}</Title>
+                <Title>
+                    编辑页面
+                </Title>
             </Center>
-            <Space h={20} />
-            <Stack>
-                {questions?.content.map((question, index) => (
-                    <Question
-                      id={question}
-                      key={index}
-                      value={getAnswerGetter(question)}
-                      setValue={getAnswerSetter(question)}
-                      setProps={getPropsSetter(question)}
-                      checkAccess={checkAccess}
-                    />
-                ))}
-            </Stack>
-            <Space h={50} />
-            <Group>
-                <Button onClick={save}>{nextPage == null ? '提交' : '下一页'}</Button>
-                <Button onClick={newQuestion}>新建</Button>
-            </Group>
-                {showNewQuestion && (
-                    <>
-                        <Space h={20} />
-                        <div
-                          style={{
-                                backgroundColor: 'rgba(185, 190, 185, 0.3)',
-                                borderRadius: '10px',
-                                padding: '10px',
-                            }}
-                        >
-                            <EditCard
-                              question={newQuestionObject}
-                              setQuestion={setNewQuestionObject}
-                              cancel={() => setShowNewQuestion(false)}
-                              save={saveNewQuestion}
-                            />
-                        </div>
-                    </>
-                )}
-            <Space h={180} />
+            <Center>
+                <Text>
+                    当前问卷: {params.id}
+                </Text>
+            </Center>
+            <Container maw={1600} w="90%">
+                <Stack>
+                    {questions?.content.map((question, index) => (
+                        <Question
+                          id={question}
+                          key={index}
+                          value={getAnswerGetter(question)}
+                          setValue={getAnswerSetter(question)}
+                          setProps={getPropsSetter(question)}
+                          checkAccess={checkAccess}
+                        />
+                    ))}
+                </Stack>
+                <Space h={50} />
+                <Group>
+                    <Button onClick={save}>{nextPage == null ? '提交' : '下一页'}</Button>
+                    <Button onClick={newQuestion}>新建</Button>
+                </Group>
+                    {showNewQuestion && (
+                        <>
+                            <Space h={20} />
+                            <div
+                              style={{
+                                    backgroundColor: 'rgba(185, 190, 185, 0.3)',
+                                    borderRadius: '10px',
+                                    padding: '10px',
+                                }}
+                            >
+                                <EditCard
+                                  question={newQuestionObject}
+                                  setQuestion={setNewQuestionObject}
+                                  cancel={() => setShowNewQuestion(false)}
+                                  save={saveNewQuestion}
+                                />
+                            </div>
+                        </>
+                    )}
+                <Space h={180} />
             </Container>
         </Stack>
     );
