@@ -9,6 +9,7 @@ import SurveyApi from '@/api/SurveyApi';
 import { Rule } from '@/app/(root)/survey/[id]/page';
 import Question from '@/app/(root)/backstage/judge/[answerId]/components/questions';
 import JudgeApi from '@/api/JudgeApi';
+import AdminApi from '@/api/AdminApi';
 
 export default function JudgeSinglePage({ params }: { params: { answerId: number } }) {
     const { answerId } = params;
@@ -22,6 +23,9 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
     const [nextPage, setNextPage] = useState<string | null>(null);
     const [completed, setCompleted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [judgeTime, setJudgeTime] = useState<string>('');
+    const [judgeId, setJudgeId] = useState<number>(0);
+    const [judgeName, setJudgeName] = useState<string>('');
     const questionsProps = useRef(new Map<string, QuestionProps>());
 
     useEffect(() => {
@@ -53,6 +57,12 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                 setTotalScore(res.full);
                 setUserScore(res.user);
                 setCompleted(res.completed);
+                setJudgeTime(res.judge_time);
+                setJudgeId(res.judge);
+                return AdminApi.getAdminInfo(res.judge);
+            })
+            .then((res) => {
+                setJudgeName(res.username);
             });
     }, [currentPage]);
 
@@ -149,15 +159,15 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                     </Center>
                     <Center>
                         <Text>
-                            最后一次阅卷人: TestPerson
+                            最后一次阅卷人: {judgeName}
                         </Text>
                         <Text c="gray">
-                            &nbsp;(UID: 123456)
+                            &nbsp;(UID: {judgeId})
                         </Text>
                     </Center>
                     <Center>
                         <Text>
-                            最后阅卷时间: 2021-10-10 10:10:10
+                            最后阅卷时间: {judgeTime.split('.')[0].replace('T', ' ')}
                         </Text>
                     </Center>
                 </Alert>

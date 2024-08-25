@@ -67,4 +67,6 @@ export interface JudgeResult {
     user: number;
     scores: object;
     completed: boolean;
+    judge: number;
+    judge_time: string;
 }

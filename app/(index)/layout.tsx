@@ -25,12 +25,6 @@ export default function RootLayout({ children }: { children: any }) {
             content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
           />
           <title>苦力怕论坛 | 问卷系统</title>
-          <script
-            async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7538931921377916"
-            crossOrigin="anonymous"
-          >
-          </script>
         </head>
         <body
           style={{
