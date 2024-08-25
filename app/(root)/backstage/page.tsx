@@ -108,7 +108,7 @@ export default function Backstage() {
                             <Button
                               size="xl"
                               leftSection={<IconChecklist />}
-                              onClick={() => handleNavigation('/editor/judge')}
+                              onClick={() => handleNavigation('/backstage/judge')}
                             >
                                 批改问卷
                             </Button>
