@@ -26,10 +26,45 @@ export default class JudgeApi {
 
         return res.json();
     }
+
+    public static async confirmJudge(answer: string) {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+        };
+
+        const result = await fetch(`http://127.0.0.1:25000/api/judge?answer=${answer}`, requestOptions)
+            .then((res) => res)
+            .catch((error) => {
+                notifications.show({
+                    title: '确认判卷失败',
+                    message: error.toString(),
+                    color: 'red',
+                });
+            });
+        if (!result?.ok) {
+            const reason = await result?.text();
+            notifications.show({
+                title: '确认失败',
+                message: reason,
+                color: 'red',
+            });
+        } else {
+            notifications.show({
+                title: '确认成功',
+                message: '已成功确认判卷',
+                color: 'green',
+            });
+        }
+    }
 }
 
 export interface JudgeResult {
     full: number;
     user: number;
     scores: object;
+    completed: boolean;
 }
