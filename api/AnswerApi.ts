@@ -1,3 +1,4 @@
+import { notifications } from '@mantine/notifications';
 import { Cookie } from '@/components/cookie';
 import { SERVER_URL } from '@/api/BackendApi';
 
@@ -14,6 +15,12 @@ export default class AnswerApi {
         const res = await fetch(`${SERVER_URL}/api/answer/${id}`, requestOptions);
 
         if (!res.ok) {
+            notifications.show({
+                title: '获取题目失败，请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
             throw new Error('Failed to get answer');
         }
 

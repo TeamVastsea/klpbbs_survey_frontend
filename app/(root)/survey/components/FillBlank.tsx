@@ -1,4 +1,4 @@
-import { Space, Textarea } from '@mantine/core';
+import { Textarea } from '@mantine/core';
 import React, { useRef } from 'react';
 import type { InputProps } from './generateQuestion';
 
@@ -20,8 +20,6 @@ export function FillBlank(props: InputProps) {
               onChange={handleChange}
               disabled={props.disabled}
             />
-
-            <Space h={40} />
         </>
     );
 }

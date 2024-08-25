@@ -1,7 +1,7 @@
-import { Button, Checkbox, Group, Input, NumberInput, Select, Space, Stack } from '@mantine/core';
+import { Button, Checkbox, Group, Input, NumberInput, Select, Stack } from '@mantine/core';
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { QuestionProps, Value } from '@/app/(root)/survey/components/generateQuestion';
+import { QuestionProps, Value } from '@/api/QuestionApi';
 import AnswerEditor from '@/app/(root)/backstage/editor/[id]/components/AnswerEditor';
 import OptionsEditor from '@/app/(root)/backstage/editor/[id]/components/OptionsEditor';
 
@@ -147,10 +147,15 @@ export default function EditCard(props: EditCardProps) {
             {(props.question.type === 2 || props.question.type === 3) && (
                 <>
                     <Input.Wrapper label="选项">
-                        <Input component="button" pointer onClick={optionsOpen}>
-                            <Input.Placeholder>
-                                {JSON.stringify(props.question.values)}
-                            </Input.Placeholder>
+                        <Input
+                          style={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                            }}
+                          component="button"
+                          pointer
+                          onClick={optionsOpen}>
+                            {JSON.stringify(props.question.values)}
                         </Input>
                     </Input.Wrapper>
                     <OptionsEditor
@@ -160,8 +165,16 @@ export default function EditCard(props: EditCardProps) {
                       close={optionsClose} />
 
                     <Input.Wrapper label="答案">
-                        <Input component="button" pointer onClick={answerOpen}>
-                            <Input.Placeholder>{props.question.answer}</Input.Placeholder>
+                        <Input
+                          style={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                            }}
+                          component="button"
+                          pointer
+                          onClick={answerOpen}
+                        >
+                            {props.question.answer}
                         </Input>
                     </Input.Wrapper>
                     <AnswerEditor
@@ -189,14 +202,12 @@ export default function EditCard(props: EditCardProps) {
                 />
             }
 
-            <Checkbox
-              checked={props.question.required ?? false}
-              onChange={changeRequired}
-              label="必答题"
-            />
-
-            <Space h={20} />
             <Group justify="flex-end">
+                <Checkbox
+                  checked={props.question.required ?? false}
+                  onChange={changeRequired}
+                  label="必答题"
+                />
                 <Button onClick={save} disabled={!edit}>保存</Button>
                 {props.cancel && <Button onClick={props.cancel}>取消</Button>}
             </Group>

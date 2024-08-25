@@ -4,6 +4,7 @@ import { SingleChoice } from '@/app/(root)/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/(root)/survey/components/MultipleChoice';
 import { FileUpload } from '@/app/(root)/survey/components/FileUpload';
 import { FillBlank } from '@/app/(root)/survey/components/FillBlank';
+import { QuestionProps } from '@/api/QuestionApi';
 
 export function generateQuestion(
     data: QuestionProps,
@@ -74,23 +75,6 @@ export function generateQuestion(
                 </div>
             );
     }
-}
-
-export interface QuestionProps {
-    id: string
-    content: Value
-    type: number
-    values: Value[]
-    condition: string | undefined
-    answer: string | undefined
-    all_points: number | undefined
-    sub_points: number | undefined
-    required: boolean | undefined
-}
-
-export interface Value {
-    content: string
-    title: string
 }
 
 export interface InputProps {

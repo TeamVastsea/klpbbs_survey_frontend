@@ -1,4 +1,4 @@
-import { FileInput, rem, Space } from '@mantine/core';
+import { FileInput, rem } from '@mantine/core';
 import { IconFileCv } from '@tabler/icons-react';
 
 export function FileUpload(props: { disabled: boolean }) {
@@ -12,8 +12,6 @@ export function FileUpload(props: { disabled: boolean }) {
               leftSectionPointerEvents="none"
               disabled={props.disabled}
             />
-
-            <Space h={40} />
         </>
     );
 }

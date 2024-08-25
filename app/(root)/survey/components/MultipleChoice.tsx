@@ -1,4 +1,4 @@
-import { Checkbox, Group, Space, Stack, Text } from '@mantine/core';
+import { Checkbox, Group, Stack, Text } from '@mantine/core';
 import classes from './MultipleChoice.module.css';
 import { ChoiceProps } from './SingleChoice';
 
@@ -31,8 +31,6 @@ export function MultipleChoice(props: ChoiceProps) {
                     {cards}
                 </Stack>
             </Checkbox.Group>
-
-            <Space h={40} />
 
             {/*<Text fz="xs" mt="md">*/}
             {/*    CurrentValue: {value.join(', ') || '–'}*/}

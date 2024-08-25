@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { notifications } from '@mantine/notifications';
-import { generateQuestion, InputProps, QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
-import { SERVER_URL } from '@/api/BackendApi';
+import { Group, Space, Stack, Text } from '@mantine/core';
+import { generateQuestion, InputProps } from '@/app/(root)/survey/components/generateQuestion';
+import QuestionApi, { QuestionProps } from '@/api/QuestionApi';
 
 export default function Question(props: PageQuestionProps) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
@@ -18,32 +18,45 @@ export default function Question(props: PageQuestionProps) {
             redirect: 'follow',
         };
 
-        fetch(`${SERVER_URL}/api/question/${props.id}`, requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                const response: QuestionProps = JSON.parse(result);
+        // fetch(`${SERVER_URL}/api/question/admin/${props.id}`, requestOptions)
+        //     .then(response => response.text())
+        //     .then(result => {
+        //         const response: QuestionProps = JSON.parse(result);
+        //         setQuestion(response);
+        //         props.setProps(response);
+        //     })
+        //     .catch(error =>
+        //         notifications.show({
+        //             title: '获取题目失败，请将以下信息反馈给管理员',
+        //             message: error.toString(),
+        //             color: 'red',
+        //         })
+        //     );
+        QuestionApi.fetchSingleQuestionAdmin(props.id)
+            .then((response) => {
                 setQuestion(response);
                 props.setProps(response);
-            })
-            .catch(error =>
-                notifications.show({
-                    title: '获取题目失败，请将以下信息反馈给管理员',
-                    message: error.toString(),
-                    color: 'red',
-                })
-            );
+            });
     }, [props.id]);
 
     return (
-        <>
-            {question ?
-                !props.checkAccess(question.condition as string)
+        <Stack>
+            {question
+                ? !props.checkAccess(question.condition as string)
                     ? '(隐藏题目, 用户无需作答)'
                     : null
                 : null}
             {question ?
-                generateQuestion(question, props.value, props.setValue, props.disabled) : null}
-        </>
+                generateQuestion(question, props.value, props.setValue, props.disabled)
+                : null}
+            {question?.answer ?
+                <Group>
+                    <Text>标准答案：{question.answer}</Text>
+                    <Text>用户选择：{props.value}</Text>
+                    <Text>得分：{props.score}</Text>
+                </Group> : null}
+            <Space h={40} />
+        </Stack>
     );
 }
 
@@ -52,4 +65,5 @@ export interface PageQuestionProps extends InputProps {
     checkAccess: (ruleStr: string) => boolean,
     setProps: (value: QuestionProps) => void,
     disabled: boolean,
+    score?: number,
 }

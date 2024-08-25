@@ -4,9 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { Button, Container, Space, Stack, Title, Text, Center } from '@mantine/core';
 import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
-import QuestionApi, { Page } from '@/api/QuestionApi';
+import QuestionApi, { Page, QuestionProps } from '@/api/QuestionApi';
 import SurveyApi from '@/api/SurveyApi';
-import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
 import { Rule } from '@/app/(root)/survey/[id]/page';
 import Question from '@/app/(root)/backstage/judge/[answerId]/components/questions';
 

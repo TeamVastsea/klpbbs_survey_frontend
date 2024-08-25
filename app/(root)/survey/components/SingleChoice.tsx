@@ -1,6 +1,7 @@
-import { Group, Radio, Space, Stack, Text } from '@mantine/core';
+import { Group, Radio, Stack, Text } from '@mantine/core';
 import classes from './SingleChoice.module.css';
-import type { InputProps, Value } from './generateQuestion';
+import type { InputProps } from './generateQuestion';
+import type { Value } from '@/api/QuestionApi';
 
 export function SingleChoice(props: ChoiceProps) {
     const data = props.choice;
@@ -27,8 +28,6 @@ export function SingleChoice(props: ChoiceProps) {
                     {cards}
                 </Stack>
             </Radio.Group>
-
-            <Space h={40} />
         </>
     );
 }
