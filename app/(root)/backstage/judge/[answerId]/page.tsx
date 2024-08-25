@@ -8,11 +8,15 @@ import QuestionApi, { Page, QuestionProps } from '@/api/QuestionApi';
 import SurveyApi from '@/api/SurveyApi';
 import { Rule } from '@/app/(root)/survey/[id]/page';
 import Question from '@/app/(root)/backstage/judge/[answerId]/components/questions';
+import JudgeApi from '@/api/JudgeApi';
 
 export default function JudgeSinglePage({ params }: { params: { answerId: number } }) {
     const { answerId } = params;
     const [, setAnswer] = useState<AnswerInfo | null>(null);
     const [userAnswer, setUserAnswer] = useState<Map<string, string>>(new Map());
+    const [scores, setScores] = useState<Map<string, number>>(new Map());
+    const [totalScore, setTotalScore] = useState<number | null>(null);
+    const [userScore, setUserScore] = useState<number | null>(null);
     const [page, setPage] = useState<Page | null>(null);
     // const [correctAnswer, setCorrectAnswer] = useState({});
     const [currentPage, setCurrentPage] = useState<string | null>(null);
@@ -46,7 +50,14 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
             .then((res) => {
                 setNextPage(res.next);
                 setPage(res);
-            });
+                return JudgeApi.doJudge(answerId.toString());
+            })
+                .then((res) => {
+                    const scoreMap = new Map(Object.entries(res.scores));
+                    setScores(scoreMap);
+                    setTotalScore(res.full);
+                    setUserScore(res.user);
+                });
     }, [currentPage]);
 
     const getAnswerGetter = (id: string) => userAnswer.get(id) || undefined;
@@ -97,6 +108,8 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
             <Center>
                 <Text>
                     当前问卷: {answerId}
+                    总分: {totalScore}
+                    用户得分: {userScore}
                 </Text>
             </Center>
             <Container maw={1600} w="90%">
@@ -110,6 +123,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                       setValue={() => {}}
                       setProps={getPropsSetter(question)}
                       checkAccess={checkAccess}
+                      score={scores.get(question)}
                       disabled />
                 ))}
                 <Space h={50} />
