@@ -42,7 +42,7 @@ export function LoginBanner() {
             <div className={classes.wrapper}>
                 <SimpleGrid cols={{ base: 1, sm: 2 }}>
                     <Container w={256}>
-                        <Image src={image.src} className={classes.image} w="100%" />
+                        <Image src={image.src} className={classes.loginBannerImage} w="100%" />
                     </Container>
                     <div className={classes.body}>
                         <Title className={classes.title}>
