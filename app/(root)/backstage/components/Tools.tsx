@@ -1,4 +1,4 @@
-import { Button, Group, Collapse, Box, Menu, Center, Stack, Space, Tooltip } from '@mantine/core';
+import { Box, Button, Center, Collapse, Group, Menu, Space, Stack, Tooltip } from '@mantine/core';
 import { IconCategory2, IconHome, IconLogout } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import { Cookie } from '@/components/cookie';

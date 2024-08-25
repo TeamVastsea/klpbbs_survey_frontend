@@ -1,6 +1,6 @@
 'use client';
 
-import { Input, Stack, Title, Center, Button } from '@mantine/core';
+import { Button, Center, Input, Stack, Title } from '@mantine/core';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -25,7 +25,9 @@ export default function SurveyPage() {
                         </Input.Wrapper>
                         <Center>
                             <Button
-                              onClick={() => { router.push(`/backstage/judge/${answerId}`); }}
+                              onClick={() => {
+                                    router.push(`/backstage/judge/${answerId}`);
+                                }}
                             >
                                 确认跳转至 {answerId}
                             </Button>

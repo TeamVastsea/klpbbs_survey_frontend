@@ -66,7 +66,6 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
                 });
             })
             .catch((error) => {
-                console.error(error);
                 notifications.show({
                     title: '更新问卷失败, 请将以下信息反馈给管理员',
                     message: error.toString(),

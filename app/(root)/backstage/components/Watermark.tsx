@@ -38,7 +38,11 @@ export default function Watermark({
                 styleSize: canvasSize / devicePixelRatio,
             };
         }
-        return { base64: '', size: 0, styleSize: 0 };
+        return {
+            base64: '',
+            size: 0,
+            styleSize: 0,
+        };
     };
 
     useEffect(() => {
@@ -61,7 +65,10 @@ export default function Watermark({
         const parent = parentRef.current;
         if (parent) {
             (div as HTMLDivElement | null)?.remove();
-            const { base64, styleSize } = bg;
+            const {
+                base64,
+                styleSize,
+            } = bg;
             div = document.createElement('div');
             div.style.cssText = `
         position: fixed;

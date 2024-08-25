@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
-import { Button, Container, Space, Stack, Title, Text, Center } from '@mantine/core';
+import { Button, Center, Container, Space, Stack, Text, Title } from '@mantine/core';
 import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
 import QuestionApi, { Page, QuestionProps } from '@/api/QuestionApi';
 import SurveyApi from '@/api/SurveyApi';
@@ -52,12 +52,12 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                 setPage(res);
                 return JudgeApi.doJudge(answerId.toString());
             })
-                .then((res) => {
-                    const scoreMap = new Map(Object.entries(res.scores));
-                    setScores(scoreMap);
-                    setTotalScore(res.full);
-                    setUserScore(res.user);
-                });
+            .then((res) => {
+                const scoreMap = new Map(Object.entries(res.scores));
+                setScores(scoreMap);
+                setTotalScore(res.full);
+                setUserScore(res.user);
+            });
     }, [currentPage]);
 
     const getAnswerGetter = (id: string) => userAnswer.get(id) || undefined;

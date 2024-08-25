@@ -51,54 +51,54 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             content: answerObject,
         };
 
-    if (answerId) {
-        raw.id = answerId;
-    }
-
-    let flag = false;
-    for (const q of questions?.content || []) {
-        if (
-            (!answers.has(q) || answers.get(q) === undefined) &&
-            checkAccess(questionsProps.current.get(q)?.condition || null) &&
-            questionsProps.current.get(q)?.required
-        ) {
-            flag = true;
+        if (answerId) {
+            raw.id = answerId;
         }
-    }
-    if (flag) {
-        notifications.show({
-            title: '请填写所有题目',
-            message: '请填写所有题目后再提交',
-            color: 'red',
-        });
-        return;
-    }
 
-    const bodyContent = JSON.stringify(raw);
-
-    const requestOptions: RequestInit = {
-        method: 'POST',
-        headers: myHeaders,
-        body: bodyContent,
-        redirect: 'follow',
-    };
-
-    fetch(`${SERVER_URL}/api/answer`, requestOptions)
-        .then((response) => response.text())
-        .then(() => {
+        let flag = false;
+        for (const q of questions?.content || []) {
+            if (
+                (!answers.has(q) || answers.get(q) === undefined) &&
+                checkAccess(questionsProps.current.get(q)?.condition || null) &&
+                questionsProps.current.get(q)?.required
+            ) {
+                flag = true;
+            }
+        }
+        if (flag) {
             notifications.show({
-                title: '提交答案成功',
-                message: '答案已成功提交',
-                color: 'green',
-            });
-        })
-        .catch((e) => {
-            notifications.show({
-                title: '提交答案失败, 请将以下信息反馈给管理员',
-                message: e.toString(),
+                title: '请填写所有题目',
+                message: '请填写所有题目后再提交',
                 color: 'red',
             });
-        });
+            return;
+        }
+
+        const bodyContent = JSON.stringify(raw);
+
+        const requestOptions: RequestInit = {
+            method: 'POST',
+            headers: myHeaders,
+            body: bodyContent,
+            redirect: 'follow',
+        };
+
+        fetch(`${SERVER_URL}/api/answer`, requestOptions)
+            .then((response) => response.text())
+            .then(() => {
+                notifications.show({
+                    title: '提交答案成功',
+                    message: '答案已成功提交',
+                    color: 'green',
+                });
+            })
+            .catch((e) => {
+                notifications.show({
+                    title: '提交答案失败, 请将以下信息反馈给管理员',
+                    message: e.toString(),
+                    color: 'red',
+                });
+            });
 
         if (nextPage !== null) {
             setCurrentPage(nextPage);
@@ -122,28 +122,28 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return true;
         }
 
-    const rules: Rule[] = JSON.parse(ruleStr);
+        const rules: Rule[] = JSON.parse(ruleStr);
 
-    for (const rule of rules) {
-        const results = rule.conditions.map((condition) => {
-            if (condition.value instanceof Array) {
-                const value: string[] = JSON.parse(getAnswerGetter(condition.id) || '[]');
-                for (const v of condition.value) {
-                    if (value.includes(v)) {
-                        return true;
+        for (const rule of rules) {
+            const results = rule.conditions.map((condition) => {
+                if (condition.value instanceof Array) {
+                    const value: string[] = JSON.parse(getAnswerGetter(condition.id) || '[]');
+                    for (const v of condition.value) {
+                        if (value.includes(v)) {
+                            return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
-            }
 
-            return getAnswerGetter(condition.id) === JSON.stringify(condition.value);
-        });
+                return getAnswerGetter(condition.id) === JSON.stringify(condition.value);
+            });
 
-        if (
-            (rule.type === 'and' && results.every(Boolean)) ||
-            (rule.type === 'or' && results.some(Boolean)) ||
-            (rule.type === 'not' && !results.every(Boolean))
-        ) {
+            if (
+                (rule.type === 'and' && results.every(Boolean)) ||
+                (rule.type === 'or' && results.some(Boolean)) ||
+                (rule.type === 'not' && !results.every(Boolean))
+            ) {
                 return true;
             }
         }
@@ -161,39 +161,39 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             redirect: 'follow',
         };
 
-    fetch(`${SERVER_URL}/api/survey/${params.id}`, requestOptions)
-        .then((response) => response.text())
-        .then((result) => {
-            const response: SurveyResponse = JSON.parse(result);
-            setCurrentPage(response.page);
-        })
-        .catch((error) => {
-            notifications.show({
-                title: '获取试题失败, 请将以下信息反馈给管理员',
-                message: error.toString(),
-                color: 'red',
+        fetch(`${SERVER_URL}/api/survey/${params.id}`, requestOptions)
+            .then((response) => response.text())
+            .then((result) => {
+                const response: SurveyResponse = JSON.parse(result);
+                setCurrentPage(response.page);
+            })
+            .catch((error) => {
+                notifications.show({
+                    title: '获取试题失败, 请将以下信息反馈给管理员',
+                    message: error.toString(),
+                    color: 'red',
+                });
             });
-        });
     }, [params.id]);
 
     useEffect(() => {
         if (currentPage !== null) {
-        const myHeaders = new Headers();
-        myHeaders.append('token', '111');
+            const myHeaders = new Headers();
+            myHeaders.append('token', '111');
 
-        const requestOptions: RequestInit = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow',
-        };
+            const requestOptions: RequestInit = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow',
+            };
 
-        fetch(`${SERVER_URL}/api/question?page=${currentPage}`, requestOptions)
-            .then((response) => response.text())
-            .then((result) => {
-                const response: PageResponse = JSON.parse(result);
-                setQuestions(response);
-                setNextPage(response.next);
-            });
+            fetch(`${SERVER_URL}/api/question?page=${currentPage}`, requestOptions)
+                .then((response) => response.text())
+                .then((result) => {
+                    const response: PageResponse = JSON.parse(result);
+                    setQuestions(response);
+                    setNextPage(response.next);
+                });
         }
     }, [currentPage]);
 
@@ -238,7 +238,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             answer: newQuestionObject.answer
                 ? JSON.parse(newQuestionObject.answer)
                 : undefined,
-            };
+        };
 
         QuestionApi.createQuestion(content).then((res) => {
             notifications.show({
@@ -289,25 +289,25 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                     <Button onClick={save}>{nextPage == null ? '提交' : '下一页'}</Button>
                     <Button onClick={newQuestion}>新建</Button>
                 </Group>
-                    {showNewQuestion && (
-                        <>
-                            <Space h={20} />
-                            <div
-                              style={{
-                                    backgroundColor: 'rgba(185, 190, 185, 0.3)',
-                                    borderRadius: '10px',
-                                    padding: '10px',
-                                }}
-                            >
-                                <EditCard
-                                  question={newQuestionObject}
-                                  setQuestion={setNewQuestionObject}
-                                  cancel={() => setShowNewQuestion(false)}
-                                  save={saveNewQuestion}
-                                />
-                            </div>
-                        </>
-                    )}
+                {showNewQuestion && (
+                    <>
+                        <Space h={20} />
+                        <div
+                          style={{
+                                backgroundColor: 'rgba(185, 190, 185, 0.3)',
+                                borderRadius: '10px',
+                                padding: '10px',
+                            }}
+                        >
+                            <EditCard
+                              question={newQuestionObject}
+                              setQuestion={setNewQuestionObject}
+                              cancel={() => setShowNewQuestion(false)}
+                              save={saveNewQuestion}
+                            />
+                        </div>
+                    </>
+                )}
                 <Space h={180} />
             </Container>
         </Stack>

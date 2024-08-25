@@ -1,7 +1,7 @@
 'use client';
 
-import { Center, Divider, Stack, Title, Button, Text, Avatar, Group } from '@mantine/core';
-import { IconFilePlus, IconEdit, IconChecklist, IconRefresh } from '@tabler/icons-react';
+import { Avatar, Button, Center, Divider, Group, Stack, Text, Title } from '@mantine/core';
+import { IconChecklist, IconEdit, IconFilePlus, IconRefresh } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { Cookie } from '@/components/cookie';
@@ -65,7 +65,11 @@ export default function Backstage() {
                     <Text
                       fw={900}
                       variant="gradient"
-                      gradient={{ from: 'green', to: 'cyan', deg: 90 }}>
+                      gradient={{
+                            from: 'green',
+                            to: 'cyan',
+                            deg: 90,
+                        }}>
                         尊敬的管理员 {userName}, 欢迎使用苦力怕论坛问卷系统后台管理界面！
                     </Text>
                     <Group>

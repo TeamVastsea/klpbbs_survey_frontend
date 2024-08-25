@@ -1,18 +1,6 @@
 'use client';
 
-import {
-    Badge,
-    Button,
-    Card,
-    Center,
-    Group,
-    Paper,
-    Stack,
-    Switch,
-    Textarea,
-    TextInput,
-    Title,
-} from '@mantine/core';
+import { Badge, Button, Card, Center, Group, Paper, Stack, Switch, Textarea, TextInput, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { DateTimePicker } from '@mantine/dates';
 import { useState } from 'react';
@@ -202,10 +190,10 @@ export default function NewSurveyPage() {
                 <Button
                   loading={loading}
                   onClick={() => {
-                    if (checkFull()) {
-                        setIsModalOpen(true);
-                    }
-                }}>
+                        if (checkFull()) {
+                            setIsModalOpen(true);
+                        }
+                    }}>
                     点击创建
                 </Button>
 

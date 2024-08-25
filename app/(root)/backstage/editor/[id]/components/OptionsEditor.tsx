@@ -1,7 +1,8 @@
 import {
     ActionIcon,
     Button,
-    Card, Center,
+    Card,
+    Center,
     Checkbox,
     Group,
     Input,
@@ -107,7 +108,10 @@ export default function OptionsEditor(props: OptionsEditorProps) {
                     <Button
                       onClick={() => {
                             const newOptions = [...props.options];
-                            newOptions.push({ title: '', content: '' });
+                            newOptions.push({
+                                title: '',
+                                content: '',
+                            });
                             props.setOptions(newOptions);
                         }}
                     >

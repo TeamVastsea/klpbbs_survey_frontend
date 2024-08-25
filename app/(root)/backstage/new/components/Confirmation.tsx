@@ -11,7 +11,7 @@ export default function ConfirmationModal({
                                               isOpen,
                                               closeModal,
                                               confirmAction,
-    loading,
+                                              loading,
                                           }: ConfirmationModalProps) {
     return (
         <Modal opened={isOpen} onClose={closeModal} title="确认操作">

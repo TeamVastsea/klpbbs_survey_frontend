@@ -1,20 +1,28 @@
 import { useState } from 'react';
-import {
-    IconBellRinging,
-    IconPlus,
-    IconTrash,
-    IconLogout,
-    IconUsersGroup,
-    IconClockHour5,
-
-} from '@tabler/icons-react';
+import { IconBellRinging, IconClockHour5, IconLogout, IconPlus, IconTrash, IconUsersGroup } from '@tabler/icons-react';
 import classes from './BadgeCard.module.css';
 
 const data = [
-    { link: '', label: '信息', icon: IconBellRinging },
-    { link: '', label: '新建问卷', icon: IconPlus },
-    { link: '', label: '最近', icon: IconClockHour5 },
-    { link: '', label: '与我合作', icon: IconUsersGroup },
+    {
+        link: '',
+        label: '信息',
+        icon: IconBellRinging,
+    },
+    {
+        link: '',
+        label: '新建问卷',
+        icon: IconPlus,
+    },
+    {
+        link: '',
+        label: '最近',
+        icon: IconClockHour5,
+    },
+    {
+        link: '',
+        label: '与我合作',
+        icon: IconUsersGroup,
+    },
 ];
 
 export default function NavBar() {
