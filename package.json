@@ -31,10 +31,13 @@
     "@testing-library/jest-dom": "^6.4.8",
     "@types/mdx": "^2.0.13",
     "dayjs": "^1.11.13",
+    "less": "^4.2.0",
     "micromatch": "^4.0.7",
     "next": "14.2.4",
+    "next-plugin-less": "^1.0.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "scratch-card-react": "^1.0.0",
     "sharp": "^0.33.5",
     "yarn": "^1.22.22"
   },

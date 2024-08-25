@@ -16,42 +16,48 @@ export default function RootLayout({ children }: { children: any }) {
     const [opened, { toggle }] = useDisclosure();
 
     return (
-    <html lang="en">
+      <html lang="en">
         <head>
-        <ColorSchemeScript />
-        <link rel="shortcut icon" href="/favicon.svg" />
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
-        />
+          <ColorSchemeScript />
+          <link rel="shortcut icon" href="/favicon.svg" />
+          <meta
+            name="viewport"
+            content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
+          />
           <title>苦力怕论坛 | 问卷系统</title>
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7538931921377916"
+            crossOrigin="anonymous"
+          >
+          </script>
         </head>
-        <body style={{
-        overflow: 'hidden',
-        }}>
-        <MantineProvider theme={theme}>
+        <body
+          style={{
+            overflow: 'hidden',
+          }}
+        >
+          <MantineProvider theme={theme}>
             <Notifications position="top-right" />
             <AppShell
               header={{ height: 60 }}
               aside={{ width: 0, breakpoint: 'sm', collapsed: { mobile: !opened } }}
             >
-                <AppShell.Header>
-                    <Header opened={opened} toggle={toggle} />
-                </AppShell.Header>
+              <AppShell.Header>
+                <Header opened={opened} toggle={toggle} />
+              </AppShell.Header>
 
-                <AppShell.Main>
-                  {children}
-                </AppShell.Main>
-                <AppShell.Footer mah={120}>
-                  <Footer />
-                </AppShell.Footer>
+              <AppShell.Main>{children}</AppShell.Main>
+              <AppShell.Footer mah={120}>
+                <Footer />
+              </AppShell.Footer>
 
-                <AppShell.Aside>
-                    <NavbarList />
-                </AppShell.Aside>
+              <AppShell.Aside>
+                <NavbarList />
+              </AppShell.Aside>
             </AppShell>
-        </MantineProvider>
+          </MantineProvider>
         </body>
-    </html>
+      </html>
     );
 }

@@ -1,5 +1,6 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
 import createMDX from '@next/mdx';
+import withLess from 'next-plugin-less';
 
 const withBundleAnalyzer = bundleAnalyzer({
     enabled: process.env.ANALYZE === 'true',
@@ -18,5 +19,12 @@ const nextConfig = {
     pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
 };
 
-// Compose the configurations
-export default withBundleAnalyzer(withMDX(nextConfig));
+export default withBundleAnalyzer(
+    withMDX(
+        withLess(nextConfig, {
+            lessOptions: {
+                javascriptEnabled: true,
+            },
+        })
+    )
+);
