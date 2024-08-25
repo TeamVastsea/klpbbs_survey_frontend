@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { notifications } from '@mantine/notifications';
 import { Button, Center, Container, Space, Stack, Text, Title } from '@mantine/core';
 import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
 import QuestionApi, { Page, QuestionProps } from '@/api/QuestionApi';
@@ -18,7 +17,6 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
     const [totalScore, setTotalScore] = useState<number | null>(null);
     const [userScore, setUserScore] = useState<number | null>(null);
     const [page, setPage] = useState<Page | null>(null);
-    // const [correctAnswer, setCorrectAnswer] = useState({});
     const [currentPage, setCurrentPage] = useState<string | null>(null);
     const [nextPage, setNextPage] = useState<string | null>(null);
     const questionsProps = useRef(new Map<string, QuestionProps>());
@@ -32,13 +30,6 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                     .then((res2) => {
                         setCurrentPage(res2.page);
                     });
-            })
-            .catch((error) => {
-                notifications.show({
-                    title: '失败',
-                    message: error.toString(),
-                    color: 'red',
-                });
             });
     }, []);
 

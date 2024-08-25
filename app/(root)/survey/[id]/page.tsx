@@ -5,13 +5,13 @@ import { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
-import { QuestionProps } from '@/api/QuestionApi';
-import { SERVER_URL } from '@/api/BackendApi';
+import QuestionApi, { PageResponse, QuestionProps } from '@/api/QuestionApi';
 import AnswerApi, { SaveRequest } from '@/api/AnswerApi';
+import SurveyApi from '@/api/SurveyApi';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
-    const [currentPage, setCurrentPage] = useState<number | null>(null);
-    const [nextPage, setNextPage] = useState<number | null>(null);
+    const [currentPage, setCurrentPage] = useState<string | null>(null);
+    const [nextPage, setNextPage] = useState<string | null>(null);
     const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const searchParams = useSearchParams();
@@ -107,46 +107,25 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     }
 
     useEffect(() => {
-        const myHeaders = new Headers();
-        myHeaders.append('token', '111');
-
-        const requestOptions: RequestInit = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow',
-        };
-
-        fetch(`${SERVER_URL}/api/survey/${params.id}`, requestOptions)
-            .then(response => response.text())
-            .then(result => {
-                const response: SurveyResponse = JSON.parse(result);
-                setCurrentPage(response.page);
-            })
-            .catch(error => {
-                notifications.show({
-                    title: '获取试题失败，请将以下信息反馈给管理员',
-                    message: error.toString(),
-                    color: 'red',
-                });
-            });
+        SurveyApi.getSurvey(params.id)
+            .then((result) => {
+                setCurrentPage(result.page);
+            }
+        );
     }, [params.id]);
 
     useEffect(() => {
         if (currentPage !== null) {
-            const myHeaders = new Headers();
-            myHeaders.append('token', '111');
-
-            const requestOptions: RequestInit = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow',
-            };
-
-            fetch(`${SERVER_URL}/api/question?page=${currentPage}`, requestOptions)
-                .then(response => response.text())
-                .then(result => {
-                    const response: PageResponse = JSON.parse(result);
-                    setQuestions(response);
+            QuestionApi.fetchPage(currentPage)
+                .then((response) => {
+                    const pageResponse: PageResponse = {
+                        id: response.id,
+                        title: response.title,
+                        budge: '',
+                        content: response.content,
+                        next: response.next,
+                    };
+                    setQuestions(pageResponse);
                     setNextPage(response.next);
                 });
         }
@@ -173,25 +152,6 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             </Container>
         </Stack>
     );
-}
-
-interface SurveyResponse {
-    id: number;
-    title: string;
-    budge: string;
-    description: string;
-    image: string;
-    page: number;
-    start_date: string;
-    end_date: string;
-}
-
-export interface PageResponse {
-    id: string;
-    title: string;
-    budge: string;
-    content: string[];
-    next: number | null;
 }
 
 export type ConditionType = 'and' | 'or' | 'not';

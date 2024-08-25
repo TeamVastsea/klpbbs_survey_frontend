@@ -43,7 +43,7 @@ export default class AnswerApi {
 
         if (!res.ok) {
             notifications.show({
-                title: '获取题目失败, 请将以下信息反馈给管理员',
+                title: '获取问卷答案失败, 请将以下信息反馈给管理员',
                 message: `${res.statusText}: ${await res.text()}`,
                 color: 'red',
             });

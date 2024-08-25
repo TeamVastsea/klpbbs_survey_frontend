@@ -18,7 +18,7 @@ export default class SurveyApi {
         return result;
     };
 
-    public static getSurvey = async (id: number): Promise<SurveyInfo> => {
+    public static getSurvey = async (id: number) => {
         const myHeaders = new Headers();
         myHeaders.append('token', Cookie.getCookie('token'));
 
@@ -29,7 +29,7 @@ export default class SurveyApi {
 
         const res = await fetch(`${SERVER_URL}/api/survey/${id}`, requestOptions);
 
-        const result: SurveyInfo = JSON.parse(await res.text());
+        const result: SurveyResponse = JSON.parse(await res.text());
 
         return result;
     };
@@ -78,6 +78,17 @@ export default class SurveyApi {
 }
 
 export type NewSurveyInfo = Omit<SurveyInfo, 'id'>;
+
+export interface SurveyResponse {
+    id: number;
+    title: string;
+    budge: string;
+    description: string;
+    image: string;
+    page: string;
+    start_date: string;
+    end_date: string;
+}
 
 export interface SurveyInfo {
     id: number;

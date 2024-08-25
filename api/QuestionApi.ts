@@ -133,18 +133,26 @@ export interface Page {
 }
 
 export interface Value {
-    content: string
-    title: string
+    content: string;
+    title: string;
 }
 
 export interface QuestionProps {
-    id: string
-    content: Value
-    type: number
-    values: Value[]
-    condition: string | undefined
-    answer: string | undefined
-    all_points: number | undefined
-    sub_points: number | undefined
-    required: boolean | undefined
+    id: string;
+    content: Value;
+    type: number;
+    values: Value[];
+    condition: string | undefined;
+    answer: string | undefined;
+    all_points: number | undefined;
+    sub_points: number | undefined;
+    required: boolean | undefined;
+}
+
+export interface PageResponse {
+    id: string;
+    title: string;
+    budge: string;
+    content: string[];
+    next: string | null;
 }
