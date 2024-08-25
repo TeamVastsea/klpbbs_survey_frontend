@@ -46,7 +46,7 @@ jobs:
           password: "${{ secrets.REGISTRY_PASSWORD }}"
       - name: Build and push image
         run: |
-          docker build -t registry.cn-guangzhou.aliyuncs.com/teamastsea/klpbbs-survey-frontend:latest .
+          docker build -t registry.cn-guangzhou.aliyuncs.com/teamvastsea/klpbbs-survey-frontend:latest .
           docker push registry.cn-guangzhou.aliyuncs.com/teamvastsea/klpbbs-survey-frontend:latest
   deploy:
     name: Deploy
