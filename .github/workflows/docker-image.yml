@@ -1,7 +1,7 @@
 name: CI/CD
 
 on:
-  push: 
+  push:
     branches: [ "main" ]
   workflow_dispatch:
 
@@ -32,8 +32,8 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/klpbbs-survey-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  build_docker_ARC:
-    name: Build docker ARC
+  build_docker_acr:
+    name: Build docker ACR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -50,7 +50,7 @@ jobs:
           docker push registry.cn-guangzhou.aliyuncs.com/teamvastsea/klpbbs-survey-frontend:latest
   deploy:
     name: Deploy
-    needs: [build_docker, build_docker_ARC]
+    needs: [build_docker, build_docker_acr]
     runs-on: ubuntu-latest
     steps:
       - name: SSH To Host
