@@ -9,7 +9,6 @@ import SurveyApi from '@/api/SurveyApi';
 import { Rule } from '@/app/(root)/survey/[id]/page';
 import Question from '@/app/(root)/backstage/judge/[answerId]/components/questions';
 import JudgeApi from '@/api/JudgeApi';
-import { green } from 'next/dist/lib/picocolors';
 
 export default function JudgeSinglePage({ params }: { params: { answerId: number } }) {
     const { answerId } = params;
