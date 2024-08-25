@@ -151,13 +151,13 @@ export default function NewSurveyPage() {
                             <Stack>
                                 <DateTimePicker
                                   label="开始时间"
-                                  valueFormat="YYYY/MM/DD hh:mm"
+                                  valueFormat="YYYY/MM/DD hh:mm A"
                                   onChange={(value) => value && setStartTime(value)}
                                   required
                                 />
                                 <DateTimePicker
                                   label="结束时间"
-                                  valueFormat="YYYY/MM/DD hh:mm"
+                                  valueFormat="YYYY/MM/DD hh:mm A"
                                   onChange={(value) => value && setEndTime(value)}
                                   required
                                 />
