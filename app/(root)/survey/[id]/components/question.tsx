@@ -5,13 +5,14 @@ import { notifications } from '@mantine/notifications';
 import { generateQuestion, InputProps } from '@/app/(root)/survey/components/generateQuestion';
 import { SERVER_URL } from '@/api/BackendApi';
 import { QuestionProps } from '@/api/QuestionApi';
+import { Cookie } from '@/components/cookie';
 
 export default function Question(props: PageQuestionProps) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
 
     useEffect(() => {
         const myHeaders = new Headers();
-        myHeaders.append('token', '111');
+        myHeaders.append('token', Cookie.getCookie('token'));
 
         const requestOptions: RequestInit = {
             method: 'GET',

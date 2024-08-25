@@ -38,7 +38,7 @@ export default class QuestionApi {
         const requestOptions: RequestInit = {
             method: 'POST',
             headers: myHeaders,
-            body: JSON.stringify(question),
+            body: JSON.stringify(question).toString(),
         };
 
         const res = await fetch(`${SERVER_URL}/api/question`, requestOptions);

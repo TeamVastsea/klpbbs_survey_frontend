@@ -153,7 +153,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
     useEffect(() => {
         const myHeaders = new Headers();
-        myHeaders.append('token', '111');
+        myHeaders.append('token', Cookie.getCookie('token'));
 
         const requestOptions: RequestInit = {
             method: 'GET',
@@ -179,7 +179,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     useEffect(() => {
         if (currentPage !== null) {
             const myHeaders = new Headers();
-            myHeaders.append('token', '111');
+            myHeaders.append('token', Cookie.getCookie('token'));
 
             const requestOptions: RequestInit = {
                 method: 'GET',
@@ -232,11 +232,11 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             type,
             values: newQuestionObject.values,
             condition: newQuestionObject.condition
-                ? JSON.parse(newQuestionObject.condition)
+                ? JSON.parse(newQuestionObject.condition).toString()
                 : undefined,
             required: newQuestionObject.required,
             answer: newQuestionObject.answer
-                ? JSON.parse(newQuestionObject.answer)
+                ? JSON.parse(newQuestionObject.answer).toString()
                 : undefined,
         };
 

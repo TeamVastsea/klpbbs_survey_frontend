@@ -1,4 +1,4 @@
-import { Button, Modal, Text } from '@mantine/core';
+import { Button, Modal, Stack, Text } from '@mantine/core';
 import { Value } from '@/api/QuestionApi';
 import { SingleChoice } from '@/app/(root)/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/(root)/survey/components/MultipleChoice';
@@ -23,14 +23,16 @@ export default function AnswerEditor(props: AnswerEditorProps) {
 
     return (
         <Modal opened={props.opened} onClose={props.close} title="答案编辑器">
-            {dispatchType(props.type)}
-            <Button
-              onClick={() => props.setAnswer(undefined)}
-              fullWidth
-              color="red"
-            >
-                清空
-            </Button>
+            <Stack>
+                {dispatchType(props.type)}
+                <Button
+                  onClick={() => props.setAnswer(undefined)}
+                  fullWidth
+                  color="red"
+                >
+                    清空
+                </Button>
+            </Stack>
         </Modal>
     );
 }
