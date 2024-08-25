@@ -15,7 +15,7 @@ export default function SurveyList() {
             .then(r => setSurveys(r))
             .catch(e => {
                 notifications.show({
-                    title: '获取问卷列表失败，请将以下信息反馈给管理员',
+                    title: '获取问卷列表失败, 请将以下信息反馈给管理员',
                     message: e.toString(),
                     color: 'red',
                 });
@@ -31,14 +31,13 @@ export default function SurveyList() {
                 </Center>
                 <SimpleGrid
                   cols={{
-                            base: 1,
-                            sm: min(2, surveys.length),
-                            lg: min(3, surveys.length),
-                        }}>
+                        base: 1,
+                        sm: min(2, surveys.length),
+                        lg: min(3, surveys.length),
+                    }}>
                     {surveys.map((survey: SurveyInfo) => (
-                        <BadgeCard survey={survey} routeAdmin={false} />
+                        <BadgeCard key={survey.id} survey={survey} routeAdmin={false} />
                     ))}
-
                 </SimpleGrid>
             </Stack>
         </Center>
