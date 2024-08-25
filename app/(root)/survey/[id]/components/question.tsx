@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
-import { generateQuestion, InputProps, QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
+import { generateQuestion, InputProps } from '@/app/(root)/survey/components/generateQuestion';
 import { SERVER_URL } from '@/api/BackendApi';
+import { QuestionProps } from '@/api/QuestionApi';
 
 export default function Question(props: PageQuestionProps) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
@@ -27,7 +28,7 @@ export default function Question(props: PageQuestionProps) {
             })
             .catch(error =>
                 notifications.show({
-                    title: '获取题目失败，请将以下信息反馈给管理员',
+                    title: '获取题目失败, 请将以下信息反馈给管理员',
                     message: error.toString(),
                     color: 'red',
                 })

@@ -1,11 +1,10 @@
 import { Text, Title, Button, Image, Space, Container, SimpleGrid } from '@mantine/core';
 import { useState } from 'react';
-import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import image from './logo.png';
 import classes from './LoginBanner.module.css';
 import { Cookie } from '@/components/cookie';
-import { SERVER_URL } from '@/api/BackendApi';
+import UserApi from '@/api/UserApi';
 
 export function LoginBanner() {
     const [loading, setLoading] = useState(false);
@@ -13,27 +12,11 @@ export function LoginBanner() {
 
     function getLogin() {
         setLoading(true);
-        const requestOptions = {
-            method: 'POST',
-        };
 
-        console.log(SERVER_URL);
-
-        fetch(`${SERVER_URL}/api/user`, requestOptions)
-            .then(response => response.text())
+        UserApi.getToken()
             .then(result => {
-                //set cookie
                 Cookie.setCookie('token', result, 7);
-
                 window.location.href = `https://klpbbs.com/plugin.php?id=klpbbs_api:oauth2&appid=4474a21e0077bcd413dd975e5c9aacc339e1fd54&state=${result}`;
-            })
-            .catch((e) => {
-                setLoading(false);
-                notifications.show({
-                    title: '登录失败，请将以下信息反馈给管理员',
-                    message: e.toString(),
-                    color: 'red',
-                });
             });
     }
 

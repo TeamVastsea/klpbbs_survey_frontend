@@ -2,37 +2,27 @@
 
 import { Center, Stack, Space, LoadingOverlay, Box } from '@mantine/core';
 import { useSearchParams } from 'next/navigation';
-import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import UserInfoCard from './components/UserInfoCard';
 import { Cookie } from '@/components/cookie';
-import { SERVER_URL } from '@/api/BackendApi';
+import UserApi from '@/api/UserApi';
 
 export default function CallbackPage() {
     const searchParams = useSearchParams();
 
     const [username, setUsername] = useState('');
-    const [uid, setUid] = useState('');
+    const [uid, setUid] = useState('11');
     const [loading, setLoading] = useState(true);
 
     const state = searchParams.get('state');
     const token = searchParams.get('token');
 
-    fetch(`${SERVER_URL}/api/oauth?state=${state}&token=${token}`)
+    UserApi.activateToken(state as string, token as string)
         .then(() => {
-            const myHeaders = new Headers();
-            myHeaders.append('token', state as string);
-
-            const requestOptions = {
-                method: 'GET',
-                headers: myHeaders,
-            };
-
-            fetch(`${SERVER_URL}/api/user`, requestOptions)
-                .then(response => response.text())
-                .then(result => {
+            UserApi.getUserInfo(state as string)
+                .then((result) => {
                     Cookie.clearAllCookies();
-                    const user = JSON.parse(result);
+                    const user = result;
 
                     Cookie.setCookie('status', 'ok', 7);
                     Cookie.setCookie('uid', user.uid, 7);
@@ -42,21 +32,7 @@ export default function CallbackPage() {
                     setUid(user.uid);
                     setUsername(user.username);
                     setLoading(false);
-                })
-                .catch(e => {
-                    notifications.show({
-                        title: '获取用户信息失败，请将以下信息反馈给管理员',
-                        message: e.toString(),
-                        color: 'red',
-                    });
                 });
-        })
-        .catch(e => {
-            notifications.show({
-                title: '账户激活失败，请将以下信息反馈给管理员',
-                message: e.toString(),
-                color: 'red',
-            });
         });
 
     return (
@@ -64,7 +40,7 @@ export default function CallbackPage() {
             <Stack>
                 <Space h={100} />
                 <Box pos="relative">
-                    <UserInfoCard id={uid} username={username} />
+                    { !loading && <UserInfoCard uid={uid} username={username} /> }
                     <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm', blur: 2 }} />
                 </Box>
                 <Space h={100} />

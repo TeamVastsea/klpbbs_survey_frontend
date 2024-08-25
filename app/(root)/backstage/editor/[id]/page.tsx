@@ -169,7 +169,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         })
         .catch((error) => {
             notifications.show({
-                title: '获取试题失败，请将以下信息反馈给管理员',
+                title: '获取试题失败, 请将以下信息反馈给管理员',
                 message: error.toString(),
                 color: 'red',
             });

@@ -15,7 +15,7 @@ export default function EditorPage() {
             .then(r => setSurveys(r))
             .catch(e => {
                 notifications.show({
-                    title: '获取问卷列表失败，请将以下信息反馈给管理员',
+                    title: '获取问卷列表失败, 请将以下信息反馈给管理员',
                     message: e.toString(),
                     color: 'red',
                 });

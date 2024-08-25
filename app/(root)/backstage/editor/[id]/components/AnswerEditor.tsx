@@ -1,5 +1,5 @@
 import { Button, Modal, Text } from '@mantine/core';
-import { Value } from '@/app/(root)/survey/components/generateQuestion';
+import { Value } from '@/api/QuestionApi';
 import { SingleChoice } from '@/app/(root)/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/(root)/survey/components/MultipleChoice';
 

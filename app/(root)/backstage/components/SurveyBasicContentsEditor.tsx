@@ -61,14 +61,14 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
             .then(() => {
                 notifications.show({
                     title: '问卷更新成功',
-                    message: '问卷信息已成功更新。',
+                    message: '问卷信息已成功更新',
                     color: 'green',
                 });
             })
             .catch((error) => {
                 console.error(error);
                 notifications.show({
-                    title: '更新问卷失败，请将以下信息反馈给管理员',
+                    title: '更新问卷失败, 请将以下信息反馈给管理员',
                     message: error.toString(),
                     color: 'red',
                 });
@@ -89,7 +89,7 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
 
         notifications.show({
             title: '编辑取消',
-            message: '已取消对问卷的编辑。',
+            message: '已取消对问卷的编辑',
             color: 'yellow',
         });
     };

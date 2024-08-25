@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { Card, Stack } from '@mantine/core';
-import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
+import { QuestionProps } from '@/api/QuestionApi';
 import { PageQuestionProps } from '@/app/(root)/survey/[id]/components/question';
 import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
 import { SERVER_URL } from '@/api/BackendApi';
@@ -31,7 +31,7 @@ export default function Question(props: PageQuestionProps) {
             })
             .catch(error =>
                 notifications.show({
-                    title: '获取题目失败，请将以下信息反馈给管理员',
+                    title: '获取题目失败, 请将以下信息反馈给管理员',
                     message: error.toString(),
                     color: 'red',
                 })

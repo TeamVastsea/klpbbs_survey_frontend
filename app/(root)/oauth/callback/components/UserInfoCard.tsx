@@ -4,7 +4,7 @@ import { Cookie } from '@/components/cookie';
 
 export default function UserInfoCard(props: UserInfoCardProps) {
     const router = useRouter();
-    const id_str = props.id.padStart(9, '0');
+    const id_str = props.uid.padStart(9, '0');
     const avatar_url = `https://user.klpbbs.com/data/avatar/${id_str.substring(0, 3)}/${id_str.substring(3, 5)}/${id_str.substring(5, 7)}/${id_str.substring(7, 9)}_avatar_big.jpg`;
 
     function logOut() {
@@ -34,7 +34,7 @@ export default function UserInfoCard(props: UserInfoCardProps) {
 
                 <Center>
                     <Text mt="xs" c="dimmed" size="sm">
-                        UID：{props.id}
+                        UID：{props.uid}
                     </Text>
                 </Center>
 
@@ -59,6 +59,6 @@ export default function UserInfoCard(props: UserInfoCardProps) {
 }
 
 export interface UserInfoCardProps {
+    uid: string;
     username: string;
-    id: string;
 }

@@ -12,7 +12,7 @@ import {
     Text,
 } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
-import { Value } from '@/app/(root)/survey/components/generateQuestion';
+import { Value } from '@/api/QuestionApi';
 import classes from '@/app/(root)/survey/components/MultipleChoice.module.css';
 
 export default function OptionsEditor(props: OptionsEditorProps) {

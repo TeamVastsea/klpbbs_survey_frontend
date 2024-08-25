@@ -17,7 +17,7 @@ export default class QuestionApi {
 
         if (!res.ok) {
             notifications.show({
-                title: '创建页面失败，请将以下信息反馈给管理员',
+                title: '创建页面失败, 请将以下信息反馈给管理员',
                 message: `${res.statusText} ${await res.text()}`,
                 color: 'red',
             });
@@ -45,7 +45,7 @@ export default class QuestionApi {
 
         if (!res.ok) {
             notifications.show({
-                title: '创建问题失败，请将以下信息反馈给管理员',
+                title: '创建问题失败, 请将以下信息反馈给管理员',
                 message: `${res.statusText}: ${await res.text()}`,
                 color: 'red',
             });
@@ -70,7 +70,7 @@ export default class QuestionApi {
 
         if (!res.ok) {
             notifications.show({
-                title: '获取页面失败，请将以下信息反馈给管理员',
+                title: '获取页面失败, 请将以下信息反馈给管理员',
                 message: `${res.statusText}: ${await res.text()}`,
                 color: 'red',
             });
@@ -97,7 +97,7 @@ export default class QuestionApi {
 
         if (!res.ok) {
             notifications.show({
-                title: '获取单个问题失败，请将以下信息反馈给管理员',
+                title: '获取单个问题失败, 请将以下信息反馈给管理员',
                 message: `${res.statusText}: ${await res.text()}`,
                 color: 'red',
             });

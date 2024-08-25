@@ -16,14 +16,14 @@ export default class JudgeApi {
 
         if (!res.ok) {
             notifications.show({
-                title: '判卷失败，请将以下信息反馈给管理员',
+                title: '判卷失败, 请将以下信息反馈给管理员',
                 message: `${res.statusText}: ${await res.text()}`,
                 color: 'red',
             });
 
             throw new Error('Failed to get judge result');
         }
-        
+
         return res.json();
     }
 }

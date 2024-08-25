@@ -5,8 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
-import { QuestionProps } from '@/app/(root)/survey/components/generateQuestion';
+import { QuestionProps } from '@/api/QuestionApi';
 import { SERVER_URL } from '@/api/BackendApi';
+import AnswerApi, { SaveRequest } from '@/api/AnswerApi';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [currentPage, setCurrentPage] = useState<number | null>(null);
@@ -19,10 +20,6 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     const answerId = useRef(searchParams.get('answer'));
 
     function save() {
-        const myHeaders = new Headers();
-        myHeaders.append('token', '111');
-        myHeaders.append('Content-Type', 'application/json');
-
         const answerObject: any = {};
         answers.forEach((value, key) => {
             answerObject[key] = value;
@@ -34,7 +31,6 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             content: answerObject,
         };
 
-        // console.log('before', answerId);
         if (answerId.current != null) {
             raw.id = Number(answerId.current);
         }
@@ -56,33 +52,14 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return;
         }
 
-            const bodyContent = JSON.stringify(raw);
+        AnswerApi.submitAnswer(raw)
+            .then((result) => {
+                answerId.current = result.toString();
+            });
 
-            const requestOptions: RequestInit = {
-                method: 'POST',
-                headers: myHeaders,
-                body: bodyContent,
-                redirect: 'follow',
-            };
-
-            fetch(`${SERVER_URL}/api/answer`, requestOptions)
-              .then((response) => response.text())
-              // eslint-disable-next-line no-console
-              .then((result) => {
-                answerId.current = result;
-                // console.log(answerId);
-              })
-              .catch((e) => {
-                notifications.show({
-                  title: '提交答案失败，请将以下信息反馈给管理员',
-                  message: e.toString(),
-                  color: 'red',
-                });
-              });
-
-            if (nextPage !== null) {
-                setCurrentPage(nextPage);
-            }
+        if (nextPage !== null) {
+            setCurrentPage(nextPage);
+        }
     }
 
     const getAnswerSetter = (id: string) => (value: string) => {
@@ -169,7 +146,6 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 .then(response => response.text())
                 .then(result => {
                     const response: PageResponse = JSON.parse(result);
-                    // console.log(response);
                     setQuestions(response);
                     setNextPage(response.next);
                 });
@@ -228,11 +204,4 @@ export interface Condition {
 export interface Rule {
     type: ConditionType;
     conditions: Condition[];
-}
-
-export interface SaveRequest {
-    survey: number;
-    content: any;
-    id?: number;
-    complete?: boolean;
 }
