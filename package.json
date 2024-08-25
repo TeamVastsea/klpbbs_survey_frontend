@@ -32,7 +32,7 @@
     "@types/mdx": "^2.0.13",
     "dayjs": "^1.11.13",
     "less": "^4.2.0",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "next": "14.2.4",
     "next-plugin-less": "^1.0.2",
     "react": "18.3.1",
