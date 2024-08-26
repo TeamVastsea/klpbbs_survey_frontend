@@ -1,11 +1,22 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Center, Space, Stack, Text, Title, Button } from '@mantine/core';
-import { useState } from 'react';
 import Scratch from '@/app/(root)/survey/[id]/completed/components/Scratch';
 
 export default function CompletedPage() {
     const [buttonVisible, setButtonVisible] = useState(false);
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const fromSurvey = searchParams.get('fs');
+
+    useEffect(() => {
+        if (!fromSurvey) {
+            router.push('/');
+        }
+    }, [fromSurvey, router]);
 
     return (
         <>

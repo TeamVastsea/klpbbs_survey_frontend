@@ -1,9 +1,9 @@
 'use client';
 
-import { Button, Container, Space, Stack, Title } from '@mantine/core';
+import { Button, Center, Container, Stack, Title } from '@mantine/core';
 import { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
 import QuestionApi, { PageResponse, QuestionProps } from '@/api/QuestionApi';
 import AnswerApi, { SaveRequest } from '@/api/AnswerApi';
@@ -16,6 +16,8 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const searchParams = useSearchParams();
     const questionsProps = useRef(new Map<string, QuestionProps>());
+
+    const router = useRouter();
 
     const answerId = useRef(searchParams.get('answer'));
 
@@ -59,6 +61,16 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
         if (nextPage !== null) {
             setCurrentPage(nextPage);
+        }
+
+        if (nextPage == null) {
+            notifications.show({
+                title: '提交成功',
+                message: '试卷已成功提交',
+                color: 'green',
+            });
+
+            router.push(`/survey/${surveyID}/completed?fs=true`);
         }
     }
 
@@ -134,21 +146,22 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     return (
         <Stack>
             <Container maw={1600} w="90%">
-                <Space h={100} />
-                <Title>{questions?.title}</Title>
-                {questions?.content.map((question, index) => (
-                    <Question
-                      id={question}
-                      key={index}
-                      value={getAnswerGetter(question)}
-                      setValue={getAnswerSetter(question)}
-                      setProps={getPropsSetter(question)}
-                      checkAccess={checkAccess}
-                    />
-                ))}
-                <Space h={50} />
-                <Button onClick={save}>{nextPage == null ? '提交' : '下一页'}</Button>
-                <Space h={180} />
+                <Stack>
+                    <Center>
+                        <Title>{questions?.title}</Title>
+                    </Center>
+                    {questions?.content.map((question, index) => (
+                        <Question
+                          id={question}
+                          key={index}
+                          value={getAnswerGetter(question)}
+                          setValue={getAnswerSetter(question)}
+                          setProps={getPropsSetter(question)}
+                          checkAccess={checkAccess}
+                        />
+                    ))}
+                    <Button onClick={save}>{nextPage == null ? '提交' : '下一页'}</Button>
+                </Stack>
             </Container>
         </Stack>
     );
