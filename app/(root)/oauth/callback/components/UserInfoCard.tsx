@@ -1,5 +1,6 @@
 import { Button, Card, Center, Container, Space, Text, Avatar } from '@mantine/core';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { Cookie } from '@/components/cookie';
 
 export default function UserInfoCard(props: UserInfoCardProps) {
@@ -9,12 +10,28 @@ export default function UserInfoCard(props: UserInfoCardProps) {
 
     function logOut() {
         Cookie.clearAllCookies();
-        window.location.href = '/oauth';
+        sessionStorage.setItem('logOutAndRedirect', 'true');
+        window.location.reload();
     }
 
     function handleConfirm() {
-        router.push('/list');
+        sessionStorage.setItem('navigateToList', 'true');
+        window.location.reload();
     }
+
+    useEffect(() => {
+        if (sessionStorage.getItem('logOutAndRedirect') === 'true') {
+            sessionStorage.removeItem('logOutAndRedirect');
+            router.push('/oauth');
+        }
+    }, []);
+
+    useEffect(() => {
+        if (sessionStorage.getItem('navigateToList') === 'true') {
+            sessionStorage.removeItem('navigateToList');
+            router.push('/list');
+        }
+    }, []);
 
     return (
         <Container w="100%">

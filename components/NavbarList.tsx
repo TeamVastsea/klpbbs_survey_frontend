@@ -42,11 +42,17 @@ export function NavbarList() {
     };
 
     const handleLogout = () => {
-        Cookie.clearCookie('uid');
-        Cookie.clearCookie('username');
-        Cookie.clearCookie('status');
+        Cookie.clearAllCookies();
+        sessionStorage.setItem('logOutAndRedirect', 'true');
         window.location.reload();
     };
+    
+    useEffect(() => {
+        if (sessionStorage.getItem('logOutAndRedirect') === 'true') {
+            sessionStorage.removeItem('logOutAndRedirect');
+            router.push('/oauth');
+        }
+    }, []);
 
     const items = links.map((link) => (
         <Button

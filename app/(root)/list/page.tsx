@@ -4,13 +4,22 @@ import { Center, SimpleGrid, Space, Stack, Title } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { min } from '@floating-ui/utils';
 import { notifications } from '@mantine/notifications';
+import { useRouter } from 'next/navigation';
 import SurveyApi, { SurveyInfo } from '@/api/SurveyApi';
 import BadgeCard from '@/app/(root)/backstage/components/BadgeCard';
+import { Cookie } from '@/components/cookie';
 
 export default function SurveyList() {
     const [surveys, setSurveys] = useState<SurveyInfo[]>([]);
+    const router = useRouter();
 
     useEffect(() => {
+        const status = Cookie.getCookie('status');
+        if (status !== 'ok') {
+            router.push('/oauth');
+            return;
+        }
+
         SurveyApi.getList(0, 10, '')
             .then(r => setSurveys(r))
             .catch(e => {

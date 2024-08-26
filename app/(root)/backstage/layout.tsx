@@ -2,13 +2,17 @@
 
 import React, { useEffect, useState } from 'react';
 import { Center, Text } from '@mantine/core';
-import Watermark from '@/app/(root)/backstage/components/Watermark';
+import { useRouter } from 'next/navigation';
 import { Cookie } from '@/components/cookie';
+import AdminApi from '@/api/AdminApi';
+import Watermark from '@/app/(root)/backstage/components/Watermark';
 import Tools from '@/app/(root)/backstage/components/Tools';
 
 export default function BackStageLayout({ children }: { children: React.ReactNode }) {
     const [userName, setUserName] = useState<string | null>(null);
     const [userId, setUserId] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -17,25 +21,32 @@ export default function BackStageLayout({ children }: { children: React.ReactNod
 
             setUserName(decodeURI(userNameFromCookie));
             setUserId(userIdFromCookie);
-        }
-    }, []);
 
-    if (userName === null || userId === null) {
+            if (userIdFromCookie) {
+                AdminApi.getAdminInfo(Number(userIdFromCookie))
+                    .then(() => {
+                        setLoading(false);
+                    })
+                    .catch(() => {
+                        sessionStorage.setItem('adminAccessDenied', 'true');
+                        router.push('/');
+                    });
+            } else {
+                router.push('/');
+            }
+        }
+    }, [router]);
+
+    if (loading) {
         return (
             <Center>
-                <Text>
-                    Loading...
-                </Text>
+                <Text>Loading...</Text>
             </Center>
         );
     }
 
     return (
-        <Watermark
-          text={`${userName} ${userId}`}
-          fontSize={40}
-          gap={200}
-        >
+        <Watermark text={`${userName} ${userId}`} fontSize={40} gap={200}>
             <>
                 {children}
                 <Tools />

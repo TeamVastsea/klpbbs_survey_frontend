@@ -8,6 +8,7 @@ import Question from '@/app/(root)/survey/[id]/components/question';
 import QuestionApi, { PageResponse, QuestionProps } from '@/api/QuestionApi';
 import AnswerApi, { SaveRequest } from '@/api/AnswerApi';
 import SurveyApi from '@/api/SurveyApi';
+import { Cookie } from '@/components/cookie';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
@@ -19,7 +20,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
     const answerId = useRef(searchParams.get('answer'));
 
-    function save(complted: boolean = false) {
+    function save(completed: boolean = false) {
         if (questions == null) {
             return false;
         }
@@ -32,7 +33,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         const raw: SaveRequest = {
             survey: surveyID,
             content: answerObject,
-            complete: complted,
+            complete: completed,
         };
 
         if (answerId.current != null) {
@@ -151,6 +152,12 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     }
 
     useEffect(() => {
+        const status = Cookie.getCookie('status');
+        if (status !== 'ok') {
+            router.push('/oauth');
+            return;
+        }
+
         SurveyApi.getSurvey(params.id)
             .then((result) => {
                 setPage(result.page);

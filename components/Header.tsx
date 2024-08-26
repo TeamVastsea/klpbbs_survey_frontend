@@ -43,11 +43,17 @@ export default function Header({ opened, toggle }: HeaderProps) {
     };
 
     const handleLogout = () => {
-        Cookie.clearCookie('uid');
-        Cookie.clearCookie('username');
-        Cookie.clearCookie('status');
+        Cookie.clearAllCookies();
+        sessionStorage.setItem('logOutAndRedirect', 'true');
         window.location.reload();
     };
+
+    useEffect(() => {
+        if (sessionStorage.getItem('logOutAndRedirect') === 'true') {
+            sessionStorage.removeItem('logOutAndRedirect');
+            router.push('/oauth');
+        }
+    }, []);
 
     const userItems = username === null ? (
         <Button

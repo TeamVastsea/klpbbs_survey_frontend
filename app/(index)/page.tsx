@@ -14,6 +14,8 @@ import {
     Title,
 } from '@mantine/core';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { notifications } from '@mantine/notifications';
 import classes from '@/styles/common.module.css';
 import mainPageImage from '@/public/main-page.svg';
 import github from '@/public/github.svg';
@@ -29,6 +31,18 @@ export type Survey = {
 
 export default function HomePage() {
     const router = useRouter();
+
+    useEffect(() => {
+        const adminAccessDenied = sessionStorage.getItem('adminAccessDenied');
+        if (adminAccessDenied === 'true') {
+            notifications.show({
+                title: '您不是管理员',
+                message: '您的操作已被记录, 若您为管理员, 请登录您的管理员账号',
+                color: 'red',
+            });
+            sessionStorage.setItem('adminAccessDenied', 'false');
+        }
+    }, []);
 
     const handleButtonClick = () => {
         const status = Cookie.getCookie('status');
