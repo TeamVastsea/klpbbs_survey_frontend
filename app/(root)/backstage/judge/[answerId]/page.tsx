@@ -19,8 +19,6 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
     const [totalScore, setTotalScore] = useState<number | null>(null);
     const [userScore, setUserScore] = useState<number | null>(null);
     const [page, setPage] = useState<Page | null>(null);
-    const [currentPage, setCurrentPage] = useState<string | null>(null);
-    const [nextPage, setNextPage] = useState<string | null>(null);
     const [completed, setCompleted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [judgeTime, setJudgeTime] = useState<string>('');
@@ -36,18 +34,14 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                 setCompleted(res.completed);
                 SurveyApi.getSurvey(res.survey)
                     .then((res2) => {
-                        setCurrentPage(res2.page);
+                        fetchPage(res2.page);
                     });
             });
     }, []);
 
-    useEffect(() => {
-        if (currentPage == null) {
-            return;
-        }
-        QuestionApi.fetchPage(currentPage)
+    function fetchPage(nextPage: string) {
+        QuestionApi.fetchPage(nextPage)
             .then((res) => {
-                setNextPage(res.next);
                 setPage(res);
                 return JudgeApi.doJudge(answerId.toString());
             })
@@ -64,7 +58,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
             .then((res) => {
                 setJudgeName(res.username);
             });
-    }, [currentPage]);
+    }
 
     const getAnswerGetter = (id: string) => userAnswer.get(id) || undefined;
 
@@ -74,20 +68,24 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
 
     function switchNextPage() {
         setLoading(true);
-        if (nextPage == null) {
-            save();
+        if (page?.next == null) {
             setLoading(false);
             return;
         }
 
-        setCurrentPage(nextPage);
+        fetchPage(page.next);
         setLoading(false);
     }
 
-    function save() {
-        JudgeApi.confirmJudge(answerId.toString()).then(() => {
-            setCompleted(true);
-        });
+    function switchPrevPage() {
+        setLoading(true);
+        if (page?.previous == null) {
+            setLoading(false);
+            return;
+        }
+
+        fetchPage(page.previous);
+        setLoading(false);
     }
 
     function checkAccess(ruleStr: string | null): boolean {
@@ -159,7 +157,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                     </Center>
                     <Center>
                         <Text>
-                            最后一次阅卷人: {judgeName}
+                            阅卷人: {judgeName}
                         </Text>
                         <Text c="gray">
                             &nbsp;(UID: {judgeId})
@@ -167,7 +165,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                     </Center>
                     <Center>
                         <Text>
-                            最后阅卷时间: {judgeTime.split('.')[0].replace('T', ' ')}
+                            阅卷时间: {judgeTime.split('.')[0].replace('T', ' ')}
                         </Text>
                     </Center>
                 </Alert>
@@ -177,10 +175,10 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                     <Center>
                         <Title>{page?.title}</Title>
                     </Center>
-                    {page?.content.map((question, index) => (
+                    {page?.content.map(question => (
                         <Question
                           id={question}
-                          key={index}
+                          key={question}
                           value={getAnswerGetter(question)}
                           setValue={() => {}}
                           setProps={getPropsSetter(question)}
@@ -189,8 +187,31 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                           disabled />
                     ))}
                 </Stack>
-                <Space h={50} />
-                <Button loading={loading} disabled={nextPage == null && completed} onClick={switchNextPage}>{nextPage == null ? '提交' : '下一页'}</Button>
+                <Stack>
+                    <Space>
+                        <Button.Group>
+                            <Button
+                              variant="light"
+                              disabled={page?.previous == null}
+                              loading={loading}
+                              onClick={switchPrevPage}
+                              fullWidth>
+                                上一页
+                            </Button>
+                            <Button
+                              variant="light"
+                              disabled={page?.next == null}
+                              loading={loading}
+                              onClick={switchNextPage}
+                              fullWidth>
+                                下一页
+                            </Button>
+                        </Button.Group>
+                    </Space>
+                    <Button color="green" disabled={completed} loading={loading}>
+                        提交
+                    </Button>
+                </Stack>
                 <Space h={180} />
             </Container>
         </Stack>

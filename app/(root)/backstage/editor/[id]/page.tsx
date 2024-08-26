@@ -209,6 +209,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             budge: questions.budge,
             content: questions.content,
             next: nextPage,
+            previous: null,
         };
 
         QuestionApi.updatePage(page).then((res) => {
