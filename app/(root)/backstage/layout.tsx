@@ -26,7 +26,7 @@ export default function BackStageLayout({ children }: { children: React.ReactNod
                 .then((res) => {
                     if (!res.ok) {
                         sessionStorage.setItem('adminAccessDenied', 'true');
-                        // router.push('/');
+                        router.push('/');
                     }
 
                     setUserId(res.result.id.toString());
