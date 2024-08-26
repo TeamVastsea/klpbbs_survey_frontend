@@ -10,8 +10,6 @@ import AnswerApi, { SaveRequest } from '@/api/AnswerApi';
 import SurveyApi from '@/api/SurveyApi';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
-    const [currentPage, setCurrentPage] = useState<string | null>(null);
-    const [nextPage, setNextPage] = useState<string | null>(null);
     const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const searchParams = useSearchParams();
@@ -21,7 +19,10 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
     const answerId = useRef(searchParams.get('answer'));
 
-    function save() {
+    function save(complted: boolean = false) {
+        if (questions == null) {
+            return false;
+        }
         const answerObject: any = {};
         answers.forEach((value, key) => {
             answerObject[key] = value;
@@ -31,6 +32,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         const raw: SaveRequest = {
             survey: surveyID,
             content: answerObject,
+            complete: complted,
         };
 
         if (answerId.current != null) {
@@ -38,7 +40,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         }
 
         let flag = false;
-        for (const q of questions?.content || []) {
+        for (const q of questions.content || []) {
             if ((!answers.has(q) || answers.get(q) === undefined)
                 && checkAccess(questionsProps.current.get(q)?.condition || null)
                 && questionsProps.current.get(q)?.required) {
@@ -51,7 +53,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 message: '请填写所有题目后再提交',
                 color: 'red',
             });
-            return;
+            return false;
         }
 
         AnswerApi.submitAnswer(raw)
@@ -59,18 +61,47 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 answerId.current = result.toString();
             });
 
-        if (nextPage !== null) {
-            setCurrentPage(nextPage);
+        return true;
+    }
+
+    function nextPage() {
+        let completed = false;
+        if (questions?.next == null) {
+            completed = true;
         }
 
-        if (nextPage == null) {
+        if (!save(completed)) {
+            return;
+        }
+
+        if (questions == null) {
+            return;
+        }
+
+        if (questions?.next !== null) {
+            setPage(questions.next);
+        }
+
+        if (questions.next == null) {
             notifications.show({
                 title: '提交成功',
                 message: '试卷已成功提交',
                 color: 'green',
             });
 
-            router.push(`/survey/${surveyID}/completed?fs=true`);
+            router.push(`/survey/${params.id}/completed?fs=true`);
+        }
+    }
+
+    function prevPage() {
+        save();
+
+        if (questions == null) {
+            return;
+        }
+
+        if (questions?.previous !== null) {
+            setPage(questions.previous);
         }
     }
 
@@ -78,6 +109,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         const newAnswers = new Map(answers);
         newAnswers.set(id, value);
         setAnswers(newAnswers);
+        // console.log(newAnswers);
     };
 
     const getAnswerGetter = (id: string) => answers.get(id) || undefined;
@@ -121,49 +153,54 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     useEffect(() => {
         SurveyApi.getSurvey(params.id)
             .then((result) => {
-                setCurrentPage(result.page);
+                setPage(result.page);
             }
         );
     }, [params.id]);
 
-    useEffect(() => {
-        if (currentPage !== null) {
-            QuestionApi.fetchPage(currentPage)
-                .then((response) => {
-                    const pageResponse: PageResponse = {
-                        id: response.id,
-                        title: response.title,
-                        budge: '',
-                        content: response.content,
-                        next: response.next,
-                    };
-                    setQuestions(pageResponse);
-                    setNextPage(response.next);
-                });
-        }
-    }, [currentPage]);
+    function setPage(page: string) {
+        QuestionApi.fetchPage(page)
+            .then((response) => {
+                const pageResponse: PageResponse = {
+                    previous: response.previous,
+                    id: response.id,
+                    title: response.title,
+                    budge: '',
+                    content: response.content,
+                    next: response.next,
+                };
+                setQuestions(pageResponse);
+            });
+    }
 
     return (
-        <Stack>
-            <Container maw={1600} w="90%">
-                <Stack>
-                    <Center>
-                        <Title>{questions?.title}</Title>
-                    </Center>
-                    {questions?.content.map((question, index) => (
-                        <Question
-                          id={question}
-                          key={index}
-                          value={getAnswerGetter(question)}
-                          setValue={getAnswerSetter(question)}
-                          setProps={getPropsSetter(question)}
-                          checkAccess={checkAccess}
-                        />
-                    ))}
-                    <Button onClick={save}>{nextPage == null ? '提交' : '下一页'}</Button>
-                </Stack>
-            </Container>
-        </Stack>
+      <Stack>
+        <Container maw={1600} w="90%">
+          <Stack>
+            <Center>
+              <Title>{questions?.title}</Title>
+            </Center>
+            {questions?.content.map(question => (
+              <Question
+                id={question}
+                key={question}
+                value={getAnswerGetter(question)}
+                setValue={getAnswerSetter(question)}
+                setProps={getPropsSetter(question)}
+                checkAccess={checkAccess}
+              />
+            ))}
+            {questions?.previous != null && (
+              <Button
+                onClick={prevPage}
+              >
+                上一页
+              </Button>
+            )}
+            <Button onClick={nextPage}>{questions?.next == null ? '提交' : '下一页'}</Button>
+          </Stack>
+        </Container>
+      </Stack>
     );
 }
 

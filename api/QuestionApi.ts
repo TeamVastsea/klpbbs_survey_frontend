@@ -189,6 +189,7 @@ export interface Page {
     budge: string;
     content: Array<string>;
     next: string | null;
+    previous: string | null;
 }
 
 export interface Value {
@@ -224,4 +225,5 @@ export interface PageResponse {
     budge: string;
     content: string[];
     next: string | null;
+    previous: string | null;
 }

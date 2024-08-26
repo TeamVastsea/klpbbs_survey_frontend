@@ -5,7 +5,10 @@ import { ChoiceProps } from './SingleChoice';
 export function MultipleChoice(props: ChoiceProps) {
     const data = props.choice;
 
+    // console.log(props.value);
+
     function setValue(value: string[]) {
+        // console.log(JSON.stringify(value));
         props.setValue(JSON.stringify(value));
     }
 

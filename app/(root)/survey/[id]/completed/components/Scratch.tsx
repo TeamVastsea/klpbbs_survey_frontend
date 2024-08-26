@@ -53,7 +53,6 @@ export default function Scratch({ onScratchComplete }: ScratchProps) {
                         </Stack>
                     </div>
 
-                    {/* Scratch card area */}
                     <ScratchCard
                       ref={cardRef}
                       width={300}

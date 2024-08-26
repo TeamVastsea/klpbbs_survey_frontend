@@ -11,6 +11,8 @@ export default function Question(props: PageQuestionProps) {
     const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
 
     useEffect(() => {
+        console.log(props.id, props.value);
+
         const myHeaders = new Headers();
         myHeaders.append('token', Cookie.getCookie('token'));
 
