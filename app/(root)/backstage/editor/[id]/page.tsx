@@ -3,19 +3,17 @@
 import { Button, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
-import { useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/backstage/editor/[id]/components/question';
 import { SERVER_URL } from '@/api/BackendApi';
 import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
 import { Cookie } from '@/components/cookie';
-import QuestionApi, { QuestionContent, QuestionProps } from '@/api/QuestionApi';
+import QuestionApi, { Page, QuestionContent, QuestionProps } from '@/api/QuestionApi';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
-    const [currentPage, setCurrentPage] = useState<number | null>(null);
-    const [nextPage, setNextPage] = useState<number | null>(null);
+    const [currentPage, setCurrentPage] = useState<string | null>(null);
+    const [nextPage, setNextPage] = useState<string | null>(null);
     const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
-    const searchParams = useSearchParams();
     const questionsProps = useRef(new Map<string, QuestionProps>());
     const [showNewQuestion, setShowNewQuestion] = useState(false);
     const [newQuestionObject, setNewQuestionObject] = useState<QuestionProps>({
@@ -33,72 +31,8 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         values: [],
     });
 
-    const answerId: string | null = searchParams.get('answer');
-
     function save() {
-        const myHeaders = new Headers();
-        myHeaders.append('token', Cookie.getCookie('token'));
-        myHeaders.append('Content-Type', 'application/json');
-
-        const answerObject: any = {};
-        answers.forEach((value, key) => {
-            answerObject[key] = value;
-        });
-
-        const surveyID = Number(params.id);
-        const raw: SaveRequest = {
-            survey: surveyID,
-            content: answerObject,
-        };
-
-        if (answerId) {
-            raw.id = answerId;
-        }
-
-        let flag = false;
-        for (const q of questions?.content || []) {
-            if (
-                (!answers.has(q) || answers.get(q) === undefined) &&
-                checkAccess(questionsProps.current.get(q)?.condition || null) &&
-                questionsProps.current.get(q)?.required
-            ) {
-                flag = true;
-            }
-        }
-        if (flag) {
-            notifications.show({
-                title: '请填写所有题目',
-                message: '请填写所有题目后再提交',
-                color: 'red',
-            });
-            return;
-        }
-
-        const bodyContent = JSON.stringify(raw);
-
-        const requestOptions: RequestInit = {
-            method: 'POST',
-            headers: myHeaders,
-            body: bodyContent,
-            redirect: 'follow',
-        };
-
-        fetch(`${SERVER_URL}/api/answer`, requestOptions)
-            .then((response) => response.text())
-            .then(() => {
-                notifications.show({
-                    title: '提交答案成功',
-                    message: '答案已成功提交',
-                    color: 'green',
-                });
-            })
-            .catch((e) => {
-                notifications.show({
-                    title: '提交答案失败, 请将以下信息反馈给管理员',
-                    message: e.toString(),
-                    color: 'red',
-                });
-            });
+        savePage();
 
         if (nextPage !== null) {
             setCurrentPage(nextPage);
@@ -235,9 +169,13 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 ? JSON.parse(newQuestionObject.condition).toString()
                 : undefined,
             required: newQuestionObject.required,
-            answer: newQuestionObject.answer
-                ? JSON.parse(newQuestionObject.answer).toString()
-                : undefined,
+            answer: {
+                answer: newQuestionObject.answer
+                    ? JSON.parse(newQuestionObject.answer).toString()
+                    : undefined,
+                all_points: newQuestionObject.all_points,
+                sub_points: newQuestionObject.sub_points,
+            },
         };
 
         QuestionApi.createQuestion(content).then((res) => {
@@ -256,6 +194,32 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                     content: newContent,
                 });
             }
+
+            savePage();
+        });
+    }
+
+    function savePage() {
+        if (questions == null) {
+            return;
+        }
+        const page: Page = {
+            id: questions.id,
+            title: questions.title,
+            budge: questions.budge,
+            content: questions.content,
+            next: nextPage,
+        };
+
+        QuestionApi.updatePage(page).then((res) => {
+            setQuestions(res);
+            setNextPage(res.next);
+
+            notifications.show({
+                title: '更新页面成功',
+                message: '更新页面成功',
+                color: 'green',
+            });
         });
     }
 
@@ -320,7 +284,7 @@ interface SurveyResponse {
     budge: string;
     description: string;
     image: string;
-    page: number;
+    page: string;
     start_date: string;
     end_date: string;
 }
@@ -330,7 +294,7 @@ export interface PageResponse {
     title: string;
     budge: string;
     content: string[];
-    next: number | null;
+    next: string | null;
 }
 
 type ConditionType = 'and' | 'or' | 'not';
@@ -343,11 +307,4 @@ interface Condition {
 interface Rule {
     type: ConditionType;
     conditions: Condition[];
-}
-
-interface SaveRequest {
-    survey: number;
-    content: any;
-    id?: string;
-    complete?: boolean;
 }

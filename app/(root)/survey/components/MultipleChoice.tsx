@@ -24,7 +24,7 @@ export function MultipleChoice(props: ChoiceProps) {
     return (
         <>
             <Checkbox.Group
-              value={props.value === undefined ? [] : JSON.parse(props.value)}
+              value={props.value === undefined || props.value === '' ? [] : JSON.parse(props.value)}
               onChange={setValue}
             >
                 <Stack pt="md" gap="xs">

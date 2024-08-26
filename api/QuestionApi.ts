@@ -109,6 +109,64 @@ export default class QuestionApi {
 
         return result;
     };
+
+    public static updatePage = async (input: Page): Promise<Page> => {
+        const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const body = JSON.stringify(input);
+
+        const requestOptions: RequestInit = {
+            method: 'PUT',
+            headers: myHeaders,
+            body,
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/question/sheet`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '更新页面失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to update question');
+        }
+
+        return res.json();
+    };
+
+    public static updateQuestion = async (input: StringifyQuestionProps) => {
+        const myHeaders = new Headers();
+        myHeaders.append('Content-Type', 'application/json');
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const body = JSON.stringify(input, null, 4);
+
+        const requestOptions: RequestInit = {
+            method: 'PUT',
+            headers: myHeaders,
+            body,
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/question`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '更新问题失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to update question');
+        }
+
+        const result: string = await res.text();
+
+        return result;
+    };
 }
 
 export interface QuestionContent {
@@ -120,14 +178,15 @@ export interface QuestionContent {
     answer: Answer | undefined;
 }
 export interface Answer {
-    all_points: number;
-    sub_points: number;
+    all_points: number | undefined;
+    sub_points: number | undefined;
     answer: string;
 }
 
 export interface Page {
     id: string;
     title: string;
+    budge: string;
     content: Array<string>;
     next: string | null;
 }
@@ -147,6 +206,16 @@ export interface QuestionProps {
     all_points: number | undefined;
     sub_points: number | undefined;
     required: boolean | undefined;
+}
+
+export interface StringifyQuestionProps {
+    id: string;
+    content: Value;
+    type: string;
+    values: Value[];
+    condition: string | undefined;
+    answer: Answer | undefined;
+    required: boolean;
 }
 
 export interface PageResponse {

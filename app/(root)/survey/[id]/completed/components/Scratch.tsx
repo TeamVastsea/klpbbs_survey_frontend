@@ -1,5 +1,3 @@
-'use client';
-
 import { Center, Stack, Text } from '@mantine/core';
 import { ScratchCard } from 'scratch-card-react';
 import { useEffect, useRef, useState } from 'react';
