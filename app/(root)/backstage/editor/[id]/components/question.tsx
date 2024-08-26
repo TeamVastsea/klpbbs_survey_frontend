@@ -30,7 +30,7 @@ export default function Question(props: PageQuestionProps) {
             return;
         }
 
-        const squestion: StringifyQuestionProps = {
+        const stringifyQuestion: StringifyQuestionProps = {
             answer: question.answer === undefined ? undefined : {
                 answer: question.answer,
                 all_points: question.all_points,
@@ -44,7 +44,7 @@ export default function Question(props: PageQuestionProps) {
             values: question.values,
         };
 
-        QuestionApi.updateQuestion(squestion).then(() => {});
+        QuestionApi.updateQuestion(stringifyQuestion).then(() => {});
     }
 
     useEffect(() => {

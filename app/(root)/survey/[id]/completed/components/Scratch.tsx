@@ -47,6 +47,9 @@ export default function Scratch({ onScratchComplete }: ScratchProps) {
                             <Center>
                                 <Text>奖品: {item}</Text>
                             </Center>
+                            <Center>
+                                <Text size="10px" c="gray">0.01 元代金券</Text>
+                            </Center>
                         </Stack>
                     </div>
 
