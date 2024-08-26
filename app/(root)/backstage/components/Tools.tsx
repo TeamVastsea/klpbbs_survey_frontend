@@ -12,7 +12,8 @@ export default function Tools() {
 
     function logOut() {
         Cookie.clearAllCookies();
-        goHome();
+        sessionStorage.setItem('logOutAndRedirect', 'true');
+        window.location.reload();
     }
 
     return (

@@ -22,18 +22,17 @@ export default function BackStageLayout({ children }: { children: React.ReactNod
             setUserName(decodeURI(userNameFromCookie));
             setUserId(userIdFromCookie);
 
-            if (userIdFromCookie) {
-                AdminApi.getAdminInfo(Number(userIdFromCookie))
-                    .then(() => {
-                        setLoading(false);
-                    })
-                    .catch(() => {
+            AdminApi.getAdminTokenInfo()
+                .then((res) => {
+                    if (!res.ok) {
                         sessionStorage.setItem('adminAccessDenied', 'true');
-                        router.push('/');
-                    });
-            } else {
-                router.push('/');
-            }
+                        // router.push('/');
+                    }
+
+                    setUserId(res.result.id.toString());
+                    setUserName(res.result.username);
+                    setLoading(false);
+                });
         }
     }, [router]);
 

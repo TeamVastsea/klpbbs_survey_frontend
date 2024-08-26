@@ -110,7 +110,6 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         const newAnswers = new Map(answers);
         newAnswers.set(id, value);
         setAnswers(newAnswers);
-        // console.log(newAnswers);
     };
 
     const getAnswerGetter = (id: string) => answers.get(id) || undefined;
