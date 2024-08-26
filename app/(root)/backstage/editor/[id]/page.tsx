@@ -4,15 +4,12 @@ import { Button, Center, Container, Group, Space, Stack, Text, Title } from '@ma
 import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import Question from '@/app/(root)/backstage/editor/[id]/components/question';
-import { SERVER_URL } from '@/api/BackendApi';
 import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
-import { Cookie } from '@/components/cookie';
 import QuestionApi, { Page, QuestionContent, QuestionProps } from '@/api/QuestionApi';
+import SurveyApi from '@/api/SurveyApi';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
-    const [currentPage, setCurrentPage] = useState<string | null>(null);
-    const [nextPage, setNextPage] = useState<string | null>(null);
-    const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
+    const [questions, setQuestions] = useState<Page | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const questionsProps = useRef(new Map<string, QuestionProps>());
     const [showNewQuestion, setShowNewQuestion] = useState(false);
@@ -30,14 +27,6 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         type: 0,
         values: [],
     });
-
-    function save() {
-        savePage();
-
-        if (nextPage !== null) {
-            setCurrentPage(nextPage);
-        }
-    }
 
     const getAnswerSetter = (id: string) => (value: string) => {
         const newAnswers = new Map(answers);
@@ -86,50 +75,33 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     }
 
     useEffect(() => {
-        const myHeaders = new Headers();
-        myHeaders.append('token', Cookie.getCookie('token'));
-
-        const requestOptions: RequestInit = {
-            method: 'GET',
-            headers: myHeaders,
-            redirect: 'follow',
-        };
-
-        fetch(`${SERVER_URL}/api/survey/${params.id}`, requestOptions)
-            .then((response) => response.text())
-            .then((result) => {
-                const response: SurveyResponse = JSON.parse(result);
-                setCurrentPage(response.page);
-            })
-            .catch((error) => {
-                notifications.show({
-                    title: '获取试题失败, 请将以下信息反馈给管理员',
-                    message: error.toString(),
-                    color: 'red',
-                });
-            });
+        SurveyApi.getSurvey(params.id).then((res) => {
+            fetchPage(res.page);
+        });
     }, [params.id]);
 
-    useEffect(() => {
-        if (currentPage !== null) {
-            const myHeaders = new Headers();
-            myHeaders.append('token', Cookie.getCookie('token'));
-
-            const requestOptions: RequestInit = {
-                method: 'GET',
-                headers: myHeaders,
-                redirect: 'follow',
-            };
-
-            fetch(`${SERVER_URL}/api/question?page=${currentPage}`, requestOptions)
-                .then((response) => response.text())
-                .then((result) => {
-                    const response: PageResponse = JSON.parse(result);
-                    setQuestions(response);
-                    setNextPage(response.next);
-                });
+    function fetchNextPage() {
+        savePage();
+        if (questions?.next == null) {
+            return;
         }
-    }, [currentPage]);
+        fetchPage(questions.next);
+    }
+
+    function fetchPrevPage() {
+        savePage();
+        if (questions?.previous == null) {
+            return;
+        }
+        fetchPage(questions.previous);
+    }
+
+    function fetchPage(page: string) {
+        QuestionApi.fetchPage(page)
+            .then((response) => {
+                setQuestions(response);
+            });
+    }
 
     function newQuestion() {
         setNewQuestionObject({
@@ -169,7 +141,8 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 ? JSON.parse(newQuestionObject.condition).toString()
                 : undefined,
             required: newQuestionObject.required,
-            answer: {
+            answer: newQuestionObject.answer === undefined || newQuestionObject.answer === '' ?
+                undefined : {
                 answer: newQuestionObject.answer
                     ? JSON.parse(newQuestionObject.answer).toString()
                     : undefined,
@@ -203,25 +176,45 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         if (questions == null) {
             return;
         }
-        const page: Page = {
-            id: questions.id,
-            title: questions.title,
-            budge: questions.budge,
-            content: questions.content,
-            next: nextPage,
-            previous: null,
-        };
 
+        savePageByPage(questions);
+    }
+
+    function savePageByPage(page: Page) {
         QuestionApi.updatePage(page).then((res) => {
             setQuestions(res);
-            setNextPage(res.next);
 
             notifications.show({
-                title: '更新页面成功',
-                message: '更新页面成功',
+                title: '保存页面成功',
+                message: '保存页面成功',
                 color: 'green',
             });
         });
+    }
+
+    async function createPage() {
+        if (questions == null) {
+            return;
+        }
+
+        const newPageId: string = await QuestionApi.createPage();
+        const nextPage: Page | null = questions.next == null ?
+            null : await QuestionApi.fetchPage(questions.next);
+        const thisPage: Page = questions;
+        const newPage: Page = await QuestionApi.fetchPage(newPageId);
+
+        thisPage.next = newPageId;
+        savePageByPage(thisPage);
+        setQuestions(thisPage);
+
+        newPage.previous = thisPage.id;
+        newPage.next = nextPage?.id || null;
+        savePageByPage(newPage);
+
+        if (nextPage) {
+            nextPage.previous = newPageId;
+            savePageByPage(nextPage);
+        }
     }
 
     return (
@@ -238,10 +231,10 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             </Center>
             <Container maw={1600} w="90%">
                 <Stack>
-                    {questions?.content.map((question, index) => (
+                    {questions?.content.map(question => (
                         <Question
                           id={question}
-                          key={index}
+                          key={question}
                           value={getAnswerGetter(question)}
                           setValue={getAnswerSetter(question)}
                           setProps={getPropsSetter(question)}
@@ -251,8 +244,16 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 </Stack>
                 <Space h={50} />
                 <Group>
-                    <Button onClick={save}>{nextPage == null ? '提交' : '下一页'}</Button>
-                    <Button onClick={newQuestion}>新建</Button>
+                    <Button onClick={createPage}>
+                        新建页面
+                    </Button>
+                    <Button onClick={fetchPrevPage}>
+                        上一页
+                    </Button>
+                    <Button onClick={fetchNextPage}>
+                        下一页
+                    </Button>
+                    <Button onClick={newQuestion}>新建问题</Button>
                 </Group>
                 {showNewQuestion && (
                     <>
@@ -277,17 +278,6 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             </Container>
         </Stack>
     );
-}
-
-interface SurveyResponse {
-    id: number;
-    title: string;
-    budge: string;
-    description: string;
-    image: string;
-    page: string;
-    start_date: string;
-    end_date: string;
 }
 
 export interface PageResponse {

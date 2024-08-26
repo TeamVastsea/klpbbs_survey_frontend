@@ -44,7 +44,13 @@ export default function Question(props: PageQuestionProps) {
             values: question.values,
         };
 
-        QuestionApi.updateQuestion(stringifyQuestion).then(() => {});
+        QuestionApi.updateQuestion(stringifyQuestion).then(() => {
+            notifications.show({
+                title: '保存成功',
+                message: '题目保存成功',
+                color: 'green',
+            });
+        });
     }
 
     useEffect(() => {

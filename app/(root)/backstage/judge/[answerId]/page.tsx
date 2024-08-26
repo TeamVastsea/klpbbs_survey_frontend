@@ -184,9 +184,11 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                           setProps={getPropsSetter(question)}
                           checkAccess={checkAccess}
                           score={scores.get(question)}
-                          disabled />
+                          disabled
+                        />
                     ))}
                 </Stack>
+                <Space h={50} />
                 <Stack>
                     <Space>
                         <Button.Group>
@@ -195,7 +197,8 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                               disabled={page?.previous == null}
                               loading={loading}
                               onClick={switchPrevPage}
-                              fullWidth>
+                              fullWidth
+                            >
                                 上一页
                             </Button>
                             <Button
@@ -203,7 +206,8 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                               disabled={page?.next == null}
                               loading={loading}
                               onClick={switchNextPage}
-                              fullWidth>
+                              fullWidth
+                            >
                                 下一页
                             </Button>
                         </Button.Group>

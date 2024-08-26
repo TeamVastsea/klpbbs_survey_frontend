@@ -1,7 +1,7 @@
 'use client';
 
-import { Button, Center, Container, Stack, Title } from '@mantine/core';
-import { useEffect, useRef, useState } from 'react';
+import { Button, Center, Container, Space, Stack, Title } from '@mantine/core';
+import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
@@ -180,7 +180,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             <Center>
               <Title>{questions?.title}</Title>
             </Center>
-            {questions?.content.map(question => (
+            {questions?.content.map((question) => (
               <Question
                 id={question}
                 key={question}
@@ -190,15 +190,24 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 checkAccess={checkAccess}
               />
             ))}
-            {questions?.previous != null && (
+          </Stack>
+          <Space h={50} />
+          <Stack>
+            <Button.Group>
               <Button
+                variant="light"
+                disabled={questions?.previous == null}
                 onClick={prevPage}
+                fullWidth
               >
                 上一页
               </Button>
-            )}
-            <Button onClick={nextPage}>{questions?.next == null ? '提交' : '下一页'}</Button>
+              <Button variant={questions?.next == null ? 'filled' : 'light'} onClick={nextPage} fullWidth>
+                {questions?.next == null ? '提交' : '下一页'}
+              </Button>
+            </Button.Group>
           </Stack>
+          <Space h={180} />
         </Container>
       </Stack>
     );
