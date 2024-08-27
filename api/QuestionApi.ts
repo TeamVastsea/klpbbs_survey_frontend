@@ -83,6 +83,33 @@ export default class QuestionApi {
         return result;
     };
 
+    public static fetchSingleQuestion = async (id: string) => {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow',
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/question/${id}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '获取单个问题失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to fetch question');
+        }
+
+        const result: QuestionProps = await res.json();
+
+        return result;
+    };
+
     public static fetchSingleQuestionAdmin = async (id: string) => {
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json');
