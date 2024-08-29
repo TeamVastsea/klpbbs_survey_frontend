@@ -120,6 +120,14 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
         return false;
     }
 
+    function save() {
+        setLoading(true);
+        JudgeApi.confirmJudge(answerId.toString()).then(() => {
+            setCompleted(true);
+            setLoading(false);
+        });
+    }
+
     return (
         <Stack>
             <Center>
@@ -212,7 +220,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                             </Button>
                         </Button.Group>
                     </Space>
-                    <Button color="green" disabled={completed} loading={loading}>
+                    <Button color="green" disabled={completed} loading={loading} onClick={save}>
                         提交
                     </Button>
                 </Stack>

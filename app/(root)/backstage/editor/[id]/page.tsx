@@ -243,18 +243,34 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                     ))}
                 </Stack>
                 <Space h={50} />
-                <Group>
-                    <Button onClick={createPage}>
-                        新建页面
-                    </Button>
-                    <Button onClick={fetchPrevPage}>
-                        上一页
-                    </Button>
-                    <Button onClick={fetchNextPage}>
-                        下一页
-                    </Button>
-                    <Button onClick={newQuestion}>新建问题</Button>
-                </Group>
+                <Stack>
+                    <Button.Group>
+                        <Button
+                          variant="light"
+                          disabled={questions?.previous == null}
+                            // loading={}
+                          onClick={fetchPrevPage}
+                          fullWidth
+                        >
+                            上一页
+                        </Button>
+                        <Button
+                          variant="light"
+                          disabled={questions?.next == null}
+                            // loading={loading}
+                          onClick={fetchNextPage}
+                          fullWidth
+                        >
+                            下一页
+                        </Button>
+                    </Button.Group>
+                    <Group>
+                        <Button onClick={createPage}>
+                            新建页面
+                        </Button>
+                        <Button onClick={newQuestion}>新建问题</Button>
+                    </Group>
+                </Stack>
                 {showNewQuestion && (
                     <>
                         <Space h={20} />
