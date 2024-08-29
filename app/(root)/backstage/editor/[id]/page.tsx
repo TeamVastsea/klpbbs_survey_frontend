@@ -264,7 +264,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                             下一页
                         </Button>
                     </Button.Group>
-                    <Group>
+                    <Group grow>
                         <Button onClick={createPage}>
                             新建页面
                         </Button>

@@ -53,6 +53,48 @@ export default class AnswerApi {
 
         return (await res.json()) as AnswerInfo;
     }
+
+    public static async searchAnswerList(page: number,
+                                         size: number | null,
+                                         survey: number | null,
+                                         user: number | null,
+                                         unfinishedOnly: boolean)
+        : Promise<PagedResponse<AnswerInfo>> {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            headers: myHeaders,
+            redirect: 'follow',
+        };
+
+        let queryString = `?page=${page}&only_unfinished=${unfinishedOnly}`;
+
+        if (size !== null) {
+            queryString += `&size=${size}`;
+        }
+        if (survey !== null) {
+            queryString += `&survey=${survey}`;
+        }
+        if (user !== null) {
+            queryString += `&user=${user}`;
+        }
+
+        const res = await fetch(`${SERVER_URL}/api/answer/search${queryString}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '获取问卷答案失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get answer');
+        }
+
+        return res.json();
+    }
 }
 
 export interface SaveRequest {
@@ -70,4 +112,9 @@ export interface AnswerInfo {
     score: null | number;
     create_time: string;
     completed: boolean;
+}
+
+export interface PagedResponse<T> {
+    records: T[];
+    total: number;
 }
