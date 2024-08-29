@@ -74,15 +74,14 @@ export default function Header({ opened, toggle }: HeaderProps) {
                 duration: 150,
             }}>
             <Menu.Target>
-                <Text
+                <Button
                   className={classes.link}
                   role="button"
                   tabIndex={0}
-                  aria-label={`你好, ${username}`}
-                  inherit
+                  variant="subtle"
                 >
                     你好, {username}
-                </Text>
+                </Button>
             </Menu.Target>
             <Menu.Dropdown>
                 <Menu.Item>
