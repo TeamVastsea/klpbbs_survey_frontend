@@ -95,7 +95,7 @@ export default function AsyncPagedSelect(props: SelectProps) {
                             size="sm"
                             onMouseDown={(event) => event.preventDefault()}
                             onClick={() => props.onChange('')}
-                            aria-label="Clear value"
+                            aria-label="清空搜索"
                           />
                       ) : (
                           <Combobox.Chevron />
@@ -105,7 +105,7 @@ export default function AsyncPagedSelect(props: SelectProps) {
                   rightSectionPointerEvents={props.value === '' ? 'none' : 'all'}
                   w={300}
                 >
-                    {props.value || <Input.Placeholder>Pick value</Input.Placeholder>}
+                    {props.value || <Input.Placeholder>选择问卷</Input.Placeholder>}
                 </InputBase>
             </Combobox.Target>
 
