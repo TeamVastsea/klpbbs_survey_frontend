@@ -5,7 +5,6 @@ import {
     Center,
     Checkbox,
     Group,
-    Input,
     LoadingOverlay,
     Pagination,
     Space,
@@ -17,10 +16,11 @@ import {
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
+import AsyncPagedSelect from '@/app/(root)/backstage/judge/components/AsyncPagedSelect';
 
 export default function SurveyPage() {
-    const [surveySearch, setSurveySearch] = useState<string | null>(null);
-    const [unconfirmedOnly, setUnconfirmedOnly] = useState(true);
+    const [surveySearch, setSurveySearch] = useState<string>('');
+    const [unconfirmedOnly, setUnconfirmedOnly] = useState(false);
     const [surveysLoading, setSurveysLoading] = useState(true);
     const [page, setPage] = useState(0);
     const [maxPage, setMaxPage] = useState(1);
@@ -57,17 +57,10 @@ export default function SurveyPage() {
                                     <Text>
                                         筛选问卷
                                     </Text>
-                                    {/*<Select*/}
-                                    {/*  limit={10}*/}
-                                    {/*  data={surveys.map(data => data.title)}*/}
-                                    {/*  clearable*/}
-                                    {/*/>*/}
-                                    {/* TODO: Surveys selection */}
-                                    <Input
-                                      value={surveySearch == null ? '' : surveySearch}
-                                      onChange={(e) => setSurveySearch(e.target.value)} />
+                                    <AsyncPagedSelect
+                                      value={surveySearch}
+                                      onChange={setSurveySearch} />
                                     <Checkbox
-                                      defaultChecked
                                       onChange={(e) =>
                                           setUnconfirmedOnly(e.currentTarget.checked)}
                                       label="仅显示未确认的问卷"
@@ -122,20 +115,6 @@ export default function SurveyPage() {
                                 </Box>
                             </Center>
                         </Stack>
-                        {/*<Input.Wrapper label="请输入 Answer ID 以跳转">*/}
-                        {/*    <Input*/}
-                        {/*      onChange={(e) => setAnswerId(parseInt(e.currentTarget.value, 10))}*/}
-                        {/*    />*/}
-                        {/*</Input.Wrapper>*/}
-                        {/*<Center>*/}
-                        {/*    <Button*/}
-                        {/*      onClick={() => {*/}
-                        {/*            router.push(`/backstage/judge/${answerId}`);*/}
-                        {/*        }}*/}
-                        {/*    >*/}
-                        {/*        确认跳转至 {answerId}*/}
-                        {/*    </Button>*/}
-                        {/*</Center>*/}
                     </Stack>
                 </Center>
             </Stack>
