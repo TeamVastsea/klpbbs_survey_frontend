@@ -62,12 +62,16 @@ export default function AsyncPagedSelect(props: SelectProps) {
             setCurrentPage(currentPage + 1);
             if (res.length === 0) {
                 setFullLoaded(true);
+                notifications.show({
+                    message: '没有更多了',
+                    color: 'red',
+                });
+            } else {
+                notifications.show({
+                    message: '获取到一批新的问卷',
+                    color: 'green',
+                });
             }
-
-            notifications.show({
-                message: '获取到一批新的',
-                color: 'green',
-            });
         });
     }
 
