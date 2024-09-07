@@ -110,7 +110,10 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
 
                         <Card.Section withBorder inheritPadding py="xs">
                             <Input.Wrapper label="描述">
-                                <ClickToEdit content={description} onSave={setDescription} alwaysShowBar />
+                                <ClickToEdit
+                                  content={description}
+                                  onSave={setDescription}
+                                  alwaysShowBar />
                             </Input.Wrapper>
                             {/*<Textarea*/}
                             {/*  label="描述"*/}
