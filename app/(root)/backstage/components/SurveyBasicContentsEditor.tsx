@@ -6,7 +6,7 @@ import {
     Card,
     Center,
     Group,
-    Image,
+    Image, Input,
     ScrollArea,
     Stack,
     Switch,
@@ -17,6 +17,7 @@ import { useState } from 'react';
 import { DateTimePicker } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
 import SurveyApi, { SurveyInfo } from '@/api/SurveyApi';
+import ClickToEdit from '@/components/ClickToEdit';
 
 // UTC -> CST (8 hours)
 const ADDED_TIME_STAMP = 28800000;
@@ -108,14 +109,17 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
                         </Card.Section>
 
                         <Card.Section withBorder inheritPadding py="xs">
-                            <Textarea
-                              label="描述"
-                              value={description}
-                              placeholder="请输入描述"
-                              onChange={(e) => setDescription(e.currentTarget.value)}
-                              mt="mt"
-                              autosize
-                            />
+                            <Input.Wrapper label="描述">
+                                <ClickToEdit content={description} onSave={setDescription} alwaysShowBar />
+                            </Input.Wrapper>
+                            {/*<Textarea*/}
+                            {/*  label="描述"*/}
+                            {/*  value={description}*/}
+                            {/*  placeholder="请输入描述"*/}
+                            {/*  onChange={(e) => setDescription(e.currentTarget.value)}*/}
+                            {/*  mt="mt"*/}
+                            {/*  autosize*/}
+                            {/*/>*/}
                         </Card.Section>
 
                         <Card.Section withBorder inheritPadding py="xs">

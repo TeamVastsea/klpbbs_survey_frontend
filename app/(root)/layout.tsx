@@ -2,13 +2,14 @@
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
+import '@mantine/tiptap/styles.css';
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { AppShell, ColorSchemeScript, MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { useDisclosure } from '@mantine/hooks';
 import { theme } from '@/theme';
-import '@mantine/notifications/styles.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { NavbarList } from '@/components/NavbarList';

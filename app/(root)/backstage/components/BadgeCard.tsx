@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, Image, Text, Badge, Button, Modal, ActionIcon, ScrollArea, Space, Group } from '@mantine/core';
+import { Card, Image, Text, Badge, Button, Modal, ActionIcon, Space, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSettings2 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -58,9 +58,7 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
 
                 <Space h="md" />
 
-                <ScrollArea h={150}>
-                    {survey.description}
-                </ScrollArea>
+                <iframe width="100%" style={{ border: 'none' }} title="111" srcDoc={survey.description} />
 
                 <Button
                   fullWidth
