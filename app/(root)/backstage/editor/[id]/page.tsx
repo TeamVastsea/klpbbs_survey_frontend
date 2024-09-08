@@ -1,32 +1,20 @@
 'use client';
 
-import { Button, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
+import { Center, Container, Stack, Text, Title } from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
+import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
+import { IconGripHorizontal } from '@tabler/icons-react';
+import cx from 'clsx';
 import Question from '@/app/(root)/backstage/editor/[id]/components/question';
-import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
-import QuestionApi, { Page, QuestionContent, QuestionProps } from '@/api/QuestionApi';
+import QuestionApi, { Page, QuestionProps } from '@/api/QuestionApi';
 import SurveyApi from '@/api/SurveyApi';
+import classes from './DndTable.module.css';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [questions, setQuestions] = useState<Page | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const questionsProps = useRef(new Map<string, QuestionProps>());
-    const [showNewQuestion, setShowNewQuestion] = useState(false);
-    const [newQuestionObject, setNewQuestionObject] = useState<QuestionProps>({
-        all_points: 0,
-        answer: '',
-        condition: '',
-        content: {
-            title: '',
-            content: '',
-        },
-        id: '',
-        required: false,
-        sub_points: 0,
-        type: 0,
-        values: [],
-    });
     const [done, setDone] = useState(false);
 
     const getAnswerSetter = (id: string) => (value: string) => {
@@ -41,39 +29,23 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         questionsProps.current.set(id, value);
     };
 
-    function checkAccess(ruleStr: string | null): boolean {
-        if (ruleStr == null) {
-            return true;
-        }
+    const handleDragEnd = (result: DropResult) => {
+        if (!result.destination) return;
 
-        const rules: Rule[] = JSON.parse(ruleStr);
+        const updatedQuestions = Array.from(questions?.content || []);
+        const [movedQuestion] = updatedQuestions.splice(result.source.index, 1);
+        updatedQuestions.splice(result.destination.index, 0, movedQuestion);
 
-        for (const rule of rules) {
-            const results = rule.conditions.map((condition) => {
-                if (condition.value instanceof Array) {
-                    const value: string[] = JSON.parse(getAnswerGetter(condition.id) || '[]');
-                    for (const v of condition.value) {
-                        if (value.includes(v)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
+        setQuestions((prev) => {
+            if (!prev) return prev;
+            return {
+                ...prev,
+                content: updatedQuestions,
+            };
+        });
 
-                return getAnswerGetter(condition.id) === JSON.stringify(condition.value);
-            });
-
-            if (
-                (rule.type === 'and' && results.every(Boolean)) ||
-                (rule.type === 'or' && results.some(Boolean)) ||
-                (rule.type === 'not' && !results.every(Boolean))
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+        savePage();
+    };
 
     useEffect(() => {
         SurveyApi.getSurvey(params.id).then((res) => {
@@ -81,255 +53,86 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         });
     }, [params.id]);
 
-    function fetchNextPage() {
-        savePage();
-        if (questions?.next == null) {
-            return;
-        }
-        setDone(false);
-        fetchPage(questions.next);
-    }
-
-    function fetchPrevPage() {
-        savePage();
-        if (questions?.previous == null) {
-            return;
-        }
-        setDone(false);
-        fetchPage(questions.previous);
-    }
-
     function fetchPage(page: string) {
-        QuestionApi.fetchPage(page)
-            .then((response) => {
-                setQuestions(response);
-            })
-            .then(() => {
-                setDone(true);
-            });
-    }
-
-    function newQuestion() {
-        setNewQuestionObject({
-            all_points: 0,
-            answer: '',
-            condition: '',
-            content: {
-                title: '',
-                content: '',
-            },
-            id: '',
-            required: false,
-            sub_points: 0,
-            type: 0,
-            values: [],
-        });
-
-        setShowNewQuestion(true);
-    }
-
-    function saveNewQuestion() {
-        let type = '';
-
-        if (newQuestionObject.type === 1) {
-            type = 'Text';
-        } else if (newQuestionObject.type === 2) {
-            type = 'SingleChoice';
-        } else if (newQuestionObject.type === 3) {
-            type = 'MultipleChoice';
-        }
-
-        const content: QuestionContent = {
-            content: newQuestionObject.content,
-            type,
-            values: newQuestionObject.values,
-            condition: newQuestionObject.condition
-                ? JSON.parse(newQuestionObject.condition).toString()
-                : undefined,
-            required: newQuestionObject.required,
-            answer: newQuestionObject.answer === undefined || newQuestionObject.answer === '' ?
-                undefined : {
-                answer: newQuestionObject.answer
-                    ? JSON.parse(newQuestionObject.answer).toString()
-                    : undefined,
-                all_points: newQuestionObject.all_points,
-                sub_points: newQuestionObject.sub_points,
-            },
-        };
-
-        QuestionApi.createQuestion(content).then((res) => {
-            notifications.show({
-                title: '创建题目成功',
-                message: '创建题目成功',
-                color: 'green',
-            });
-            setShowNewQuestion(false);
-
-            if (questions) {
-                const newContent = questions.content;
-                newContent?.push(res);
-                setQuestions({
-                    ...questions,
-                    content: newContent,
-                });
-            }
-
-            savePage();
+        QuestionApi.fetchPage(page).then((response) => {
+            setQuestions(response);
+            setDone(true);
         });
     }
 
     function savePage() {
-        if (questions == null) {
-            return;
-        }
+        if (questions == null) return;
 
-        savePageByPage(questions);
-    }
-
-    function savePageByPage(page: Page) {
-        QuestionApi.updatePage(page).then((res) => {
-            setQuestions(res);
-
+        QuestionApi.updatePage(questions).then(() => {
             notifications.show({
                 title: '保存页面成功',
-                message: '保存页面成功',
+                message: '页面顺序已更新',
                 color: 'green',
             });
         });
-    }
-
-    async function createPage() {
-        if (questions == null) {
-            return;
-        }
-
-        const newPageId: string = await QuestionApi.createPage();
-        const nextPage: Page | null = questions.next == null ?
-            null : await QuestionApi.fetchPage(questions.next);
-        const thisPage: Page = questions;
-        const newPage: Page = await QuestionApi.fetchPage(newPageId);
-
-        thisPage.next = newPageId;
-        savePageByPage(thisPage);
-        setQuestions(thisPage);
-
-        newPage.previous = thisPage.id;
-        newPage.next = nextPage?.id || null;
-        savePageByPage(newPage);
-
-        if (nextPage) {
-            nextPage.previous = newPageId;
-            savePageByPage(nextPage);
-        }
     }
 
     return (
         <Stack>
             <Center>
-                <Title>
-                    编辑页面
-                </Title>
+                <Title>编辑页面</Title>
             </Center>
-            {!done
-                ? (
-                    <Center>
-                        <Text size="md">
-                            Loading...
-                        </Text>
-                    </Center>
-                ) : (
-                    <>
-                        <Center>
-                            <Text>
-                                当前问卷: {params.id}
-                            </Text>
-                        </Center>
-                        <Container maw={1600} w="90%">
-                            <Stack>
-                                {questions?.content.map(question => (
-                                    <Question
-                                      id={question}
-                                      key={question}
-                                      value={getAnswerGetter(question)}
-                                      setValue={getAnswerSetter(question)}
-                                      setProps={getPropsSetter(question)}
-                                      checkAccess={checkAccess}
-                                    />
-                                ))}
-                            </Stack>
-                            <Space h={50} />
-                            <Stack>
-                                <Button.Group>
-                                    <Button
-                                      variant="light"
-                                      disabled={questions?.previous == null}
-                                        // loading={}
-                                      onClick={fetchPrevPage}
-                                      fullWidth
+            {!done ? (
+                <Center>
+                    <Text size="md">Loading...</Text>
+                </Center>
+            ) : (
+                <>
+                    <Container maw={1600} w="90%">
+                        <DragDropContext onDragEnd={handleDragEnd}>
+                            <Droppable droppableId="questions-list" direction="vertical">
+                                {(droppableProvided) => (
+                                    <Stack
+                                      {...droppableProvided.droppableProps}
+                                      ref={droppableProvided.innerRef}
                                     >
-                                        上一页
-                                    </Button>
-                                    <Button
-                                      variant="light"
-                                      disabled={questions?.next == null}
-                                        // loading={loading}
-                                      onClick={fetchNextPage}
-                                      fullWidth
-                                    >
-                                        下一页
-                                    </Button>
-                                </Button.Group>
-                                <Group grow>
-                                    <Button onClick={createPage}>
-                                        新建页面
-                                    </Button>
-                                    <Button onClick={newQuestion}>新建问题</Button>
-                                </Group>
-                            </Stack>
-                            {showNewQuestion && (
-                                <>
-                                    <Space h={20} />
-                                    <div
-                                      style={{
-                                            backgroundColor: 'rgba(185, 190, 185, 0.3)',
-                                            borderRadius: '10px',
-                                            padding: '10px',
-                                        }}
-                                    >
-                                        <EditCard
-                                          question={newQuestionObject}
-                                          setQuestion={setNewQuestionObject}
-                                          cancel={() => setShowNewQuestion(false)}
-                                          save={saveNewQuestion}
-                                        />
-                                    </div>
-                                </>
-                            )}
-                            <Space h={180} />
-                        </Container>
-                    </>
-                )
-            }
+                                        {questions?.content.map((questionId, index) => (
+                                            <Draggable
+                                              key={questionId}
+                                              draggableId={questionId}
+                                              index={index}
+                                            >
+                                                {(draggableProvided, snapshot) => (
+                                                    <div
+                                                      ref={draggableProvided.innerRef}
+                                                      {...draggableProvided.draggableProps}
+                                                      className={cx(classes.item, {
+                                                            [classes.itemDragging]:
+                                                            snapshot.isDragging,
+                                                        })}
+                                                    >
+                                                        <Stack>
+                                                            <div
+                                                              {...draggableProvided.dragHandleProps}
+                                                              className={classes.dragHandle}
+                                                            >
+                                                                <IconGripHorizontal />
+                                                            </div>
+                                                            <Question
+                                                              id={questionId}
+                                                              value={getAnswerGetter(questionId)}
+                                                              setValue={getAnswerSetter(questionId)}
+                                                              setProps={getPropsSetter(questionId)}
+                                                              checkAccess={() => true}
+                                                            />
+                                                        </Stack>
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                        ))}
+                                        {droppableProvided.placeholder}
+                                    </Stack>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
+                    </Container>
+                </>
+            )}
         </Stack>
     );
-}
-
-export interface PageResponse {
-    id: string;
-    title: string;
-    budge: string;
-    content: string[];
-    next: string | null;
-}
-
-type ConditionType = 'and' | 'or' | 'not';
-
-interface Condition {
-    id: string;
-    value: any;
-}
-
-interface Rule {
-    type: ConditionType;
-    conditions: Condition[];
 }

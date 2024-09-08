@@ -137,7 +137,7 @@ export default class QuestionApi {
         return result;
     };
 
-    public static updatePage = async (input: Page): Promise<Page> => {
+    public static updatePage = async (input: Page): Promise<String> => {
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json');
         myHeaders.append('token', Cookie.getCookie('token'));
@@ -162,7 +162,7 @@ export default class QuestionApi {
             throw new Error('Failed to update question');
         }
 
-        return res.json();
+        return res.text();
     };
 
     public static updateQuestion = async (input: StringifyQuestionProps) => {
