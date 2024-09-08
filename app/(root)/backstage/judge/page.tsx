@@ -59,7 +59,8 @@ export default function SurveyPage() {
                                     </Text>
                                     <AsyncPagedSelect
                                       value={surveySearch}
-                                      onChange={setSurveySearch} />
+                                      onChange={setSurveySearch}
+                                    />
                                     <Checkbox
                                       onChange={(e) =>
                                           setUnconfirmedOnly(e.currentTarget.checked)}

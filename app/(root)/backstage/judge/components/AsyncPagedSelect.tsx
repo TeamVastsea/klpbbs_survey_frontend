@@ -13,8 +13,24 @@ import {
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import SurveyApi, { SurveyInfo } from '@/api/SurveyApi';
+import DOMPurify from 'dompurify';
 
 function Options(props: SurveyInfo) {
+    const descriptionConverter = (htmlCtx: string, maxLength: number) => {
+        const cleanHtmlCtx = DOMPurify.sanitize(htmlCtx);
+
+        const tempEle = document.createElement('div');
+        tempEle.innerHTML = cleanHtmlCtx;
+
+        const contents = tempEle.innerText.trim().replace(/\s+/g, ' ');
+
+        if (contents.length > maxLength) {
+            return `${contents.slice(0, maxLength)}...`;
+        }
+
+        return contents;
+    };
+
     return (
         <Group>
             <Code>
@@ -22,7 +38,7 @@ function Options(props: SurveyInfo) {
             </Code>
             <Stack gap="xs">
                 <Text fz="sm" fw={500}>{props.title}</Text>
-                <Text fz="xs" opacity={0.6}>{props.description}</Text>
+                <Text fz="xs" opacity={0.6}>{descriptionConverter(props.description, 30)}</Text>
             </Stack>
         </Group>
     );
