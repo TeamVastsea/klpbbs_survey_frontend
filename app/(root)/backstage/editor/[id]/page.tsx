@@ -232,13 +232,12 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             </Center>
             {!done
                 ? (
-                    <>
-                        <Text size="1000px">
-                            12345
+                    <Center>
+                        <Text size="md">
+                            Loading...
                         </Text>
-                    </>
-                )
-                : (
+                    </Center>
+                ) : (
                     <>
                         <Center>
                             <Text>
