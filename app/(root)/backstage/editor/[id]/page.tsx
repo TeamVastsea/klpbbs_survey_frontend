@@ -27,6 +27,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         type: 0,
         values: [],
     });
+    const [done, setDone] = useState(false);
 
     const getAnswerSetter = (id: string) => (value: string) => {
         const newAnswers = new Map(answers);
@@ -85,6 +86,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         if (questions?.next == null) {
             return;
         }
+        setDone(false);
         fetchPage(questions.next);
     }
 
@@ -93,6 +95,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         if (questions?.previous == null) {
             return;
         }
+        setDone(false);
         fetchPage(questions.previous);
     }
 
@@ -100,6 +103,9 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         QuestionApi.fetchPage(page)
             .then((response) => {
                 setQuestions(response);
+            })
+            .then(() => {
+                setDone(true);
             });
     }
 
@@ -224,74 +230,87 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                     编辑页面
                 </Title>
             </Center>
-            <Center>
-                <Text>
-                    当前问卷: {params.id}
-                </Text>
-            </Center>
-            <Container maw={1600} w="90%">
-                <Stack>
-                    {questions?.content.map(question => (
-                        <Question
-                          id={question}
-                          key={question}
-                          value={getAnswerGetter(question)}
-                          setValue={getAnswerSetter(question)}
-                          setProps={getPropsSetter(question)}
-                          checkAccess={checkAccess}
-                        />
-                    ))}
-                </Stack>
-                <Space h={50} />
-                <Stack>
-                    <Button.Group>
-                        <Button
-                          variant="light"
-                          disabled={questions?.previous == null}
-                            // loading={}
-                          onClick={fetchPrevPage}
-                          fullWidth
-                        >
-                            上一页
-                        </Button>
-                        <Button
-                          variant="light"
-                          disabled={questions?.next == null}
-                            // loading={loading}
-                          onClick={fetchNextPage}
-                          fullWidth
-                        >
-                            下一页
-                        </Button>
-                    </Button.Group>
-                    <Group grow>
-                        <Button onClick={createPage}>
-                            新建页面
-                        </Button>
-                        <Button onClick={newQuestion}>新建问题</Button>
-                    </Group>
-                </Stack>
-                {showNewQuestion && (
+            {!done
+                ? (
                     <>
-                        <Space h={20} />
-                        <div
-                          style={{
-                                backgroundColor: 'rgba(185, 190, 185, 0.3)',
-                                borderRadius: '10px',
-                                padding: '10px',
-                            }}
-                        >
-                            <EditCard
-                              question={newQuestionObject}
-                              setQuestion={setNewQuestionObject}
-                              cancel={() => setShowNewQuestion(false)}
-                              save={saveNewQuestion}
-                            />
-                        </div>
+                        <Text size="1000px">
+                            12345
+                        </Text>
                     </>
-                )}
-                <Space h={180} />
-            </Container>
+                )
+                : (
+                    <>
+                        <Center>
+                            <Text>
+                                当前问卷: {params.id}
+                            </Text>
+                        </Center>
+                        <Container maw={1600} w="90%">
+                            <Stack>
+                                {questions?.content.map(question => (
+                                    <Question
+                                      id={question}
+                                      key={question}
+                                      value={getAnswerGetter(question)}
+                                      setValue={getAnswerSetter(question)}
+                                      setProps={getPropsSetter(question)}
+                                      checkAccess={checkAccess}
+                                    />
+                                ))}
+                            </Stack>
+                            <Space h={50} />
+                            <Stack>
+                                <Button.Group>
+                                    <Button
+                                      variant="light"
+                                      disabled={questions?.previous == null}
+                                        // loading={}
+                                      onClick={fetchPrevPage}
+                                      fullWidth
+                                    >
+                                        上一页
+                                    </Button>
+                                    <Button
+                                      variant="light"
+                                      disabled={questions?.next == null}
+                                        // loading={loading}
+                                      onClick={fetchNextPage}
+                                      fullWidth
+                                    >
+                                        下一页
+                                    </Button>
+                                </Button.Group>
+                                <Group grow>
+                                    <Button onClick={createPage}>
+                                        新建页面
+                                    </Button>
+                                    <Button onClick={newQuestion}>新建问题</Button>
+                                </Group>
+                            </Stack>
+                            {showNewQuestion && (
+                                <>
+                                    <Space h={20} />
+                                    <div
+                                      style={{
+                                            backgroundColor: 'rgba(185, 190, 185, 0.3)',
+                                            borderRadius: '10px',
+                                            padding: '10px',
+                                        }}
+                                    >
+                                        <EditCard
+                                          question={newQuestionObject}
+                                          setQuestion={setNewQuestionObject}
+                                          cancel={() => setShowNewQuestion(false)}
+                                          save={saveNewQuestion}
+                                        />
+                                    </div>
+                                </>
+                            )}
+                            <Space h={180} />
+                        </Container>
+                    </>
+                )
+            }
         </Stack>
     );
 }
