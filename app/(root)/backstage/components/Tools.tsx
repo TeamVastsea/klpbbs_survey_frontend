@@ -49,7 +49,7 @@ export default function Tools() {
         >
             <Modal opened={openedModal} onClose={close} title="确认操作">
                 <Text>您确定要执行此操作吗？如果您正在编辑或批改问卷，建议先保存您的进度，以免丢失重要的修改内容。确保一切都已妥当后再继续操作哦！</Text>
-                <Group position="center" mt="md" w="100%">
+                <Group p="center" mt="md" w="100%">
                     <Button color="blue" onClick={handleConfirm}>是</Button>
                     <Button color="red" onClick={close}>否</Button>
                 </Group>
