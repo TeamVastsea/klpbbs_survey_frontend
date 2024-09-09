@@ -33,16 +33,34 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         values: [],
     });
 
+    function updateMap<K, V>(
+        map: Map<K, V>,
+        key: K,
+        value?: V,
+        setMap?: React.Dispatch<React.SetStateAction<Map<K, V>>> | React.MutableRefObject<Map<K, V>>
+    ): V | undefined {
+        if (setMap) {
+            if (typeof setMap === 'function') {
+                const newMap = new Map(map);
+                newMap.set(key, value as V);
+                setMap(newMap);
+            } else {
+                // 对 ref 进行更新
+                setMap.current.set(key, value as V);
+            }
+            return undefined;
+        }
+        return map.get(key);
+    }
+
     const getAnswerSetter = (id: string) => (value: string) => {
-        const newAnswers = new Map(answers);
-        newAnswers.set(id, value);
-        setAnswers(newAnswers);
+        updateMap(answers, id, value, setAnswers);
     };
 
-    const getAnswerGetter = (id: string) => answers.get(id) || undefined;
+    const getAnswerGetter = (id: string) => updateMap(answers, id, undefined);
 
     const getPropsSetter = (id: string) => (value: QuestionProps) => {
-        questionsProps.current.set(id, value);
+        updateMap(questionsProps.current, id, value, questionsProps);
     };
 
     const handleDragEnd = (result: DropResult) => {
