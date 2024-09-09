@@ -1,10 +1,10 @@
 'use client';
 
-import {useEffect, useState} from 'react';
-import {notifications} from '@mantine/notifications';
-import {Stack} from '@mantine/core';
-import QuestionApi, {QuestionProps, StringifyQuestionProps} from '@/api/QuestionApi';
-import {PageQuestionProps} from '@/app/(root)/survey/[id]/components/question';
+import { useEffect, useState } from 'react';
+import { notifications } from '@mantine/notifications';
+import { Stack } from '@mantine/core';
+import QuestionApi, { QuestionProps, StringifyQuestionProps } from '@/api/QuestionApi';
+import { PageQuestionProps } from '@/app/(root)/survey/[id]/components/question';
 import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
 
 export default function Question(props: PageQuestionProps) {
@@ -61,7 +61,7 @@ export default function Question(props: PageQuestionProps) {
     return (
         <Stack gap="xs">
             {question ?
-                <EditCard question={question} setQuestion={setQuestion} save={save}/> : null}
+                <EditCard question={question} setQuestion={setQuestion} save={save} /> : null}
         </Stack>
     );
 }
