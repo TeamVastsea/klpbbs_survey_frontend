@@ -244,6 +244,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                           style={{
                                 backgroundColor: 'rgba(185, 190, 185, 0.3)',
                             }}
+                          radius="md"
                         >
                             <EditCard
                               question={newQuestionObject}
