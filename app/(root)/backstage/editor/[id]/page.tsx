@@ -1,13 +1,14 @@
 'use client';
 
-import { Center, Container, Stack, Text, Title } from '@mantine/core';
+import { Center, Container, Stack, Text, Title, Button, Space, Group } from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
 import { IconGripHorizontal } from '@tabler/icons-react';
 import cx from 'clsx';
 import Question from '@/app/(root)/backstage/editor/[id]/components/question';
-import QuestionApi, { Page, QuestionProps } from '@/api/QuestionApi';
+import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
+import QuestionApi, { Page, QuestionContent, QuestionProps } from '@/api/QuestionApi';
 import SurveyApi from '@/api/SurveyApi';
 import classes from './DndTable.module.css';
 
@@ -16,6 +17,21 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const questionsProps = useRef(new Map<string, QuestionProps>());
     const [done, setDone] = useState(false);
+    const [showNewQuestion, setShowNewQuestion] = useState(false);
+    const [newQuestionObject, setNewQuestionObject] = useState<QuestionProps>({
+        all_points: 0,
+        answer: '',
+        condition: '',
+        content: {
+            title: '',
+            content: '',
+        },
+        id: '',
+        required: false,
+        sub_points: 0,
+        type: 0,
+        values: [],
+    });
 
     const getAnswerSetter = (id: string) => (value: string) => {
         const newAnswers = new Map(answers);
@@ -69,6 +85,75 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 message: '页面顺序已更新',
                 color: 'green',
             });
+        });
+    }
+
+    function newQuestion() {
+        setNewQuestionObject({
+            all_points: 0,
+            answer: '',
+            condition: '',
+            content: {
+                title: '',
+                content: '',
+            },
+            id: '',
+            required: false,
+            sub_points: 0,
+            type: 0,
+            values: [],
+        });
+
+        setShowNewQuestion(true);
+    }
+
+    function saveNewQuestion() {
+        let type = '';
+
+        if (newQuestionObject.type === 1) {
+            type = 'Text';
+        } else if (newQuestionObject.type === 2) {
+            type = 'SingleChoice';
+        } else if (newQuestionObject.type === 3) {
+            type = 'MultipleChoice';
+        }
+
+        const content: QuestionContent = {
+            content: newQuestionObject.content,
+            type,
+            values: newQuestionObject.values,
+            condition: newQuestionObject.condition
+                ? JSON.parse(newQuestionObject.condition).toString()
+                : undefined,
+            required: newQuestionObject.required,
+            answer: newQuestionObject.answer === undefined || newQuestionObject.answer === '' ?
+                undefined : {
+                    answer: newQuestionObject.answer
+                        ? JSON.parse(newQuestionObject.answer).toString()
+                        : undefined,
+                    all_points: newQuestionObject.all_points,
+                    sub_points: newQuestionObject.sub_points,
+                },
+        };
+
+        QuestionApi.createQuestion(content).then((res) => {
+            notifications.show({
+                title: '创建题目成功',
+                message: '创建题目成功',
+                color: 'green',
+            });
+            setShowNewQuestion(false);
+
+            if (questions) {
+                const newContent = questions.content;
+                newContent?.push(res);
+                setQuestions({
+                    ...questions,
+                    content: newContent,
+                });
+            }
+
+            savePage();
         });
     }
 
@@ -130,6 +215,32 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                                 )}
                             </Droppable>
                         </DragDropContext>
+
+                        <Space h={20} />
+
+                        <Group grow>
+                            <Button onClick={newQuestion}>新建问题</Button>
+                        </Group>
+
+                        {showNewQuestion && (
+                            <>
+                                <Space h={20} />
+                                <div
+                                  style={{
+                                        backgroundColor: 'rgba(185, 190, 185, 0.3)',
+                                        borderRadius: '10px',
+                                        padding: '10px',
+                                    }}
+                                >
+                                    <EditCard
+                                      question={newQuestionObject}
+                                      setQuestion={setNewQuestionObject}
+                                      cancel={() => setShowNewQuestion(false)}
+                                      save={saveNewQuestion}
+                                    />
+                                </div>
+                            </>
+                        )}
                     </Container>
                 </>
             )}
