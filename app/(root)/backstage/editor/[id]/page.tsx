@@ -1,6 +1,6 @@
 'use client';
 
-import { Center, Container, Stack, Text, Title, Button, Space, Group } from '@mantine/core';
+import { ActionIcon, Button, Card, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
@@ -185,82 +185,75 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                     <Text size="md">加载中...</Text>
                 </Center>
             ) : (
-                <>
-                    <Container maw={1600} w="90%">
-                        <DragDropContext onDragEnd={handleDragEnd}>
-                            <Droppable droppableId="questions-list" direction="vertical">
-                                {(droppableProvided) => (
-                                    <Stack
-                                      {...droppableProvided.droppableProps}
-                                      ref={droppableProvided.innerRef}
-                                    >
-                                        {questions?.content.map((questionId, index) => (
-                                            <Draggable
-                                              key={questionId}
-                                              draggableId={questionId}
-                                              index={index}
-                                            >
-                                                {(draggableProvided, snapshot) => (
-                                                    <div
-                                                      ref={draggableProvided.innerRef}
-                                                      {...draggableProvided.draggableProps}
-                                                      className={cx(classes.item, {
-                                                            [classes.itemDragging]:
-                                                            snapshot.isDragging,
-                                                        })}
-                                                    >
-                                                        <Stack>
-                                                            <div
-                                                              {...draggableProvided.dragHandleProps}
-                                                              className={classes.dragHandle}
-                                                            >
-                                                                <IconGripHorizontal />
-                                                            </div>
-                                                            <Question
-                                                              id={questionId}
-                                                              value={getAnswerGetter(questionId)}
-                                                              setValue={getAnswerSetter(questionId)}
-                                                              setProps={getPropsSetter(questionId)}
-                                                              checkAccess={() => true}
-                                                            />
-                                                        </Stack>
-                                                    </div>
-                                                )}
-                                            </Draggable>
-                                        ))}
-                                        {droppableProvided.placeholder}
-                                    </Stack>
-                                )}
-                            </Droppable>
-                        </DragDropContext>
-
-                        <Space h={20} />
-
-                        <Group grow>
-                            <Button onClick={newQuestion}>新建问题</Button>
-                        </Group>
-
-                        {showNewQuestion && (
-                            <>
-                                <Space h={20} />
-                                <div
-                                  style={{
-                                        backgroundColor: 'rgba(185, 190, 185, 0.3)',
-                                        borderRadius: '10px',
-                                        padding: '10px',
-                                    }}
+                <Container maw={1600} w="90%">
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                        <Droppable droppableId="questions-list" direction="vertical">
+                            {(droppableProvided) => (
+                                <Stack
+                                  {...droppableProvided.droppableProps}
+                                  ref={droppableProvided.innerRef}
                                 >
-                                    <EditCard
-                                      question={newQuestionObject}
-                                      setQuestion={setNewQuestionObject}
-                                      cancel={() => setShowNewQuestion(false)}
-                                      save={saveNewQuestion}
-                                    />
-                                </div>
-                            </>
-                        )}
-                    </Container>
-                </>
+                                    {questions?.content.map((questionId, index) => (
+                                        <Draggable
+                                          key={questionId}
+                                          draggableId={questionId}
+                                          index={index}
+                                        >
+                                            {(draggableProvided, snapshot) => (
+                                                <Card
+                                                  ref={draggableProvided.innerRef}
+                                                  {...draggableProvided.draggableProps}
+                                                  className={cx(classes.item, {
+                                                        [classes.itemDragging]:
+                                                        snapshot.isDragging,
+                                                    })}
+                                                  withBorder
+                                                  radius="md"
+                                                >
+                                                    <Stack>
+                                                        <ActionIcon {...draggableProvided.dragHandleProps} variant="subtle" color="gray">
+                                                            <IconGripHorizontal />
+                                                        </ActionIcon>
+                                                        <Question
+                                                          id={questionId}
+                                                          value={getAnswerGetter(questionId)}
+                                                          setValue={getAnswerSetter(questionId)}
+                                                          setProps={getPropsSetter(questionId)}
+                                                          checkAccess={() => true}
+                                                        />
+                                                    </Stack>
+                                                </Card>
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {droppableProvided.placeholder}
+                                </Stack>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
+
+                    <Space h={20} />
+
+                    <Group grow>
+                        <Button onClick={newQuestion}>新建问题</Button>
+                    </Group>
+                    <Space h={20} />
+
+                    {showNewQuestion && (
+                        <Card
+                          style={{
+                                backgroundColor: 'rgba(185, 190, 185, 0.3)',
+                            }}
+                        >
+                            <EditCard
+                              question={newQuestionObject}
+                              setQuestion={setNewQuestionObject}
+                              cancel={() => setShowNewQuestion(false)}
+                              save={saveNewQuestion}
+                            />
+                        </Card>
+                    )}
+                </Container>
             )}
         </Stack>
     );
