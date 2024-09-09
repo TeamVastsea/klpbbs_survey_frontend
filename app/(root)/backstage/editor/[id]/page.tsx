@@ -16,7 +16,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     const [questions, setQuestions] = useState<Page | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const questionsProps = useRef(new Map<string, QuestionProps>());
-    const [done, setDone] = useState(false);
+    const [done, setDone] = useState(false); // 控制加载状态
     const [showNewQuestion, setShowNewQuestion] = useState(false);
     const [newQuestionObject, setNewQuestionObject] = useState<QuestionProps>({
         all_points: 0,
@@ -45,7 +45,6 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 newMap.set(key, value as V);
                 setMap(newMap);
             } else {
-                // 对 ref 进行更新
                 setMap.current.set(key, value as V);
             }
             return undefined;
@@ -82,6 +81,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     };
 
     useEffect(() => {
+        setDone(false); // 在开始请求数据时将 done 设为 false
         SurveyApi.getSurvey(params.id).then((res) => {
             fetchPage(res.page);
         });
@@ -90,7 +90,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     function fetchPage(page: string) {
         QuestionApi.fetchPage(page).then((response) => {
             setQuestions(response);
-            setDone(true);
+            setDone(true); // 数据加载完成后，将 done 设为 true
         });
     }
 
@@ -182,7 +182,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             </Center>
             {!done ? (
                 <Center>
-                    <Text size="md">Loading...</Text>
+                    <Text size="md">加载中...</Text>
                 </Center>
             ) : (
                 <>
