@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconSettings2 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import SurveyBasicContentsEditor from './SurveyBasicContentsEditor'; // Correct import
+import SurveyBasicContentsEditor from './SurveyBasicContentsEditor';
 import { SurveyInfo } from '@/api/SurveyApi';
 
 export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardProps) {
@@ -74,7 +74,7 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
 
             <Modal opened={opened} onClose={close} title={`编辑 ${survey.title} 基本信息`}>
                 <SurveyBasicContentsEditor
-                  survey={editingSurvey} // Pass only `survey`
+                  survey={editingSurvey}
                 />
             </Modal>
         </>
