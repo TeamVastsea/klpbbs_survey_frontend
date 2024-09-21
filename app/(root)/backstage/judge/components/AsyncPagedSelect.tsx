@@ -13,23 +13,15 @@ import {
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import SurveyApi, { SurveyInfo } from '@/api/SurveyApi';
-import DOMPurify from 'dompurify';
 
 function Options(props: SurveyInfo) {
-    const descriptionConverter = (htmlCtx: string, maxLength: number) => {
-        const cleanHtmlCtx = DOMPurify.sanitize(htmlCtx);
+    function removeTags(input: string): string {
+        return input.replace(/<[^>]*>/g, '');
+    }
 
-        const tempEle = document.createElement('div');
-        tempEle.innerHTML = cleanHtmlCtx;
-
-        const contents = tempEle.innerText.trim().replace(/\s+/g, ' ');
-
-        if (contents.length > maxLength) {
-            return `${contents.slice(0, maxLength)}...`;
-        }
-
-        return contents;
-    };
+    function cutStringByLength(input: string, length: number): string {
+        return input.length > length ? `${input.substring(0, length)}...` : input;
+    }
 
     return (
         <Group>
@@ -38,7 +30,7 @@ function Options(props: SurveyInfo) {
             </Code>
             <Stack gap="xs">
                 <Text fz="sm" fw={500}>{props.title}</Text>
-                <Text fz="xs" opacity={0.6}>{descriptionConverter(props.description, 30)}</Text>
+                <Text fz="xs" opacity={0.6}>{cutStringByLength(removeTags(props.description), 20)}</Text>
             </Stack>
         </Group>
     );
