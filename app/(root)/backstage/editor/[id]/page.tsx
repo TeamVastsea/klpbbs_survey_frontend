@@ -87,22 +87,65 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         });
     }, [params.id]);
 
-    function fetchPage(page: string) {
+    function fetchPage(page: string | undefined | null) {
+        if (page == null) {
+            return;
+        }
+        savePage();
+        setDone(false);
+
         QuestionApi.fetchPage(page).then((response) => {
             setQuestions(response);
             setDone(true);
         });
     }
 
-    function savePage() {
-        if (questions == null) return;
+    async function createPage() {
+        if (questions == null) {
+            return;
+        }
+        // create new page
+        const newPageId: string = await QuestionApi.createPage();
+        // get all pages
+        const nextPage: Page | null = questions.next == null ?
+          null : await QuestionApi.fetchPage(questions.next);
+        const thisPage: Page = questions;
+        const newPage: Page = await QuestionApi.fetchPage(newPageId);
+        // update index
+        thisPage.next = newPageId;
+        newPage.next = nextPage?.id || null;
+        newPage.previous = thisPage.id;
+        savePageByPage(thisPage);
+        setQuestions(thisPage);
+        savePageByPage(newPage);
+        if (nextPage) {
+            nextPage.previous = newPageId;
+            savePageByPage(nextPage);
+        }
 
-        QuestionApi.updatePage(questions).then(() => {
-            notifications.show({
-                title: '保存页面成功',
-                message: '页面顺序已更新',
-                color: 'green',
-            });
+        notifications.show({
+            title: '新建页面成功',
+            message: '新建页面成功',
+            color: 'green',
+        });
+    }
+
+    function savePage() {
+        if (questions == null) {
+            return;
+        }
+
+        savePageByPage(questions, true);
+    }
+    function savePageByPage(page: Page, showNotification: boolean = false) {
+        QuestionApi.updatePage(page).then(() => {
+            if (showNotification) {
+                notifications.show({
+                    title: '保存页面成功',
+                    message: '保存页面成功',
+                    color: 'green',
+                });
+            }
         });
     }
 
@@ -134,6 +177,13 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             type = 'SingleChoice';
         } else if (newQuestionObject.type === 3) {
             type = 'MultipleChoice';
+        } else {
+            notifications.show({
+                title: '题目类型错误',
+                message: '请选择题目类型',
+                color: 'red',
+            });
+            return;
         }
 
         const content: QuestionContent = {
@@ -234,9 +284,34 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
                     <Space h={20} />
 
-                    <Group grow>
-                        <Button onClick={newQuestion}>新建问题</Button>
-                    </Group>
+                    <Stack>
+                        <Button.Group>
+                            <Button
+                              variant="light"
+                              disabled={questions?.previous == null}
+                              // loading={}
+                              onClick={() => fetchPage(questions?.previous)}
+                              fullWidth
+                            >
+                                上一页
+                            </Button>
+                            <Button
+                              variant="light"
+                              disabled={questions?.next == null}
+                              // loading={loading}
+                              onClick={() => fetchPage(questions?.next)}
+                              fullWidth
+                            >
+                                下一页
+                            </Button>
+                        </Button.Group>
+                        <Group grow>
+                            <Button onClick={createPage}>
+                                新建页面
+                            </Button>
+                            <Button onClick={newQuestion}>新建问题</Button>
+                        </Group>
+                    </Stack>
                     <Space h={20} />
 
                     {showNewQuestion && (
