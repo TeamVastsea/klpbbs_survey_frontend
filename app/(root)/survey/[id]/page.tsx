@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Center, Container, Space, Stack, Title } from '@mantine/core';
+import { Button, Container, Space, Stack } from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -42,9 +42,11 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
         let flag = false;
         for (const q of questions.content || []) {
-            if ((!answers.has(q) || answers.get(q) === undefined)
-                && checkAccess(questionsProps.current.get(q)?.condition || null)
-                && questionsProps.current.get(q)?.required) {
+            if (
+                (!answers.has(q) || answers.get(q) === undefined) &&
+                checkAccess(questionsProps.current.get(q)?.condition || null) &&
+                questionsProps.current.get(q)?.required
+            ) {
                 flag = true;
             }
         }
@@ -57,10 +59,9 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return false;
         }
 
-        AnswerApi.submitAnswer(raw)
-            .then((result) => {
-                answerId.current = result.toString();
-            });
+        AnswerApi.submitAnswer(raw).then((result) => {
+            answerId.current = result.toString();
+        });
 
         return true;
     }
@@ -140,9 +141,11 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 return getAnswerGetter(condition.id) === JSON.stringify(condition.value);
             });
 
-            if ((rule.type === 'and' && results.every(Boolean)) ||
+            if (
+                (rule.type === 'and' && results.every(Boolean)) ||
                 (rule.type === 'or' && results.some(Boolean)) ||
-                (rule.type === 'not' && !results.every(Boolean))) {
+                (rule.type === 'not' && !results.every(Boolean))
+            ) {
                 return true;
             }
         }
@@ -157,65 +160,71 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return;
         }
 
-        SurveyApi.getSurvey(params.id)
-            .then((result) => {
-                setPage(result.page);
-            }
-        );
+        SurveyApi.getSurvey(params.id).then((result) => {
+            setPage(result.page);
+        });
     }, [params.id]);
 
     function setPage(page: string) {
-        QuestionApi.fetchPage(page)
-            .then((response) => {
-                const pageResponse: PageResponse = {
-                    previous: response.previous,
-                    id: response.id,
-                    title: response.title,
-                    budge: '',
-                    content: response.content,
-                    next: response.next,
-                };
-                setQuestions(pageResponse);
-            });
+        QuestionApi.fetchPage(page).then((response) => {
+            const pageResponse: PageResponse = {
+                previous: response.previous,
+                id: response.id,
+                title: response.title,
+                budge: '',
+                content: response.content,
+                next: response.next,
+            };
+            setQuestions(pageResponse);
+        });
     }
 
     return (
-      <Stack>
-        <Container maw={1600} w="90%">
-          <Stack>
-            <Center>
-              <Title>{questions?.title}</Title>
-            </Center>
-            {questions?.content.map((question) => (
-              <Question
-                id={question}
-                key={question}
-                value={getAnswerGetter(question)}
-                setValue={getAnswerSetter(question)}
-                setProps={getPropsSetter(question)}
-                checkAccess={checkAccess}
-              />
-            ))}
-          </Stack>
-          <Space h={50} />
-          <Stack>
-            <Button.Group>
-              <Button
-                variant="light"
-                disabled={questions?.previous == null}
-                onClick={prevPage}
-                fullWidth
-              >
-                上一页
-              </Button>
-              <Button variant={questions?.next == null ? 'filled' : 'light'} onClick={nextPage} fullWidth>
-                {questions?.next == null ? '提交' : '下一页'}
-              </Button>
-            </Button.Group>
-          </Stack>
-          <Space h={180} />
-        </Container>
-      </Stack>
+        <Stack>
+            <Container maw={1600} w="90%">
+                <Stack>
+                    <Space h={50} />
+                    <iframe
+                      width="100%"
+                      style={{ border: 'none' }}
+                      title="title"
+                      srcDoc={questions?.title}
+                      sandbox="allow-popups"
+                    />
+                    {questions?.content.map((question) => (
+                        <Question
+                          id={question}
+                          key={question}
+                          value={getAnswerGetter(question)}
+                          setValue={getAnswerSetter(question)}
+                          setProps={getPropsSetter(question)}
+                          checkAccess={checkAccess}
+                        />
+                    ))}
+                </Stack>
+                <Space h={50} />
+                <Stack>
+                    <Button.Group>
+                        <Button
+                          variant="light"
+                          disabled={questions?.previous == null}
+                          onClick={prevPage}
+                          fullWidth
+                        >
+                            上一页
+                        </Button>
+                        <Button
+                          variant={questions?.next == null ? 'filled' : 'light'}
+                          onClick={nextPage}
+                          fullWidth
+                        >
+                            {questions?.next == null ? '提交' : '下一页'}
+                        </Button>
+                    </Button.Group>
+                </Stack>
+                <Space h={180} />
+            </Container>
+        </Stack>
     );
 }
 

@@ -58,7 +58,7 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
 
                 <Space h="md" />
 
-                <iframe width="100%" style={{ border: 'none' }} title="111" srcDoc={survey.description} sandbox="allow-popups" />
+                <iframe width="100%" style={{ border: 'none' }} title="description" srcDoc={survey.description} sandbox="allow-popups" />
 
                 <Button
                   fullWidth

@@ -11,6 +11,7 @@ import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
 import QuestionApi, { Page, QuestionContent, QuestionProps } from '@/api/QuestionApi';
 import SurveyApi from '@/api/SurveyApi';
 import classes from './DndTable.module.css';
+import ClickToEdit from '@/components/ClickToEdit';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [questions, setQuestions] = useState<Page | undefined>(undefined);
@@ -236,6 +237,16 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 </Center>
             ) : (
                 <Container maw={1600} w="90%">
+                    <ClickToEdit
+                      alwaysShowBar
+                      content={questions?.title || ''}
+                      onSave={title => {
+                        if (questions) {
+                            const newQuestions = { ...questions, title };
+                            setQuestions(newQuestions);
+                            savePageByPage(questions);
+                        }
+                    }} />
                     <DragDropContext onDragEnd={handleDragEnd}>
                         <Droppable droppableId="questions-list" direction="vertical">
                             {(droppableProvided) => (
@@ -310,6 +321,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                                 新建页面
                             </Button>
                             <Button onClick={newQuestion}>新建问题</Button>
+                            <Button onClick={savePage}>保存页面</Button>
                         </Group>
                     </Stack>
                     <Space h={20} />
