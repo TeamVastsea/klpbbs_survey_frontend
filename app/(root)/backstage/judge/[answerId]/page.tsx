@@ -53,6 +53,9 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                 setCompleted(res.completed);
                 setJudgeTime(res.judge_time);
                 setJudgeId(res.judge);
+                if (res.judge === 0) {
+                    return Promise.resolve({ username: '' });
+                }
                 return AdminApi.getAdminInfo(res.judge);
             })
             .then((res) => {
@@ -129,105 +132,98 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
     }
 
     return (
-        <Stack>
+      <Stack>
+        <Center>
+          <Title>阅卷系统</Title>
+        </Center>
+        <Center>
+          <Alert
+            variant="light"
+            color={completed ? 'green' : 'blue'}
+            title={
+              <Group gap={5}>
+                {completed ? <IconCheck /> : <IconInfoCircle />}
+                <Text>当前问卷状态</Text>
+              </Group>
+            }
+            w={370}
+          >
             <Center>
-                <Title>
-                    阅卷系统
-                </Title>
+              <Text>当前问卷: {answerId}</Text>
             </Center>
             <Center>
-                <Alert
+              <Text>
+                用户得分: {userScore} / {totalScore}
+              </Text>
+            </Center>
+            <Center>
+              <Group gap={1} c={completed ? 'green' : 'red'}>
+                {completed ? <IconCheck size={16} /> : <IconX size={16} />}
+                {completed ? '已阅卷' : '待阅卷'}
+              </Group>
+            </Center>
+            <Center>
+              <Text>阅卷人: {judgeName}</Text>
+              <Text c="gray">&nbsp;(UID: {judgeId})</Text>
+            </Center>
+            <Center>
+              <Text>阅卷时间: {judgeTime.split('.')[0].replace('T', ' ')}</Text>
+            </Center>
+          </Alert>
+        </Center>
+        <Container maw={1600} w="90%">
+          <Stack>
+            <iframe
+              width="100%"
+              style={{ border: 'none' }}
+              title="title"
+              srcDoc={page?.title}
+              sandbox="allow-popups"
+            />
+            {page?.content.map((question) => (
+              <Question
+                id={question}
+                key={question}
+                value={getAnswerGetter(question)}
+                setValue={() => {}}
+                setProps={getPropsSetter(question)}
+                checkAccess={checkAccess}
+                score={scores.get(question)}
+                disabled
+              />
+            ))}
+          </Stack>
+          <Space h={50} />
+          <Stack>
+            <Space>
+              <Button.Group>
+                <Button
                   variant="light"
-                  color={completed ? 'green' : 'blue'}
-                  title={
-                    <Group gap={5}>
-                        {completed ? <IconCheck /> : <IconInfoCircle />}
-                        <Text>当前问卷状态</Text>
-                    </Group>
-                  }
-                  w={370}
+                  disabled={page?.previous == null}
+                  loading={loading}
+                  onClick={switchPrevPage}
+                  fullWidth
                 >
-                    <Center>
-                        <Text>
-                            当前问卷: {answerId}
-                        </Text>
-                    </Center>
-                    <Center>
-                        <Text>
-                            用户得分: {userScore} / {totalScore}
-                        </Text>
-                    </Center>
-                    <Center>
-                        <Group gap={1} c={completed ? 'green' : 'red'}>
-                            {completed ? <IconCheck size={16} /> : <IconX size={16} />}
-                            {completed ? '已阅卷' : '待阅卷'}
-                        </Group>
-                    </Center>
-                    <Center>
-                        <Text>
-                            阅卷人: {judgeName}
-                        </Text>
-                        <Text c="gray">
-                            &nbsp;(UID: {judgeId})
-                        </Text>
-                    </Center>
-                    <Center>
-                        <Text>
-                            阅卷时间: {judgeTime.split('.')[0].replace('T', ' ')}
-                        </Text>
-                    </Center>
-                </Alert>
-            </Center>
-            <Container maw={1600} w="90%">
-                <Stack>
-                    <Center>
-                        <Title>{page?.title}</Title>
-                    </Center>
-                    {page?.content.map(question => (
-                        <Question
-                          id={question}
-                          key={question}
-                          value={getAnswerGetter(question)}
-                          setValue={() => {}}
-                          setProps={getPropsSetter(question)}
-                          checkAccess={checkAccess}
-                          score={scores.get(question)}
-                          disabled
-                        />
-                    ))}
-                </Stack>
-                <Space h={50} />
-                <Stack>
-                    <Space>
-                        <Button.Group>
-                            <Button
-                              variant="light"
-                              disabled={page?.previous == null}
-                              loading={loading}
-                              onClick={switchPrevPage}
-                              fullWidth
-                            >
-                                上一页
-                            </Button>
-                            <Button
-                              variant="light"
-                              disabled={page?.next == null}
-                              loading={loading}
-                              onClick={switchNextPage}
-                              fullWidth
-                            >
-                                下一页
-                            </Button>
-                        </Button.Group>
-                    </Space>
-                    <Button color="green" disabled={completed} loading={loading} onClick={save}>
-                        提交
-                    </Button>
-                </Stack>
-                <Space h={180} />
-            </Container>
-        </Stack>
-
+                  上一页
+                </Button>
+                <Button
+                  variant="light"
+                  disabled={page?.next == null}
+                  loading={loading}
+                  onClick={switchNextPage}
+                  fullWidth
+                >
+                  下一页
+                </Button>
+              </Button.Group>
+            </Space>
+            <Button color="green" disabled={completed} loading={loading} onClick={save}>
+              提交
+            </Button>
+          </Stack>
+          <Space h={180} />
+        </Container>
+      </Stack>
     );
 }
 

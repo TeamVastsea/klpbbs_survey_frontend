@@ -3,7 +3,7 @@ import { Cookie } from '@/components/cookie';
 import { SERVER_URL } from '@/api/BackendApi';
 
 export default class AdminApi {
-    public static async getAdminInfo(id?: number): Promise<any> {
+    public static async getAdminInfo(id: number): Promise<any> {
         const myHeaders = new Headers();
         myHeaders.append('token', Cookie.getCookie('token'));
 
