@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Group, Space, Stack, Menu, Button, Text } from '@mantine/core';
+import { Group, Space, Stack, Menu, Button, Text, Center } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import classes from '@/components/Header.module.css';
 import { Cookie } from '@/components/cookie';
+import { ColorSchemeToggle } from './ColorSchemeToggle';
 
 interface Link {
     link: string;
@@ -46,7 +47,7 @@ export function NavbarList() {
         sessionStorage.setItem('logOutAndRedirect', 'true');
         window.location.reload();
     };
-    
+
     useEffect(() => {
         if (sessionStorage.getItem('logOutAndRedirect') === 'true') {
             sessionStorage.removeItem('logOutAndRedirect');
@@ -61,8 +62,7 @@ export function NavbarList() {
           onClick={() => handleClick(link.link)}
           onKeyDown={(e) => e.key === 'Enter' && handleClick(link.link)}
           tabIndex={0}
-          aria-label={link.label}
-          color="white"
+          variant="subtle"
         >
             {link.label}
         </Button>
@@ -119,6 +119,9 @@ export function NavbarList() {
                     </Button>
                 )}
                 {items}
+                <Center>
+                    <ColorSchemeToggle />
+                </Center>
             </Stack>
         </Group>
     );
