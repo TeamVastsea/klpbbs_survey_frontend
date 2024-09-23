@@ -44,8 +44,8 @@ export default function SurveyList() {
                         sm: min(2, surveys.length),
                         lg: min(3, surveys.length),
                     }}>
-                    {surveys.map((survey: SurveyInfo) => (
-                        <BadgeCard key={survey.id} survey={survey} routeAdmin={false} />
+                    {surveys.map((survey: SurveyInfo, index: number) => (
+                        <BadgeCard key={index} survey={survey} routeAdmin={false} />
                     ))}
                 </SimpleGrid>
             </Stack>

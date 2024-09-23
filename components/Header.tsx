@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Burger, Container, Group, Image, Text, Menu, Button } from '@mantine/core';
 import { useRouter } from 'next/navigation';
+import { ColorSchemeToggle } from '@/components/ColorSchemeToggle';
 import classes from './Header.module.css';
 import logo from '@/public/favicon.svg';
 import { Cookie } from '@/components/cookie';
@@ -76,7 +77,6 @@ export default function Header({ opened, toggle }: HeaderProps) {
             <Menu.Target>
                 <Button
                   className={classes.link}
-                  role="button"
                   tabIndex={0}
                   variant="subtle"
                 >
@@ -116,24 +116,32 @@ export default function Header({ opened, toggle }: HeaderProps) {
         >
             <Container size="md" className={classes.inner}>
                 <Group>
-                    <Image src={logo.src} w={28} h={28} />
-                    <Text>苦力怕论坛 | 问卷系统</Text>
+                    <Button
+                      className={classes.link}
+                      tabIndex={0}
+                      variant="subtle"
+                      leftSection={(<Image src={logo.src} w={28} h={28} />)}
+                      onClick={() => router.push('/')}
+                    >
+                        <Text>苦力怕论坛 | 问卷系统</Text>
+                    </Button>
                 </Group>
                 <Group gap={5} visibleFrom="xs">
                     {userItems}
                     {links.map((link) => (
                         <Button
                           key={link.label}
-                          className={classes.link}
                           onClick={() => handleClick(link.link)}
                           onKeyDown={(e) => e.key === 'Enter' && handleClick(link.link)}
                           tabIndex={0}
                           aria-label={link.label}
-                          color="white"
+                          className={classes.link}
+                          variant="subtle"
                         >
                             {link.label}
                         </Button>
                     ))}
+                    <ColorSchemeToggle />
                 </Group>
                 <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm" />
             </Container>
