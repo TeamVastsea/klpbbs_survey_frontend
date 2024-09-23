@@ -1,12 +1,13 @@
 'use client';
 
-import { ActionIcon, Badge, Button, Card, Group, Image, Modal, Space, Text } from '@mantine/core';
+import { ActionIcon, Badge, Button, Card, Group, Image, Modal, ScrollArea, Space, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconSettings2 } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import SurveyBasicContentsEditor from './SurveyBasicContentsEditor';
 import { SurveyInfo } from '@/api/SurveyApi';
+import SafeHTML from '@/components/SafeHTML';
 
 export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardProps) {
     const [opened, { open, close }] = useDisclosure();
@@ -40,7 +41,6 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
     }
 
     const getValidBadge = () => {
-      console.log(survey.budge, survey.budge === '');
         const result = checkValid();
         switch (result) {
             case ValidResult.NoReSubmit:
@@ -81,20 +81,23 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
                     </Text>
 
                     <Group>
-                        {survey.budge ? <></> : <Badge variant="light">{survey.budge}</Badge>}
+                        {survey.budge === '          ' ? <></> : <Badge variant="light">{survey.budge}</Badge>}
                         {getValidBadge()}
                     </Group>
                 </Group>
 
                 <Space h="md" />
 
-                <iframe
+                {/* <iframe
                   width="100%"
                   style={{ border: 'none' }}
                   title="description"
                   srcDoc={survey.description}
                   sandbox="allow-popups"
-                />
+                /> */}
+                <ScrollArea h={150}>
+                    <SafeHTML content={survey.description} />
+                </ScrollArea>
 
                 <Button
                   fullWidth

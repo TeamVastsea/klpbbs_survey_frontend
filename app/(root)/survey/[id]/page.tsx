@@ -9,6 +9,7 @@ import QuestionApi, { PageResponse, QuestionProps } from '@/api/QuestionApi';
 import AnswerApi, { SaveRequest } from '@/api/AnswerApi';
 import SurveyApi from '@/api/SurveyApi';
 import { Cookie } from '@/components/cookie';
+import SafeHTML from '@/components/SafeHTML';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
@@ -184,13 +185,14 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             <Container maw={1600} w="90%">
                 <Stack>
                     <Space h={50} />
-                    <iframe
+                    {/* <iframe
                       width="100%"
                       style={{ border: 'none' }}
                       title="title"
                       srcDoc={questions?.title}
                       sandbox="allow-popups"
-                    />
+                    /> */}
+                    <SafeHTML content={questions?.title || ''} />
                     {questions?.content.map((question) => (
                         <Question
                           id={question}

@@ -10,6 +10,7 @@ import { Rule } from '@/app/(root)/survey/[id]/page';
 import Question from '@/app/(root)/backstage/judge/[answerId]/components/questions';
 import JudgeApi from '@/api/JudgeApi';
 import AdminApi from '@/api/AdminApi';
+import SafeHTML from '@/components/SafeHTML';
 
 export default function JudgeSinglePage({ params }: { params: { answerId: number } }) {
     const { answerId } = params;
@@ -173,13 +174,14 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
         </Center>
         <Container maw={1600} w="90%">
           <Stack>
-            <iframe
+            {/* <iframe
               width="100%"
               style={{ border: 'none' }}
               title="title"
               srcDoc={page?.title}
               sandbox="allow-popups"
-            />
+            /> */}
+            <SafeHTML content={page?.title || ''} />
             {page?.content.map((question) => (
               <Question
                 id={question}

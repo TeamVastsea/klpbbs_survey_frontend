@@ -3,7 +3,7 @@ import { Cookie } from '@/components/cookie';
 import { SERVER_URL } from '@/api/BackendApi';
 
 export default class QuestionApi {
-    public static createPage = async (title?: string) => {
+    public static createPage = async (title: string = '') => {
         const myHeaders = new Headers();
         myHeaders.append('Content-Type', 'application/json');
         myHeaders.append('token', Cookie.getCookie('token'));
