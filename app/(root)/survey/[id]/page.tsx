@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Question from '@/app/(root)/survey/[id]/components/question';
-import QuestionApi, { PageResponse, QuestionProps } from '@/api/QuestionApi';
+import QuestionApi, { PageResponse, Question } from '@/api/QuestionApi';
 import AnswerApi, { SaveRequest } from '@/api/AnswerApi';
 import SurveyApi from '@/api/SurveyApi';
 import { Cookie } from '@/components/cookie';
@@ -15,7 +15,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     const [questions, setQuestions] = useState<PageResponse | undefined>(undefined);
     const [answers, setAnswers] = useState<Map<string, string>>(new Map());
     const searchParams = useSearchParams();
-    const questionsProps = useRef(new Map<string, QuestionProps>());
+    const questionsProps = useRef(new Map<string, Question>());
 
     const router = useRouter();
 
@@ -116,7 +116,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
     const getAnswerGetter = (id: string) => answers.get(id) || undefined;
 
-    const getPropsSetter = (id: string) => (value: QuestionProps) => {
+    const getPropsSetter = (id: string) => (value: Question) => {
         questionsProps.current.set(id, value);
     };
 
@@ -172,7 +172,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 previous: response.previous,
                 id: response.id,
                 title: response.title,
-                budge: '',
+                badge: '',
                 content: response.content,
                 next: response.next,
             };

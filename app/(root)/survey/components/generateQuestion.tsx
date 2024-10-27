@@ -4,10 +4,10 @@ import { SingleChoice } from '@/app/(root)/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/(root)/survey/components/MultipleChoice';
 import { FileUpload } from '@/app/(root)/survey/components/FileUpload';
 import { FillBlank } from '@/app/(root)/survey/components/FillBlank';
-import { QuestionProps } from '@/api/QuestionApi';
+import { Question } from '@/api/QuestionApi';
 
 export function generateQuestion(
-    data: QuestionProps,
+    data: Question,
     value: string | undefined,
     setValue: (value: string) => void,
     isDisable: boolean = false,

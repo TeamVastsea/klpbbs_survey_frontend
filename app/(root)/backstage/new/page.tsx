@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import SurveyApi, { NewSurveyInfo } from '@/api/SurveyApi';
 import ConfirmationModal from './components/Confirmation';
-import QuestionApi from '@/api/QuestionApi';
+import PageApi from '@/api/PageApi';
 
 const ADDED_TIME_STAMP = 28800000; // 8 hours for CST
 
@@ -18,7 +18,7 @@ const handleTimeStamp = {
 export default function NewSurveyPage() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [budge, setBudge] = useState('');
+    const [badge, setBadge] = useState('');
     const [image, setImage] = useState('');
     const [startTime, setStartTime] = useState<Date | null>(null);
     const [endTime, setEndTime] = useState<Date | null>(null);
@@ -42,7 +42,7 @@ export default function NewSurveyPage() {
         return true;
     };
 
-    const handleConfirm = async () => {
+    const handleConfirm = () => {
         if (!startTime || !endTime) {
             notifications.show({
                 title: '未选择时间',
@@ -54,14 +54,11 @@ export default function NewSurveyPage() {
         }
         setLoading(true);
 
-        const page: string = await QuestionApi.createPage('');
-
         const newSurvey: NewSurveyInfo = {
             title,
             description,
-            budge,
+            badge,
             image,
-            page,
             start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString().split('.')[0],
             end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString().split('.')[0],
             allow_submit: allowSubmit,
@@ -78,7 +75,10 @@ export default function NewSurveyPage() {
                     color: 'green',
                 });
 
-                router.push(`/backstage/editor/${res}`);
+                PageApi.newPage(title, Number(res), 0)
+                    .then(() => {
+                        router.push(`/backstage/editor/${res}`);
+                    });
             })
             .catch((error) => {
                 notifications.show({
@@ -126,13 +126,13 @@ export default function NewSurveyPage() {
                                 <Textarea
                                   label="图章"
                                   placeholder="请输入图章"
-                                  onChange={(e) => setBudge(e.currentTarget.value)}
+                                  onChange={(e) => setBadge(e.currentTarget.value)}
                                   mt="mt"
                                   autosize
                                 />
                                 <Stack>
                                     <Badge variant="light">
-                                        <Center>{budge}</Center>
+                                        <Center>{badge}</Center>
                                     </Badge>
                                 </Stack>
                             </Group>

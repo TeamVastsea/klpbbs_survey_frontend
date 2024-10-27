@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { Group, Space, Stack, Text } from '@mantine/core';
 import { generateQuestion, InputProps } from '@/app/(root)/survey/components/generateQuestion';
-import QuestionApi, { QuestionProps } from '@/api/QuestionApi';
+import QuestionApi, { Question } from '@/api/QuestionApi';
 
 export default function Question(props: PageQuestionProps) {
-    const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
+    const [question, setQuestion] = useState<Question | undefined>(undefined);
 
     useEffect(() => {
         QuestionApi.fetchSingleQuestionAdmin(props.id)
@@ -40,7 +40,7 @@ export default function Question(props: PageQuestionProps) {
 export interface PageQuestionProps extends InputProps {
     id: string,
     checkAccess: (ruleStr: string) => boolean,
-    setProps: (value: QuestionProps) => void,
+    setProps: (value: Question) => void,
     disabled: boolean,
     score?: number,
 }

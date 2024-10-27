@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Burger, Container, Group, Image, Text, Menu, Button } from '@mantine/core';
+import { Burger, Container, Group, Image, Text, Menu, Button, Modal, Stack } from '@mantine/core';
 import { useRouter } from 'next/navigation';
+import { useDisclosure } from '@mantine/hooks';
 import { ColorSchemeToggle } from '@/components/ColorSchemeToggle';
 import classes from './Header.module.css';
 import logo from '@/public/favicon.svg';
 import { Cookie } from '@/components/cookie';
+import UserApi from '@/api/UserApi';
 
 interface Link {
     link: string;
@@ -22,6 +24,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
     const router = useRouter();
     const [username, setUsername] = useState<string | null>(null);
     const [uid, setUid] = useState<string | undefined>(undefined);
+    const [modalOpened, { open, close }] = useDisclosure(false);
 
     useEffect(() => {
         const status = Cookie.getCookie('status');
@@ -44,9 +47,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
     };
 
     const handleLogout = () => {
-        Cookie.clearAllCookies();
-        sessionStorage.setItem('logOutAndRedirect', 'true');
-        window.location.reload();
+        open();
     };
 
     useEffect(() => {
@@ -101,6 +102,31 @@ export default function Header({ opened, toggle }: HeaderProps) {
                     退出登录
                 </Menu.Item>
             </Menu.Dropdown>
+            <Modal opened={modalOpened} onClose={close} withCloseButton={false} centered>
+                <Stack>
+                    <Text>
+                        是否要在所有设备上退出登录？
+                    </Text>
+
+                    <Group>
+                        <Button onClick={() => {
+                            Cookie.clearAllCookies();
+                            sessionStorage.setItem('logOutAndRedirect', 'true');
+                            window.location.reload();
+                        }}>
+                            仅在当前设备上退出登录
+                        </Button>
+                        <Button onClick={() => {
+                            UserApi.invalidateToken(Cookie.getCookie('token')).then(() => {});
+                            Cookie.clearAllCookies();
+                            sessionStorage.setItem('logOutAndRedirect', 'true');
+                            window.location.reload();
+                        }}>
+                            在所有设备上退出登录
+                        </Button>
+                    </Group>
+                </Stack>
+            </Modal>
         </Menu>
     );
 

@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Button, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
 import { IconCheck, IconInfoCircle, IconX } from '@tabler/icons-react';
 import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
-import QuestionApi, { Page, QuestionProps } from '@/api/QuestionApi';
+import QuestionApi, { Page, Question } from '@/api/QuestionApi';
 import SurveyApi from '@/api/SurveyApi';
 import { Rule } from '@/app/(root)/survey/[id]/page';
 import Question from '@/app/(root)/backstage/judge/[answerId]/components/questions';
@@ -25,7 +25,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
     const [judgeTime, setJudgeTime] = useState<string>('');
     const [judgeId, setJudgeId] = useState<number>(0);
     const [judgeName, setJudgeName] = useState<string>('');
-    const questionsProps = useRef(new Map<string, QuestionProps>());
+    const questionsProps = useRef(new Map<string, Question>());
 
     useEffect(() => {
         AnswerApi.getAnswer(answerId)
@@ -66,7 +66,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
 
     const getAnswerGetter = (id: string) => userAnswer.get(id) || undefined;
 
-    const getPropsSetter = (id: string) => (value: QuestionProps) => {
+    const getPropsSetter = (id: string) => (value: Question) => {
         questionsProps.current.set(id, value);
     };
 

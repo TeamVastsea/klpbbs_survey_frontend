@@ -1,33 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { generateQuestion, InputProps } from '@/app/(root)/survey/components/generateQuestion';
-import QuestionApi, { QuestionProps } from '@/api/QuestionApi';
+import type { Question } from '@/api/QuestionApi';
 
 export default function Question(props: PageQuestionProps) {
-    const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
-
-    useEffect(() => {
-        QuestionApi.fetchSingleQuestion(props.id)
-            .then((response) => {
-                setQuestion(response);
-                props.setProps(response);
-            });
-    }, [props.id]);
-
     return (
         <>
-            {question ?
-                props.checkAccess(question.condition as string) ?
-                    generateQuestion(question, props.value, props.setValue, props.disabled) : null
+            {props.checkAccess(JSON.stringify(props.question.condition)) ?
+                generateQuestion(props.question, props.value, props.setValue, props.disabled)
                 : null}
         </>
     );
 }
 
 export interface PageQuestionProps extends InputProps {
-    id: string,
+    question: Question,
     checkAccess: (ruleStr: string) => boolean,
-    setProps: (value: QuestionProps) => void,
+    setProps: (value: Question) => void,
     disabled?: boolean,
 }

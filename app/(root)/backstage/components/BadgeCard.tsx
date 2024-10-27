@@ -81,7 +81,7 @@ export default function BadgeCard({ survey, showBadge, routeAdmin }: BadgeCardPr
                     </Text>
 
                     <Group>
-                        {survey.budge === '          ' ? <></> : <Badge variant="light">{survey.budge}</Badge>}
+                        {survey.badge === '          ' ? <></> : <Badge variant="light">{survey.badge}</Badge>}
                         {getValidBadge()}
                     </Group>
                 </Group>

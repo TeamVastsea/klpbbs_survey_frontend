@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Center, Text } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { Cookie } from '@/components/cookie';
-import AdminApi from '@/api/AdminApi';
 import Watermark from '@/app/(root)/backstage/components/Watermark';
 import Tools from '@/app/(root)/backstage/components/Tools';
+import UserApi from '@/api/UserApi';
 
 export default function BackStageLayout({ children }: { children: React.ReactNode }) {
     const [userName, setUserName] = useState<string | null>(null);
@@ -22,17 +22,32 @@ export default function BackStageLayout({ children }: { children: React.ReactNod
             setUserName(decodeURI(userNameFromCookie));
             setUserId(userIdFromCookie);
 
-            AdminApi.getAdminTokenInfo()
+            UserApi.getUserInfo(Cookie.getCookie('token') as string)
                 .then((res) => {
-                    if (!res.ok) {
+                    if (!res.admin) {
                         sessionStorage.setItem('adminAccessDenied', 'true');
                         router.push('/');
                     }
 
-                    setUserId(res.result.id.toString());
-                    setUserName(res.result.username);
+                    setUserId(res.uid);
+                    setUserName(res.username);
                     setLoading(false);
+                })
+                .catch(() => {
+                    sessionStorage.setItem('adminAccessDenied', 'true');
+                    router.push('/');
                 });
+            // AdminApi.getAdminTokenInfo()
+            //     .then((res) => {
+            //         if (!res.ok) {
+            //             sessionStorage.setItem('adminAccessDenied', 'true');
+            //             router.push('/');
+            //         }
+            //
+            //         setUserId(res.result.id.toString());
+            //         setUserName(res.result.username);
+            //         setLoading(false);
+            //     });
         }
     }, [router]);
 
