@@ -123,6 +123,8 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
         // create new page
         await PageApi.newPage('', Number(params.id), pageIndex);
 
+        setTotalPage(totalPage + 1);
+
         notifications.show({
             title: '新建页面成功',
             message: '新建页面成功',

@@ -3,7 +3,7 @@
 import { generateQuestion, InputProps } from '@/app/(root)/survey/components/generateQuestion';
 import type { Question } from '@/api/QuestionApi';
 
-export default function Question(props: PageQuestionProps) {
+export default function QuestionCard(props: PageQuestionProps) {
     return (
         <>
             {props.checkAccess(JSON.stringify(props.question.condition)) ?
