@@ -266,7 +266,7 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
                         <Button.Group>
                             <Button
                               variant="light"
-                              disabled={pageIndex > 0}
+                              disabled={pageIndex <= 0}
                                 // loading={}
                               onClick={() => setPageIndex(pageIndex - 1)}
                               fullWidth
@@ -275,7 +275,7 @@ export default function SurveyPage({ params }: { params: { id: string } }) {
                             </Button>
                             <Button
                               variant="light"
-                              disabled={pageIndex < totalPage - 1}
+                              disabled={pageIndex >= totalPage - 1}
                                 // loading={}
                               onClick={() => setPageIndex(pageIndex + 1)}
                               fullWidth
