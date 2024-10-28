@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
+import ScoreApi, { AnswerInfo } from '@/api/ScoreApi';
 import AsyncPagedSelect from '@/app/(root)/backstage/judge/components/AsyncPagedSelect';
 
 export default function SurveyPage() {
@@ -29,7 +29,7 @@ export default function SurveyPage() {
 
     useEffect(() => {
         setSurveysLoading(true);
-        AnswerApi.searchAnswerList(page,
+        ScoreApi.searchAnswerList(page,
             10,
             surveySearch ? Number(surveySearch) : null,
             null,

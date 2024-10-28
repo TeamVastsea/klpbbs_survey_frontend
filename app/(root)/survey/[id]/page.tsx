@@ -4,11 +4,14 @@ import { Button, Container, Space, Stack } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
+import { useDisclosure } from '@mantine/hooks';
 import QuestionCard from '@/app/(root)/survey/[id]/components/question';
 import QuestionApi, { Question } from '@/api/QuestionApi';
 import { Cookie } from '@/components/cookie';
 import SafeHTML from '@/components/SafeHTML';
 import PageApi, { Page } from '@/api/PageApi';
+import ScoreApi, { ScorePrompt } from '@/api/ScoreApi';
+import Submits from '@/app/(root)/survey/[id]/components/submits';
 
 export default function SurveyPage({ params }: { params: { id: number } }) {
     const [page, setPage] = useState<Page | undefined>(undefined);
@@ -16,12 +19,15 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     const [totalPage, setTotalPage] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [answers, setAnswers] = useState<Map<number, string>>(new Map());
+    const [answerId, setAnswerId] = useState<number | undefined>(undefined);
+    const [submits, setSubmits] = useState<ScorePrompt[]>([]);
+    const [opened, { open, close }] = useDisclosure(false);
 
     const router = useRouter();
 
     // const answerId = useRef(searchParams.get('answer'));
 
-    function save(completed: boolean = false) {
+    function save() {
         // if (questions == null) {
         //     return false;
         // }
@@ -64,18 +70,20 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         //     answerId.current = result.toString();
         // });
 
-        console.log(completed);
+        ScoreApi.submitAnswer({
+            id: answerId,
+            survey: Number(params.id),
+            content: Object.fromEntries(answers),
+        })
+            .then((res) => {
+                setAnswerId(res);
+            });
 
         return true;
     }
 
     function nextPage() {
-        let completed = false;
-        if (pageIndex >= totalPage - 1) {
-            completed = true;
-        }
-
-        if (!save(completed)) {
+        if (!save()) {
             return;
         }
 
@@ -87,6 +95,12 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             setPageIndex(pageIndex + 1);
             return;
         }
+
+        if (answerId === undefined) {
+            return;
+        }
+
+        ScoreApi.finishAnswer(answerId).then(() => {});
 
         notifications.show({
             title: '提交成功',
@@ -156,6 +170,21 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         return rules.length === 0;
     }
 
+    const loadSubmit = (load: boolean, use: ScorePrompt) => {
+        close();
+        if (!load) {
+            return;
+        }
+
+        const answerObject = JSON.parse(use.answer);
+        const numberKeyedAnswerObject = new Map<number, string>(
+            Object.entries(answerObject).map(([key, value]) => [Number(key), String(value)])
+        );
+
+        setAnswers(numberKeyedAnswerObject);
+        setAnswerId(use.id);
+    };
+
     useEffect(() => {
         const status = Cookie.getCookie('status');
         if (status !== 'ok') {
@@ -173,12 +202,22 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         });
     }, [params.id, pageIndex]);
 
+    useEffect(() => {
+        ScoreApi.getAnswerList(Number(params.id)).then((answersSubmit) => {
+            if (answersSubmit.length > 0) {
+                setSubmits(answersSubmit);
+                open();
+            }
+        });
+    }, [params.id]);
+
     return (
         <Stack>
             <Container maw={1600} w="90%">
                 <Stack>
                     <Space h={50} />
                     <SafeHTML content={page?.title || ''} />
+                    <Submits submits={submits} opened={opened} onClose={loadSubmit} />
                     {questions?.map((question) => (
                         <QuestionCard
                           question={question}

@@ -1,8 +1,8 @@
 import { notifications } from '@mantine/notifications';
 import { Cookie } from '@/components/cookie';
-import { SERVER_URL } from '@/api/BackendApi';
+import { handleError, SERVER_URL } from '@/api/BackendApi';
 
-export default class AnswerApi {
+export default class ScoreApi {
     public static async submitAnswer(props: SaveRequest): Promise<number> {
         const myHeaders = new Headers();
         myHeaders.append('token', Cookie.getCookie('token'));
@@ -15,7 +15,66 @@ export default class AnswerApi {
             redirect: 'follow',
         };
 
-        const res = await fetch(`${SERVER_URL}/api/answer`, requestOptions);
+        const res = await fetch(`${SERVER_URL}/api/score`, requestOptions);
+
+        if (!res.ok) {
+            if (res.status === 429) {
+                notifications.show({
+                    title: '重复提交',
+                    message: '该问卷不支持重复提交',
+                    color: 'red',
+                });
+            }
+
+            if (!handleError(await res.text(), res.status)) {
+                notifications.show({
+                    title: '提交答案失败, 请将以下信息反馈给管理员',
+                    message: `${res.statusText}: ${await res.text()}`,
+                    color: 'red',
+                });
+            }
+
+            throw new Error('Failed to submit answer');
+        }
+
+        return Number(await res.text());
+    }
+
+    public static async getAnswerList(survey: number): Promise<ScorePrompt[]> {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/score?survey=${survey}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '获取问卷答案失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get answer');
+        }
+
+        return res.json();
+    }
+
+    public static async finishAnswer(id: number): Promise<void> {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'PATCH',
+            headers: myHeaders,
+            redirect: 'follow',
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/score?id=${id}`, requestOptions);
 
         if (!res.ok) {
             notifications.show({
@@ -26,8 +85,6 @@ export default class AnswerApi {
 
             throw new Error('Failed to submit answer');
         }
-
-        return res.json();
     }
 
     public static async getAnswer(id: number): Promise<AnswerInfo> {
@@ -101,7 +158,6 @@ export interface SaveRequest {
     survey: number;
     content: any;
     id?: number;
-    complete?: boolean;
 }
 
 export interface AnswerInfo {
@@ -117,4 +173,10 @@ export interface AnswerInfo {
 export interface PagedResponse<T> {
     records: T[];
     total: number;
+}
+
+export interface ScorePrompt {
+    id: number;
+    answer: string;
+    update_time: string;
 }

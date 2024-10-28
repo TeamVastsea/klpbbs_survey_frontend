@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Alert, Button, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
 import { IconCheck, IconInfoCircle, IconX } from '@tabler/icons-react';
-import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
+import ScoreApi, { AnswerInfo } from '@/api/ScoreApi';
 import QuestionApi, { Page, Question } from '@/api/QuestionApi';
 import SurveyApi from '@/api/SurveyApi';
 import { Rule } from '@/app/(root)/survey/[id]/page';
@@ -28,7 +28,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
     const questionsProps = useRef(new Map<string, Question>());
 
     useEffect(() => {
-        AnswerApi.getAnswer(answerId)
+        ScoreApi.getAnswer(answerId)
             .then((res) => {
                 setAnswer(res);
                 setUserAnswer(new Map(Object.entries(res.answers)));
