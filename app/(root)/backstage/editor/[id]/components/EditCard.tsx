@@ -110,8 +110,8 @@ export default function EditCard(props: EditCardProps) {
         props.setQuestion({
             ...props.question,
             answer: {
-                sub_points: Number(e),
                 ...props.question.answer,
+                sub_points: Number(e),
             },
         });
     };
