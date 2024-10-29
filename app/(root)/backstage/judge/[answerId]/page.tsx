@@ -230,6 +230,8 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                           setAnswer(res);
                           setUserAnswer(new Map(Object.entries(JSON.parse(res.answer))
                               .map(([key, value]) => [Number(key), String(value)])));
+                          setScores(new Map(Object.entries(JSON.parse(res.scores || '{}'))
+                              .map(([key, value]) => [Number(key), Number(value)])));
                           setCompleted(res.judge != null);
                           notifications.show({
                                 title: '重新阅卷成功',
