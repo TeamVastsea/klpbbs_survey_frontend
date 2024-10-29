@@ -1,5 +1,6 @@
 import { notifications } from '@mantine/notifications';
 import { SERVER_URL } from '@/api/BackendApi';
+import { Cookie } from '@/components/cookie';
 
 export default class UserApi {
     public static async getToken(token: string): Promise<string> {
@@ -65,5 +66,38 @@ export default class UserApi {
         }
 
         return JSON.parse(await res.text());
+    }
+
+    public static async getOtherUserInfo(uid: string):
+        Promise<{ uid: string, username: string, admin: boolean }> {
+        if (uid === null) {
+            return {
+                uid: '',
+                username: '',
+                admin: false,
+            };
+        }
+
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/user/${uid}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '判卷失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get judge result');
+        }
+
+        return res.json();
     }
 }

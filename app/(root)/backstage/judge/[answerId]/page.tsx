@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
 import { IconCheck, IconInfoCircle, IconX } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 import ScoreApi, { Score } from '@/api/ScoreApi';
 import QuestionApi, { Question } from '@/api/QuestionApi';
 import { Rule } from '@/app/(root)/survey/[id]/page';
@@ -10,7 +11,8 @@ import QuestionCard from '@/app/(root)/backstage/judge/[answerId]/components/que
 import JudgeApi from '@/api/JudgeApi';
 import SafeHTML from '@/components/SafeHTML';
 import PageApi, { Page } from '@/api/PageApi';
-import { notifications } from '@mantine/notifications';
+import UserApi from '@/api/UserApi';
+import { Cookie } from '@/components/cookie';
 
 export default function JudgeSinglePage({ params }: { params: { answerId: number } }) {
     const { answerId } = params;
@@ -23,6 +25,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
     const [page, setPage] = useState<Page | undefined>(undefined);
     const [completed, setCompleted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [judge, setJudge] = useState('');
 
     useEffect(() => {
         ScoreApi.getAnswer(answerId)
@@ -52,6 +55,16 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                     });
             });
     }, [answer, pageIndex]);
+
+    useEffect(() => {
+        if (answer == null || answer.judge === undefined) {
+            return;
+        }
+        UserApi.getOtherUserInfo(answer.judge)
+            .then((res) => {
+                setJudge(res.username);
+            });
+    }, [answer?.judge]);
 
     const getAnswerGetter = (id: number) => userAnswer.get(id) || undefined;
 
@@ -120,6 +133,12 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
         JudgeApi.confirmJudge(answerId.toString()).then(() => {
             setCompleted(true);
             setLoading(false);
+
+            setAnswer({
+                ...answer,
+                judge: Cookie.getCookie('uid'),
+                judge_time: new Date().toISOString(),
+            } as Score);
         });
     }
 
@@ -155,7 +174,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
               </Group>
             </Center>
             <Center>
-              <Text>阅卷人: {answer?.judge}</Text>
+              <Text>阅卷人: {judge}</Text>
               <Text c="gray">&nbsp;(UID: {answer?.judge})</Text>
             </Center>
             <Center>
@@ -202,7 +221,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
               </Button.Group>
             </Space>
               <Button.Group>
-                  <Button color="green" disabled={completed} loading={loading} onClick={save} fullWidth>
+                  <Button color="green" disabled={answer?.judge != null} onClick={save} fullWidth>
                       提交
                   </Button>
                   <Button
@@ -218,8 +237,9 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                                 color: 'green',
                           });
                       });
-                  }}
-                    fullWidth>
+                    }}
+                    fullWidth
+                    disabled={answer?.judge != null}>
                       重新阅卷
                   </Button>
               </Button.Group>

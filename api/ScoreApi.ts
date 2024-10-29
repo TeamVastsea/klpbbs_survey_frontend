@@ -123,6 +123,16 @@ export default class ScoreApi {
         const res = await fetch(`${SERVER_URL}/api/score/${id}`, requestOptions);
 
         if (!res.ok) {
+            if (res.status === 429) {
+                notifications.show({
+                    title: '重复提交',
+                    message: '该问卷已经确认分数，不支持重复提交',
+                    color: 'red',
+                });
+
+                throw new Error('Already judged');
+            }
+
             notifications.show({
                 title: '获取问卷答案失败, 请将以下信息反馈给管理员',
                 message: `${res.statusText}: ${await res.text()}`,

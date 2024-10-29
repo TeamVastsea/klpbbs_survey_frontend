@@ -36,7 +36,7 @@ export default class JudgeApi {
             headers: myHeaders,
         };
 
-        const result = await fetch(`http://127.0.0.1:25000/api/judge?answer=${answer}`, requestOptions)
+        const result = await fetch(`${SERVER_URL}/api/score/${answer}`, requestOptions)
             .then((res) => res)
             .catch((error) => {
                 notifications.show({
