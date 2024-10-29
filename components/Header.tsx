@@ -24,6 +24,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
     const router = useRouter();
     const [username, setUsername] = useState<string | null>(null);
     const [uid, setUid] = useState<string | undefined>(undefined);
+    const [admin, setAdmin] = useState(false);
     const [modalOpened, { open, close }] = useDisclosure(false);
 
     useEffect(() => {
@@ -33,6 +34,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
             const username_ = decodeURIComponent(Cookie.getCookie('username') || '');
             setUid(uid_);
             setUsername(username_);
+            setAdmin(Cookie.getCookie('admin') === 'true');
         } else {
             setUsername(null);
         }
@@ -91,6 +93,11 @@ export default function Header({ opened, toggle }: HeaderProps) {
                 <Menu.Item>
                     UID: {uid}
                 </Menu.Item>
+                {admin &&
+                    <Menu.Item onClick={() => router.push('/backstage')}>
+                      前往后台
+                    </Menu.Item>
+                }
                 <Menu.Item
                   onClick={handleLogout}
                   style={{ color: 'red' }}
