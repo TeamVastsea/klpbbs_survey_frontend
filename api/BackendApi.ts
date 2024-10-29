@@ -1,8 +1,8 @@
 import { notifications } from '@mantine/notifications';
 import { Cookie } from '@/components/cookie';
 
-export const SERVER_URL = 'https://wj.klpbbs.cn';
-// export const SERVER_URL = 'http://127.0.0.1:25000';
+// export const SERVER_URL = 'https://wj.klpbbs.cn';
+export const SERVER_URL = 'http://127.0.0.1:25000';
 
 export const handleError = (errorMessage: string, status: number) => {
     if (status === 401) {

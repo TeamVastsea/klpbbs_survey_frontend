@@ -87,7 +87,7 @@ export default class ScoreApi {
         }
     }
 
-    public static async getAnswer(id: number): Promise<AnswerInfo> {
+    public static async getAnswer(id: number): Promise<Score> {
         const myHeaders = new Headers();
         myHeaders.append('token', Cookie.getCookie('token'));
 
@@ -96,7 +96,7 @@ export default class ScoreApi {
             headers: myHeaders,
         };
 
-        const res = await fetch(`${SERVER_URL}/api/answer/${id}`, requestOptions);
+        const res = await fetch(`${SERVER_URL}/api/score/${id}`, requestOptions);
 
         if (!res.ok) {
             notifications.show({
@@ -108,7 +108,31 @@ export default class ScoreApi {
             throw new Error('Failed to get answer');
         }
 
-        return (await res.json()) as AnswerInfo;
+        return (await res.json()) as Score;
+    }
+
+    public static async judgeAnswer(id: number): Promise<Score> {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'PATCH',
+            headers: myHeaders,
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/score/${id}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '获取问卷答案失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get answer');
+        }
+
+        return (await res.json()) as Score;
     }
 
     public static async searchAnswerList(page: number,
@@ -138,7 +162,7 @@ export default class ScoreApi {
             queryString += `&user=${user}`;
         }
 
-        const res = await fetch(`${SERVER_URL}/api/answer/search${queryString}`, requestOptions);
+        const res = await fetch(`${SERVER_URL}/api/score/search${queryString}`, requestOptions);
 
         if (!res.ok) {
             notifications.show({
@@ -166,12 +190,12 @@ export interface AnswerInfo {
     user: number;
     answers: Object;
     score: null | number;
-    create_time: string;
+    update_time: string;
     completed: boolean;
 }
 
 export interface PagedResponse<T> {
-    records: T[];
+    data: T[];
     total: number;
 }
 
@@ -179,4 +203,18 @@ export interface ScorePrompt {
     id: number;
     answer: string;
     update_time: string;
+}
+
+export interface Score {
+    id: number;
+    survey: number;
+    user: string;
+    answer: string;
+    completed: boolean;
+    update_time: string;
+    judge?: string;
+    judge_time?: string;
+    scores?: string;
+    user_scores?: number;
+    full_scores?: number;
 }

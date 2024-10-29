@@ -37,7 +37,7 @@ export default function SurveyPage() {
             .then((res) => {
                 setSurveysLoading(false);
                 setMaxPage(res.total);
-                setAnswers(res.records);
+                setAnswers(res.data);
             });
     }, [surveySearch, unconfirmedOnly, page]);
 
@@ -92,7 +92,7 @@ export default function SurveyPage() {
                                                         <Table.Td>{element.id}</Table.Td>
                                                         <Table.Td>{element.survey}</Table.Td>
                                                         <Table.Td>{element.user}</Table.Td>
-                                                        <Table.Td>{element.create_time}</Table.Td>
+                                                        <Table.Td>{element.update_time}</Table.Td>
                                                         <Table.Td>{element.completed ? '已确认' : '待确认'}</Table.Td>
                                                     </Table.Tr>
                                                 ))}
