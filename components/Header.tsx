@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Burger, Container, Group, Image, Text, Menu, Button, Modal, Stack } from '@mantine/core';
+import { Burger, Container, Group, Image, Text, Menu, Button, Modal, Stack, Input } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { ColorSchemeToggle } from '@/components/ColorSchemeToggle';
 import classes from './Header.module.css';
 import logo from '@/public/favicon.svg';
@@ -24,8 +25,13 @@ export default function Header({ opened, toggle }: HeaderProps) {
     const router = useRouter();
     const [username, setUsername] = useState<string | null>(null);
     const [uid, setUid] = useState<string | undefined>(undefined);
+    const [source, setSource] = useState<string>('');
     const [admin, setAdmin] = useState(false);
-    const [modalOpened, { open, close }] = useDisclosure(false);
+    const [logoutModalOpened, { open: logoutOpen, close: logoutClose }] = useDisclosure(false);
+    const [changePasswordModalOpened, { open: changePasswordOpen, close: changePasswordClose }] = useDisclosure(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [changing, setChanging] = useState(false);
 
     useEffect(() => {
         const status = Cookie.getCookie('status');
@@ -35,6 +41,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
             setUid(uid_);
             setUsername(username_);
             setAdmin(Cookie.getCookie('admin') === 'true');
+            setSource(Cookie.getCookie('source'));
         } else {
             setUsername(null);
         }
@@ -48,16 +55,30 @@ export default function Header({ opened, toggle }: HeaderProps) {
         }
     };
 
-    const handleLogout = () => {
-        open();
-    };
-
     useEffect(() => {
         if (sessionStorage.getItem('logOutAndRedirect') === 'true') {
             sessionStorage.removeItem('logOutAndRedirect');
             router.push('/oauth');
         }
     }, []);
+
+    const changePassword = () => {
+        setChanging(true);
+        UserApi.changePassword(oldPassword, newPassword, uid === undefined ? '' : uid).then(() => {
+            setChanging(false);
+            changePasswordClose();
+            Cookie.clearAllCookies();
+            notifications.show({
+                title: '密码修改成功',
+                message: '请重新登录',
+                color: 'green',
+            });
+            router.push('/oauth');
+        })
+            .catch(() => {
+                setChanging(false);
+            });
+    };
 
     const userItems = username === null ? (
         <Button
@@ -93,23 +114,48 @@ export default function Header({ opened, toggle }: HeaderProps) {
                 <Menu.Item>
                     UID: {uid}
                 </Menu.Item>
+                {source === 'Password' &&
+                    <Menu.Item onClick={changePasswordOpen}>
+                        更改密码
+                    </Menu.Item>}
                 {admin &&
                     <Menu.Item onClick={() => router.push('/backstage')}>
                       前往后台
                     </Menu.Item>
                 }
                 <Menu.Item
-                  onClick={handleLogout}
+                  onClick={logoutOpen}
                   style={{ color: 'red' }}
                   aria-label="Logout"
                   role="button"
                   tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && handleLogout()}
                 >
                     退出登录
                 </Menu.Item>
             </Menu.Dropdown>
-            <Modal opened={modalOpened} onClose={close} withCloseButton={false} centered>
+            <Modal opened={changePasswordModalOpened} onClose={changePasswordClose}>
+                <Stack>
+                    <Input.Wrapper label="旧密码">
+                        <Input
+                          type="password"
+                          value={oldPassword}
+                          onChange={(e) => setOldPassword(e.target.value)} />
+                    </Input.Wrapper>
+
+                    <Input.Wrapper label="新密码">
+                        <Input
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)} />
+                    </Input.Wrapper>
+                    <Button onClick={changePassword}>修改</Button>
+                </Stack>
+            </Modal>
+            <Modal
+              opened={logoutModalOpened}
+              onClose={logoutClose}
+              withCloseButton={false}
+              centered>
                 <Stack>
                     <Text>
                         是否要在所有设备上退出登录？

@@ -34,7 +34,7 @@ export function LoginBanner() {
             <Image src={image.src} w="100%" />
           </Container>
           <div className={classes.body}>
-            <Title className={classes.title}>苦力怕论坛</Title>
+            <Title className={classes.title}>苦力怕论坛登录</Title>
             <Text fw={500} fz="lg" mb={5}>
               请授权我们获取您的苦力怕论坛信息
             </Text>

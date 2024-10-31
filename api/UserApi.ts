@@ -43,7 +43,7 @@ export default class UserApi {
     }
 
     public static async getUserInfo(token: string):
-        Promise<{ uid: string, username: string, admin: boolean }> {
+        Promise<{ uid: string, username: string, admin: boolean, source: string }> {
         const myHeaders = new Headers();
         myHeaders.append('token', token);
 
@@ -65,7 +65,7 @@ export default class UserApi {
             throw new Error('Failed to get user info');
         }
 
-        return JSON.parse(await res.text());
+        return res.json();
     }
 
     public static async getOtherUserInfo(uid: string):
@@ -99,5 +99,61 @@ export default class UserApi {
         }
 
         return res.json();
+    }
+
+    public static async register(username: string, password: string) {
+        const requestOptions: RequestInit = {
+            method: 'POST',
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/user/password?username=${username}&password=${password}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '注册失败',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get judge result');
+        }
+    }
+
+    public static async login(username: string, password: string) {
+        const requestOptions: RequestInit = {
+            method: 'GET',
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/user/password?username=${username}&password=${password}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '登录失败',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get judge result');
+        }
+
+        return res.text();
+    }
+
+    public static async changePassword(old_password: string, new_password: string, id: string) {
+        const requestOptions: RequestInit = {
+            method: 'PUT',
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/user/password?old=${old_password}&new=${new_password}&id=${id}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '注册失败',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get judge result');
+        }
     }
 }
