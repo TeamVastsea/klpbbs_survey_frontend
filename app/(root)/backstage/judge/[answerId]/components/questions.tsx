@@ -1,46 +1,33 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { Group, Space, Stack, Text } from '@mantine/core';
 import { generateQuestion, InputProps } from '@/app/(root)/survey/components/generateQuestion';
-import QuestionApi, { QuestionProps } from '@/api/QuestionApi';
+import { Question } from '@/api/QuestionApi';
 
-export default function Question(props: PageQuestionProps) {
-    const [question, setQuestion] = useState<QuestionProps | undefined>(undefined);
-
-    useEffect(() => {
-        QuestionApi.fetchSingleQuestionAdmin(props.id)
-            .then((response) => {
-                setQuestion(response);
-                props.setProps(response);
-            });
-    }, [props.id]);
-
+export default function QuestionCard(props: PageQuestionProps) {
     return (
         <Stack>
-            {question
-                ? !props.checkAccess(question.condition as string)
-                    ? '(隐藏题目, 用户无需作答)'
-                    : null
+            {!props.checkAccess(JSON.stringify(props.question.condition))
+                ? '(隐藏题目, 用户无需作答)'
                 : null}
-            {question ?
-                generateQuestion(question, props.value, props.setValue, props.disabled)
-                : null}
-            {question?.answer ?
+            {generateQuestion(props.question, props.value, props.setValue, true)}
+            {props.question.answer?.answer &&
                 <Group>
-                    <Text>标准答案：{question.answer}</Text>
+                    <Text>标准答案：{props.question.answer.answer}</Text>
                     <Text>用户选择：{props.value}</Text>
                     <Text>得分：{props.score}</Text>
-                </Group> : null}
+                    {props.question.answer.all_points &&
+                        <Text>满分：{props.question.answer.all_points}</Text>}
+                    {props.question.answer.sub_points &&
+                        <Text>半分：{props.question.answer.sub_points}</Text>}
+                </Group>}
             <Space h={40} />
         </Stack>
     );
 }
 
 export interface PageQuestionProps extends InputProps {
-    id: string,
+    question: Question,
     checkAccess: (ruleStr: string) => boolean,
-    setProps: (value: QuestionProps) => void,
-    disabled: boolean,
     score?: number,
 }

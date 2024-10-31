@@ -1,7 +1,7 @@
 import { Button, Checkbox, Group, Input, NumberInput, Select, Stack } from '@mantine/core';
 import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { QuestionProps, Value } from '@/api/QuestionApi';
+import { Question, Value } from '@/api/QuestionApi';
 import AnswerEditor from '@/app/(root)/backstage/editor/[id]/components/AnswerEditor';
 import OptionsEditor from '@/app/(root)/backstage/editor/[id]/components/OptionsEditor';
 
@@ -42,7 +42,7 @@ export default function EditCard(props: EditCardProps) {
         setEdit(true);
         props.setQuestion({
             ...props.question,
-            condition: e.target.value,
+            condition: JSON.parse(e.target.value),
         });
     };
 
@@ -67,25 +67,52 @@ export default function EditCard(props: EditCardProps) {
     const changeAnswer = (e: string | undefined) => {
         setEdit(true);
 
+        if (e === undefined) {
+            props.setQuestion({
+                ...props.question,
+                answer: undefined,
+            });
+            return;
+        }
+
         props.setQuestion({
             ...props.question,
-            answer: e,
+            answer: {
+                ...props.question.answer,
+                answer: e,
+            },
         });
     };
 
     const changeAllScore = (e: number | string) => {
         setEdit(true);
+
+        if (props.question.answer === undefined) {
+            return;
+        }
+
         props.setQuestion({
             ...props.question,
-            all_points: Number(e),
+            answer: {
+                ...props.question.answer,
+                all_points: Number(e),
+            },
         });
     };
 
     const changeSubScore = (e: number | string) => {
         setEdit(true);
+
+        if (props.question.answer === undefined) {
+            return;
+        }
+
         props.setQuestion({
             ...props.question,
-            sub_points: Number(e),
+            answer: {
+                ...props.question.answer,
+                sub_points: Number(e),
+            },
         });
     };
 
@@ -97,37 +124,37 @@ export default function EditCard(props: EditCardProps) {
         });
     };
 
-    function save() {
+    const save = () => {
         setEdit(false);
 
         props.save && props.save();
-    }
+    };
 
-    function mapType(type: number) {
+    const checkType = (type: string) => {
         switch (type) {
-            case 1:
+            case '文本':
+                return 'Text';
+            case '单选':
+                return 'SingleChoice';
+            case '多选':
+                return 'MultipleChoice';
+            default:
+                return '';
+        }
+    };
+
+    const parseType = (type: string) => {
+        switch (type) {
+            case 'Text':
                 return '文本';
-            case 2:
+            case 'SingleChoice':
                 return '单选';
-            case 3:
+            case 'MultipleChoice':
                 return '多选';
             default:
                 return '';
         }
-    }
-
-    function checkType(type: string) {
-        switch (type) {
-            case '文本':
-                return 1;
-            case '单选':
-                return 2;
-            case '多选':
-                return 3;
-            default:
-                return 0;
-        }
-    }
+    };
 
     return (
         <Stack>
@@ -142,18 +169,18 @@ export default function EditCard(props: EditCardProps) {
                 {/* TODO: add condition editor */}
                 <Input
                   placeholder="条件"
-                  value={props.question.condition == null ? '' : props.question.condition}
+                  value={props.question.condition == null ? '' : JSON.stringify(props.question.condition)}
                   onChange={changeCondition} />
             </Input.Wrapper>
 
             <Select
               label="题目类型"
               data={['文本', '多选', '单选']}
-              value={mapType(props.question.type)}
+              value={parseType(props.question.type)}
               onChange={changeType}
             />
 
-            {(props.question.type === 2 || props.question.type === 3) && (
+            {(props.question.type === 'SingleChoice' || props.question.type === 'MultipleChoice') && (
                 <>
                     <Input.Wrapper label="选项">
                         <Input
@@ -183,11 +210,11 @@ export default function EditCard(props: EditCardProps) {
                           pointer
                           onClick={answerOpen}
                         >
-                            {props.question.answer}
+                            {props.question.answer?.answer}
                         </Input>
                     </Input.Wrapper>
                     <AnswerEditor
-                      answer={props.question.answer}
+                      answer={props.question.answer?.answer}
                       setAnswer={changeAnswer}
                       opened={answerOpened}
                       close={answerClose}
@@ -197,16 +224,16 @@ export default function EditCard(props: EditCardProps) {
 
                     <NumberInput
                       label="总分"
-                      value={props.question.all_points ?? 0}
+                      value={props.question.answer?.all_points ?? 0}
                       onChange={changeAllScore}
                     />
                 </>
             )}
 
-            {props.question.type === 3 &&
+            {props.question.type === 'MultipleChoice' &&
                 <NumberInput
                   label="半分"
-                  value={props.question.sub_points ?? 0}
+                  value={props.question.answer?.sub_points ?? 0}
                   onChange={changeSubScore}
                 />
             }
@@ -225,8 +252,8 @@ export default function EditCard(props: EditCardProps) {
 }
 
 export interface EditCardProps {
-    question: QuestionProps;
-    setQuestion: (value: QuestionProps) => void;
+    question: Question;
+    setQuestion: (value: Question) => void;
     save?: () => void;
     cancel?: () => void;
     allowCancel?: boolean;

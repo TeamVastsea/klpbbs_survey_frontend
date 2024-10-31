@@ -1,95 +1,92 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Button, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
 import { IconCheck, IconInfoCircle, IconX } from '@tabler/icons-react';
-import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
-import QuestionApi, { Page, QuestionProps } from '@/api/QuestionApi';
-import SurveyApi from '@/api/SurveyApi';
+import { notifications } from '@mantine/notifications';
+import ScoreApi, { Score } from '@/api/ScoreApi';
+import QuestionApi, { Question } from '@/api/QuestionApi';
 import { Rule } from '@/app/(root)/survey/[id]/page';
-import Question from '@/app/(root)/backstage/judge/[answerId]/components/questions';
+import QuestionCard from '@/app/(root)/backstage/judge/[answerId]/components/questions';
 import JudgeApi from '@/api/JudgeApi';
-import AdminApi from '@/api/AdminApi';
 import SafeHTML from '@/components/SafeHTML';
+import PageApi, { Page } from '@/api/PageApi';
+import UserApi from '@/api/UserApi';
+import { Cookie } from '@/components/cookie';
 
 export default function JudgeSinglePage({ params }: { params: { answerId: number } }) {
     const { answerId } = params;
-    const [, setAnswer] = useState<AnswerInfo | null>(null);
-    const [userAnswer, setUserAnswer] = useState<Map<string, string>>(new Map());
-    const [scores, setScores] = useState<Map<string, number>>(new Map());
-    const [totalScore, setTotalScore] = useState<number | null>(null);
-    const [userScore, setUserScore] = useState<number | null>(null);
-    const [page, setPage] = useState<Page | null>(null);
+    const [answer, setAnswer] = useState<Score | null>(null);
+    const [userAnswer, setUserAnswer] = useState<Map<number, string>>(new Map());
+    const [scores, setScores] = useState<Map<number, number>>(new Map());
+    const [pageIndex, setPageIndex] = useState(0);
+    const [totalPage, setTotalPage] = useState(0);
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [page, setPage] = useState<Page | undefined>(undefined);
     const [completed, setCompleted] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [judgeTime, setJudgeTime] = useState<string>('');
-    const [judgeId, setJudgeId] = useState<number>(0);
-    const [judgeName, setJudgeName] = useState<string>('');
-    const questionsProps = useRef(new Map<string, QuestionProps>());
+    const [judge, setJudge] = useState('');
 
     useEffect(() => {
-        AnswerApi.getAnswer(answerId)
+        ScoreApi.getAnswer(answerId)
             .then((res) => {
                 setAnswer(res);
-                setUserAnswer(new Map(Object.entries(res.answers)));
-                setCompleted(res.completed);
-                SurveyApi.getSurvey(res.survey)
-                    .then((res2) => {
-                        fetchPage(res2.page);
+                setUserAnswer(new Map(Object.entries(JSON.parse(res.answer))
+                    .map(([key, value]) => [Number(key), String(value)])));
+                setScores(new Map(Object.entries(JSON.parse(res.scores || '{}'))
+                    .map(([key, value]) => [Number(key), Number(value)])));
+                setCompleted(res.judge != null);
+            });
+    }, [answerId]);
+
+    useEffect(() => {
+        if (answer == null) {
+            return;
+        }
+
+        PageApi.fetchPageByIndex(answer.survey, pageIndex)
+            .then((res) => {
+                setPage(res.data);
+                setTotalPage(res.total);
+                QuestionApi.fetchQuestionByPage(res.data.id)
+                    .then((result) => {
+                        setQuestions(result);
+                        setLoading(false);
                     });
             });
-    }, []);
+    }, [answer, pageIndex]);
 
-    function fetchPage(nextPage: string) {
-        QuestionApi.fetchPage(nextPage)
+    useEffect(() => {
+        if (answer == null || answer.judge === undefined) {
+            return;
+        }
+        UserApi.getOtherUserInfo(answer.judge)
             .then((res) => {
-                setPage(res);
-                return JudgeApi.doJudge(answerId.toString());
-            })
-            .then((res) => {
-                const scoreMap = new Map(Object.entries(res.scores));
-                setScores(scoreMap);
-                setTotalScore(res.full);
-                setUserScore(res.user);
-                setCompleted(res.completed);
-                setJudgeTime(res.judge_time);
-                setJudgeId(res.judge);
-                if (res.judge === 0) {
-                    return Promise.resolve({ username: '' });
-                }
-                return AdminApi.getAdminInfo(res.judge);
-            })
-            .then((res) => {
-                setJudgeName(res.username);
+                setJudge(res.username);
             });
-    }
+    }, [answer?.judge]);
 
-    const getAnswerGetter = (id: string) => userAnswer.get(id) || undefined;
-
-    const getPropsSetter = (id: string) => (value: QuestionProps) => {
-        questionsProps.current.set(id, value);
-    };
+    const getAnswerGetter = (id: number) => userAnswer.get(id) || undefined;
 
     function switchNextPage() {
         setLoading(true);
-        if (page?.next == null) {
+
+        if (pageIndex >= totalPage - 1) {
             setLoading(false);
             return;
         }
 
-        fetchPage(page.next);
-        setLoading(false);
+        setPageIndex(pageIndex + 1);
     }
 
     function switchPrevPage() {
         setLoading(true);
-        if (page?.previous == null) {
+        if (pageIndex <= 0) {
             setLoading(false);
             return;
         }
 
-        fetchPage(page.previous);
-        setLoading(false);
+        setPageIndex(pageIndex - 1);
     }
 
     function checkAccess(ruleStr: string | null): boolean {
@@ -99,29 +96,36 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
 
         const rules: Rule[] = JSON.parse(ruleStr);
 
-        for (const rule of rules) {
-            const results = rule.conditions.map((condition: Condition) => {
-                if (condition.value instanceof Array) {
-                    const value: string[] = JSON.parse(getAnswerGetter(condition.id) || '[]');
-                    for (const v of condition.value) {
-                        if (value.includes(v)) {
-                            return true;
-                        }
+        const equals = (condition: any, user: any) => {
+            if (condition instanceof Array) {
+                const answerArray: string[] = JSON.parse(user);
+
+                for (const conditionElement of condition) {
+                    if (answerArray.includes(conditionElement)) {
+                        return true;
                     }
-                    return false;
                 }
 
-                return getAnswerGetter(condition.id) === JSON.stringify(condition.value);
-            });
+                return false;
+            }
 
-            if ((rule.type === 'and' && results.every(Boolean)) ||
+            return condition === answer;
+        };
+
+        for (const rule of rules) {
+            const results = rule.conditions.map((condition) =>
+                equals(condition.value, getAnswerGetter(condition.id)));
+
+            if (
+                (rule.type === 'and' && results.every(Boolean)) ||
                 (rule.type === 'or' && results.some(Boolean)) ||
-                (rule.type === 'not' && !results.every(Boolean))) {
+                (rule.type === 'not' && !results.every(Boolean))
+            ) {
                 return true;
             }
         }
 
-        return false;
+        return rules.length === 0;
     }
 
     function save() {
@@ -129,6 +133,12 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
         JudgeApi.confirmJudge(answerId.toString()).then(() => {
             setCompleted(true);
             setLoading(false);
+
+            setAnswer({
+                ...answer,
+                judge: Cookie.getCookie('uid'),
+                judge_time: new Date().toISOString(),
+            } as Score);
         });
     }
 
@@ -154,7 +164,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
             </Center>
             <Center>
               <Text>
-                用户得分: {userScore} / {totalScore}
+                用户得分: {answer?.user_scores} / {answer?.full_scores}
               </Text>
             </Center>
             <Center>
@@ -164,34 +174,25 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
               </Group>
             </Center>
             <Center>
-              <Text>阅卷人: {judgeName}</Text>
-              <Text c="gray">&nbsp;(UID: {judgeId})</Text>
+              <Text>阅卷人: {judge}</Text>
+              <Text c="gray">&nbsp;(UID: {answer?.judge})</Text>
             </Center>
             <Center>
-              <Text>阅卷时间: {judgeTime.split('.')[0].replace('T', ' ')}</Text>
+              <Text>阅卷时间: {answer?.judge_time}</Text>
             </Center>
           </Alert>
         </Center>
         <Container maw={1600} w="90%">
           <Stack>
-            {/* <iframe
-              width="100%"
-              style={{ border: 'none' }}
-              title="title"
-              srcDoc={page?.title}
-              sandbox="allow-popups"
-            /> */}
             <SafeHTML content={page?.title || ''} />
-            {page?.content.map((question) => (
-              <Question
-                id={question}
-                key={question}
-                value={getAnswerGetter(question)}
+            {questions.map((question) => (
+              <QuestionCard
+                key={question.id}
+                question={question}
+                value={getAnswerGetter(question.id)}
                 setValue={() => {}}
-                setProps={getPropsSetter(question)}
                 checkAccess={checkAccess}
-                score={scores.get(question)}
-                disabled
+                score={scores.get(question.id)}
               />
             ))}
           </Stack>
@@ -201,7 +202,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
               <Button.Group>
                 <Button
                   variant="light"
-                  disabled={page?.previous == null}
+                  disabled={pageIndex <= 0}
                   loading={loading}
                   onClick={switchPrevPage}
                   fullWidth
@@ -210,7 +211,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                 </Button>
                 <Button
                   variant="light"
-                  disabled={page?.next == null}
+                  disabled={pageIndex >= totalPage - 1}
                   loading={loading}
                   onClick={switchNextPage}
                   fullWidth
@@ -219,17 +220,34 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                 </Button>
               </Button.Group>
             </Space>
-            <Button color="green" disabled={completed} loading={loading} onClick={save}>
-              提交
-            </Button>
+              <Button.Group>
+                  <Button color="green" disabled={answer?.judge != null} onClick={save} fullWidth>
+                      提交
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      ScoreApi.judgeAnswer(answerId).then((res) => {
+                          setAnswer(res);
+                          setUserAnswer(new Map(Object.entries(JSON.parse(res.answer))
+                              .map(([key, value]) => [Number(key), String(value)])));
+                          setScores(new Map(Object.entries(JSON.parse(res.scores || '{}'))
+                              .map(([key, value]) => [Number(key), Number(value)])));
+                          setCompleted(res.judge != null);
+                          notifications.show({
+                                title: '重新阅卷成功',
+                                message: '已重新阅卷',
+                                color: 'green',
+                          });
+                      });
+                    }}
+                    fullWidth
+                    disabled={answer?.judge != null}>
+                      重新阅卷
+                  </Button>
+              </Button.Group>
           </Stack>
           <Space h={180} />
         </Container>
       </Stack>
     );
-}
-
-interface Condition {
-    id: string;
-    value: any;
 }

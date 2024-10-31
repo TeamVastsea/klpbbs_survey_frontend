@@ -4,10 +4,10 @@ import { SingleChoice } from '@/app/(root)/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/(root)/survey/components/MultipleChoice';
 import { FileUpload } from '@/app/(root)/survey/components/FileUpload';
 import { FillBlank } from '@/app/(root)/survey/components/FillBlank';
-import { QuestionProps } from '@/api/QuestionApi';
+import { Question } from '@/api/QuestionApi';
 
 export function generateQuestion(
-    data: QuestionProps,
+    data: Question,
     value: string | undefined,
     setValue: (value: string) => void,
     isDisable: boolean = false,
@@ -20,7 +20,7 @@ export function generateQuestion(
     );
 
     switch (data.type) {
-        case 1:
+        case 'Text':
             return (
                 <div key={data.id}>
                     {titleContent}
@@ -32,7 +32,7 @@ export function generateQuestion(
                     />
                 </div>
             );
-        case 2:
+        case 'SingleChoice':
             return (
                 <div key={data.id}>
                     {titleContent}
@@ -45,7 +45,7 @@ export function generateQuestion(
                     />
                 </div>
             );
-        case 3:
+        case 'MultipleChoice':
             return (
                 <div key={data.id}>
                     {titleContent}
@@ -58,7 +58,7 @@ export function generateQuestion(
                     />
                 </div>
             );
-        case 4:
+        case 'File':
             return (
                 <div key={data.id}>
                     {titleContent}

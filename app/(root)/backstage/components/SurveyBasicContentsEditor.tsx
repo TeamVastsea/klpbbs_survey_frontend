@@ -31,7 +31,7 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
     const [title, setTitle] = useState(survey.title);
     const [description, setDescription] = useState(survey.description);
     const [image, setImage] = useState(survey.image);
-    const [budge, setBudge] = useState(survey.budge);
+    const [badge, setBadge] = useState(survey.badge);
     const [startTime, setStartTime] = useState(
         new Date(handleTimeStamp.utc2cst(new Date(survey.start_date).getTime()))
     );
@@ -48,7 +48,7 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
             ...survey,
             title,
             description,
-            budge,
+            badge,
             image,
             start_date: handleTimeStamp.cst2utc(startTime.getTime()).toISOString().split('.')[0],
             end_date: handleTimeStamp.cst2utc(endTime.getTime()).toISOString().split('.')[0],
@@ -79,7 +79,7 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
         setTitle(survey.title);
         setDescription(survey.description);
         setImage(survey.image);
-        setBudge(survey.budge);
+        setBadge(survey.badge);
         setStartTime(new Date(handleTimeStamp.utc2cst(new Date(survey.start_date).getTime())));
         setEndTime(new Date(handleTimeStamp.utc2cst(new Date(survey.end_date).getTime())));
         setAllowSubmit(survey.allow_submit);
@@ -129,15 +129,15 @@ export default function SurveyBasicContentsEditor({ survey }: SurveyEditorProps)
                             <Group justify="space-between">
                                 <Textarea
                                   label="图章"
-                                  value={budge}
+                                  value={badge}
                                   placeholder="请输入图章"
-                                  onChange={(e) => setBudge(e.currentTarget.value)}
+                                  onChange={(e) => setBadge(e.currentTarget.value)}
                                   mt="mt"
                                   autosize
                                 />
                                 <Stack>
                                     <Badge variant="light">
-                                        <Center>{budge}</Center>
+                                        <Center>{badge}</Center>
                                     </Badge>
                                 </Stack>
                             </Group>

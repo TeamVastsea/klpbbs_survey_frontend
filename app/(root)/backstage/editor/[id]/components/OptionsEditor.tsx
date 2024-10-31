@@ -46,7 +46,7 @@ export default function OptionsEditor(props: OptionsEditorProps) {
                 </Card>
                 <ScrollArea h={350} type="auto">
                     <Stack>
-                        {props.options.map((option, index) => (
+                        {props.options?.map((option, index) => (
                             <Card withBorder key={index}>
                                 <Stack style={{ position: 'relative' }}>
                                     <Group justify="space-between">
@@ -107,7 +107,7 @@ export default function OptionsEditor(props: OptionsEditorProps) {
                     </Menu>
                     <Button
                       onClick={() => {
-                            const newOptions = [...props.options];
+                            const newOptions = props.options == null ? [] : [...props.options];
                             newOptions.push({
                                 title: '',
                                 content: '',

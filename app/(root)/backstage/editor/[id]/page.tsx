@@ -1,45 +1,79 @@
 'use client';
 
-import { ActionIcon, Button, Card, Center, Container, Group, Space, Stack, Text, Title } from '@mantine/core';
+import {
+    ActionIcon,
+    Button,
+    Card,
+    Center,
+    Container,
+    Group,
+    Space,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
 import { IconGripHorizontal } from '@tabler/icons-react';
 import cx from 'clsx';
-import Question from '@/app/(root)/backstage/editor/[id]/components/question';
+import QuestionCard from '@/app/(root)/backstage/editor/[id]/components/questionCard';
 import EditCard from '@/app/(root)/backstage/editor/[id]/components/EditCard';
-import QuestionApi, { Page, QuestionContent, QuestionProps } from '@/api/QuestionApi';
-import SurveyApi from '@/api/SurveyApi';
+import QuestionApi, { Question } from '@/api/QuestionApi';
 import classes from './DndTable.module.css';
 import ClickToEdit from '@/components/ClickToEdit';
+import PageApi, { Page } from '@/api/PageApi';
 
-export default function SurveyPage({ params }: { params: { id: number } }) {
-    const [questions, setQuestions] = useState<Page | undefined>(undefined);
-    const [answers, setAnswers] = useState<Map<string, string>>(new Map());
-    const questionsProps = useRef(new Map<string, QuestionProps>());
+export default function SurveyPage({ params }: { params: { id: string } }) {
+    const [page, setPage] = useState<Page | undefined>(undefined);
+    const [pageIndex, setPageIndex] = useState(0);
+    const [totalPage, setTotalPage] = useState(0);
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [answers, setAnswers] = useState<Map<number, string>>(new Map());
+    const questionsProps = useRef(new Map<number, Question>());
     const [done, setDone] = useState(false);
     const [showNewQuestion, setShowNewQuestion] = useState(false);
-    const [newQuestionObject, setNewQuestionObject] = useState<QuestionProps>({
-        all_points: 0,
-        answer: '',
-        condition: '',
+    const [newQuestionObject, setNewQuestionObject] = useState<Question>({
+        page: Number(params.id),
+        answer: {
+            answer: '',
+            all_points: 0,
+            sub_points: 0,
+        },
+        condition: [],
         content: {
             title: '',
             content: '',
         },
-        id: '',
+        id: 0,
         required: false,
-        sub_points: 0,
-        type: 0,
+        type: 'Text',
         values: [],
     });
 
-    function updateMap<K, V>(
+    useEffect(() => {
+        setDone(false);
+        freshPage();
+    }, [params.id, pageIndex]);
+
+    const freshPage = () => {
+        PageApi.fetchPageByIndex(Number(params.id), pageIndex)
+            .then((response) => {
+                setPage(response.data);
+                setTotalPage(response.total);
+                QuestionApi.fetchQuestionByPage(response.data.id).then((res) => {
+                    setQuestions(res);
+                    setDone(true);
+                });
+            });
+    };
+
+    const updateMap = <K, V>(
         map: Map<K, V>,
         key: K,
         value?: V,
         setMap?: React.Dispatch<React.SetStateAction<Map<K, V>>> | React.MutableRefObject<Map<K, V>>
-    ): V | undefined {
+    ) => {
         if (setMap) {
             if (typeof setMap === 'function') {
                 const newMap = new Map(map);
@@ -51,78 +85,45 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return undefined;
         }
         return map.get(key);
-    }
+    };
 
-    const getAnswerSetter = (id: string) => (value: string) => {
+    const getAnswerSetter = (id: number) => (value: string) => {
         updateMap(answers, id, value, setAnswers);
     };
 
-    const getAnswerGetter = (id: string) => updateMap(answers, id, undefined);
+    const getAnswerGetter = (id: number) => updateMap(answers, id, undefined);
 
-    const getPropsSetter = (id: string) => (value: QuestionProps) => {
+    const getPropsSetter = (id: number) => (value: Question) => {
         updateMap(questionsProps.current, id, value, questionsProps);
     };
 
     const handleDragEnd = (result: DropResult) => {
-        if (!result.destination) return;
+        if (page == null ||
+            result.destination == null ||
+            result.source.index === result.destination.index) {
+            return;
+        }
 
-        const updatedQuestions = Array.from(questions?.content || []);
-        const [movedQuestion] = updatedQuestions.splice(result.source.index, 1);
-        updatedQuestions.splice(result.destination.index, 0, movedQuestion);
+        setDone(false);
+        setQuestions([]);
 
-        setQuestions((prev) => {
-            if (!prev) return prev;
-            return {
-                ...prev,
-                content: updatedQuestions,
-            };
-        });
-
-        savePage();
+        QuestionApi.swapQuestion(page.id, result.source.index, result.destination.index)
+            .then(() => {
+                QuestionApi.fetchQuestionByPage(page.id).then((res) => {
+                    setQuestions(res);
+                    setDone(true);
+                });
+            }); // fresh page doesn't work here
     };
 
-    useEffect(() => {
-        setDone(false);
-        SurveyApi.getSurvey(params.id).then((res) => {
-            fetchPage(res.page);
-        });
-    }, [params.id]);
-
-    function fetchPage(page: string | undefined | null) {
+    async function createPage() {
         if (page == null) {
             return;
         }
-        savePage();
-        setDone(false);
-
-        QuestionApi.fetchPage(page).then((response) => {
-            setQuestions(response);
-            setDone(true);
-        });
-    }
-
-    async function createPage() {
-        if (questions == null) {
-            return;
-        }
         // create new page
-        const newPageId: string = await QuestionApi.createPage();
-        // get all pages
-        const nextPage: Page | null = questions.next == null ?
-          null : await QuestionApi.fetchPage(questions.next);
-        const thisPage: Page = questions;
-        const newPage: Page = await QuestionApi.fetchPage(newPageId);
-        // update index
-        thisPage.next = newPageId;
-        newPage.next = nextPage?.id || null;
-        newPage.previous = thisPage.id;
-        savePageByPage(thisPage);
-        setQuestions(thisPage);
-        savePageByPage(newPage);
-        if (nextPage) {
-            nextPage.previous = newPageId;
-            savePageByPage(nextPage);
-        }
+        await PageApi.newPage('', Number(params.id), pageIndex);
+
+        setTotalPage(totalPage + 1);
 
         notifications.show({
             title: '新建页面成功',
@@ -131,100 +132,66 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         });
     }
 
-    function savePage() {
-        if (questions == null) {
+    const newQuestion = () => {
+        if (page == null) {
             return;
         }
 
-        savePageByPage(questions, true);
-    }
-    function savePageByPage(page: Page, showNotification: boolean = false) {
-        QuestionApi.updatePage(page).then(() => {
-            if (showNotification) {
-                notifications.show({
-                    title: '保存页面成功',
-                    message: '保存页面成功',
-                    color: 'green',
-                });
-            }
-        });
-    }
-
-    function newQuestion() {
         setNewQuestionObject({
-            all_points: 0,
-            answer: '',
-            condition: '',
+            page: page.id,
+            answer: {
+                answer: '',
+                all_points: 0,
+                sub_points: 0,
+            },
+            condition: [],
             content: {
                 title: '',
                 content: '',
             },
-            id: '',
+            id: 0,
             required: false,
-            sub_points: 0,
-            type: 0,
+            type: 'Text',
             values: [],
         });
 
         setShowNewQuestion(true);
-    }
+    };
 
     function saveNewQuestion() {
-        let type = '';
-
-        if (newQuestionObject.type === 1) {
-            type = 'Text';
-        } else if (newQuestionObject.type === 2) {
-            type = 'SingleChoice';
-        } else if (newQuestionObject.type === 3) {
-            type = 'MultipleChoice';
-        } else {
-            notifications.show({
-                title: '题目类型错误',
-                message: '请选择题目类型',
-                color: 'red',
-            });
+        if (page == null) {
             return;
         }
 
-        const content: QuestionContent = {
-            content: newQuestionObject.content,
-            type,
-            values: newQuestionObject.values,
-            condition: newQuestionObject.condition
-                ? JSON.parse(newQuestionObject.condition).toString()
-                : undefined,
-            required: newQuestionObject.required,
-            answer: newQuestionObject.answer === undefined || newQuestionObject.answer === '' ?
-                undefined : {
-                    answer: newQuestionObject.answer
-                        ? JSON.parse(newQuestionObject.answer).toString()
-                        : undefined,
-                    all_points: newQuestionObject.all_points,
-                    sub_points: newQuestionObject.sub_points,
-                },
-        };
+        setNewQuestionObject({
+            ...newQuestionObject,
+            page: page.id,
+        });
 
-        QuestionApi.createQuestion(content).then((res) => {
+        QuestionApi.createQuestion(newQuestionObject).then(() => {
             notifications.show({
                 title: '创建题目成功',
                 message: '创建题目成功',
                 color: 'green',
             });
             setShowNewQuestion(false);
-
-            if (questions) {
-                const newContent = questions.content;
-                newContent?.push(res);
-                setQuestions({
-                    ...questions,
-                    content: newContent,
-                });
-            }
-
-            savePage();
+            freshPage();
         });
     }
+
+    const savePage = () => {
+        if (page == null) {
+            return;
+        }
+
+        PageApi.updatePage(page).then(() => {
+            notifications.show({
+                title: '保存成功',
+                message: '保存成功',
+                color: 'green',
+            });
+        });
+    };
 
     return (
         <Stack>
@@ -239,47 +206,49 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                 <Container maw={1600} w="90%">
                     <ClickToEdit
                       alwaysShowBar
-                      content={questions?.title || ''}
-                      onSave={title => {
-                        if (questions) {
-                            const newQuestions = { ...questions, title };
-                            setQuestions(newQuestions);
-                            savePageByPage(questions);
-                        }
-                    }} />
+                      content={page?.title || ''}
+                      onSave={(title) => {
+                            if (page) {
+                                const newQuestions = { ...page, title };
+                                setPage(newQuestions);
+                                savePage();
+                            }
+                        }}
+                    />
                     <DragDropContext onDragEnd={handleDragEnd}>
                         <Droppable droppableId="questions-list" direction="vertical">
                             {(droppableProvided) => (
                                 <Stack
-                                  {...droppableProvided.droppableProps}
                                   ref={droppableProvided.innerRef}
-                                >
-                                    {questions?.content.map((questionId, index) => (
+                                  {...droppableProvided.droppableProps}>
+                                    {questions.map((question, index) => (
                                         <Draggable
-                                          key={questionId}
-                                          draggableId={questionId}
-                                          index={index}
-                                        >
+                                          key={question.id}
+                                          draggableId={question.id.toString()}
+                                          index={index}>
                                             {(draggableProvided, snapshot) => (
                                                 <Card
                                                   ref={draggableProvided.innerRef}
                                                   {...draggableProvided.draggableProps}
                                                   className={cx(classes.item, {
-                                                        [classes.itemDragging]:
-                                                        snapshot.isDragging,
+                                                        [classes.itemDragging]: snapshot.isDragging,
                                                     })}
                                                   withBorder
                                                   radius="md"
                                                 >
                                                     <Stack>
-                                                        <ActionIcon {...draggableProvided.dragHandleProps} variant="subtle" color="gray">
+                                                        <ActionIcon
+                                                          {...draggableProvided.dragHandleProps}
+                                                          variant="subtle"
+                                                          color="gray"
+                                                        >
                                                             <IconGripHorizontal />
                                                         </ActionIcon>
-                                                        <Question
-                                                          id={questionId}
-                                                          value={getAnswerGetter(questionId)}
-                                                          setValue={getAnswerSetter(questionId)}
-                                                          setProps={getPropsSetter(questionId)}
+                                                        <QuestionCard
+                                                          question={question}
+                                                          value={getAnswerGetter(question.id)}
+                                                          setValue={getAnswerSetter(question.id)}
+                                                          setProps={getPropsSetter(question.id)}
                                                           checkAccess={() => true}
                                                         />
                                                     </Stack>
@@ -299,27 +268,25 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
                         <Button.Group>
                             <Button
                               variant="light"
-                              disabled={questions?.previous == null}
-                              // loading={}
-                              onClick={() => fetchPage(questions?.previous)}
+                              disabled={pageIndex <= 0}
+                                // loading={}
+                              onClick={() => setPageIndex(pageIndex - 1)}
                               fullWidth
                             >
                                 上一页
                             </Button>
                             <Button
                               variant="light"
-                              disabled={questions?.next == null}
-                              // loading={loading}
-                              onClick={() => fetchPage(questions?.next)}
+                              disabled={pageIndex >= totalPage - 1}
+                                // loading={}
+                              onClick={() => setPageIndex(pageIndex + 1)}
                               fullWidth
                             >
                                 下一页
                             </Button>
                         </Button.Group>
                         <Group grow>
-                            <Button onClick={createPage}>
-                                新建页面
-                            </Button>
+                            <Button onClick={createPage}>新建页面</Button>
                             <Button onClick={newQuestion}>新建问题</Button>
                             <Button onClick={savePage}>保存页面</Button>
                         </Group>

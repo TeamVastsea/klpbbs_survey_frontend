@@ -29,7 +29,7 @@ export default class SurveyApi {
 
         const res = await fetch(`${SERVER_URL}/api/survey/${id}`, requestOptions);
 
-        const result: SurveyResponse = JSON.parse(await res.text());
+        const result: SurveyInfo = JSON.parse(await res.text());
 
         return result;
     };
@@ -79,24 +79,12 @@ export default class SurveyApi {
 
 export type NewSurveyInfo = Omit<SurveyInfo, 'id'>;
 
-export interface SurveyResponse {
-    id: number;
-    title: string;
-    budge: string;
-    description: string;
-    image: string;
-    page: string;
-    start_date: string;
-    end_date: string;
-}
-
 export interface SurveyInfo {
     id: number;
     title: string;
-    budge: string;
+    badge: string;
     description: string;
     image: string;
-    page: string;
     start_date: string;
     end_date: string;
     allow_submit: boolean;

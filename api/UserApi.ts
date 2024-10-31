@@ -1,16 +1,14 @@
 import { notifications } from '@mantine/notifications';
 import { SERVER_URL } from '@/api/BackendApi';
+import { Cookie } from '@/components/cookie';
 
 export default class UserApi {
-    public static async getToken(): Promise<string> {
-        const myHeaders = new Headers();
-
+    public static async getToken(token: string): Promise<string> {
         const requestOptions: RequestInit = {
-            method: 'POST',
-            headers: myHeaders,
+            method: 'GET',
         };
 
-        const res = await fetch(`${SERVER_URL}/api/user`, requestOptions);
+        const res = await fetch(`${SERVER_URL}/api/oauth?token=${token}`, requestOptions);
 
         if (!res.ok) {
             notifications.show({
@@ -25,31 +23,27 @@ export default class UserApi {
         return res.text();
     }
 
-    public static async activateToken(state: string, token: string): Promise<{}> {
+    public static async invalidateToken(token: string) {
         const myHeaders = new Headers();
+        myHeaders.append('token', token);
 
         const requestOptions: RequestInit = {
-            method: 'GET',
+            method: 'DELETE',
             headers: myHeaders,
             redirect: 'follow',
         };
 
-        const res = await fetch(`${SERVER_URL}/api/oauth?state=${state}&token=${token}`, requestOptions);
-
-        if (!res.ok) {
-            notifications.show({
-                title: '激活 token 失败, 请将以下信息反馈给管理员',
-                message: `${res.statusText}: ${await res.text()}`,
-                color: 'red',
-            });
-
-            throw new Error('Failed to activate token');
-        }
-
-        return {};
+        fetch(`${SERVER_URL}/api/user`, requestOptions)
+          .then(() => {})
+          .catch((e) => notifications.show({
+              title: '注销失败, 请将以下信息反馈给管理员',
+              message: e.toString(),
+              color: 'red',
+          }));
     }
 
-    public static async getUserInfo(token: string): Promise<{ uid: string, username: string }> {
+    public static async getUserInfo(token: string):
+        Promise<{ uid: string, username: string, admin: boolean }> {
         const myHeaders = new Headers();
         myHeaders.append('token', token);
 
@@ -72,5 +66,38 @@ export default class UserApi {
         }
 
         return JSON.parse(await res.text());
+    }
+
+    public static async getOtherUserInfo(uid: string):
+        Promise<{ uid: string, username: string, admin: boolean }> {
+        if (uid === null) {
+            return {
+                uid: '',
+                username: '',
+                admin: false,
+            };
+        }
+
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/user/${uid}`, requestOptions);
+
+        if (!res.ok) {
+            notifications.show({
+                title: '判卷失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get judge result');
+        }
+
+        return res.json();
     }
 }

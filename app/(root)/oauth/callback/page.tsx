@@ -14,12 +14,12 @@ export default function CallbackPage() {
     const [uid, setUid] = useState('11');
     const [loading, setLoading] = useState(true);
 
-    const state = searchParams.get('state');
+    // const state = searchParams.get('state');
     const token = searchParams.get('token');
 
-    UserApi.activateToken(state as string, token as string)
-        .then(() => {
-            UserApi.getUserInfo(state as string)
+    UserApi.getToken(token as string)
+        .then((credentials) => {
+            UserApi.getUserInfo(credentials)
                 .then((result) => {
                     Cookie.clearAllCookies();
                     const user = result;
@@ -27,7 +27,8 @@ export default function CallbackPage() {
                     Cookie.setCookie('status', 'ok', 7);
                     Cookie.setCookie('uid', user.uid, 7);
                     Cookie.setCookie('username', user.username, 7);
-                    Cookie.setCookie('token', state as string, 7);
+                    Cookie.setCookie('token', credentials, 7);
+                    Cookie.setCookie('admin', user.admin ? 'true' : 'false', 7);
 
                     setUid(user.uid);
                     setUsername(user.username);
@@ -40,7 +41,7 @@ export default function CallbackPage() {
             <Stack>
                 <Space h={100} />
                 <Box pos="relative">
-                    { !loading && <UserInfoCard uid={uid} username={username} /> }
+                    <UserInfoCard uid={uid} username={username} />
                     <LoadingOverlay visible={loading} overlayProps={{ radius: 'sm', blur: 2 }} />
                 </Box>
                 <Space h={100} />

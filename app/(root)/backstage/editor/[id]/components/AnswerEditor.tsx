@@ -4,14 +4,14 @@ import { SingleChoice } from '@/app/(root)/survey/components/SingleChoice';
 import { MultipleChoice } from '@/app/(root)/survey/components/MultipleChoice';
 
 export default function AnswerEditor(props: AnswerEditorProps) {
-    const dispatchType = (type: number) => {
+    const dispatchType = (type: string) => {
         switch (type) {
-            case 2:
+            case 'SingleChoice':
                 return <SingleChoice
                   choice={props.options}
                   value={props.answer}
                   setValue={props.setAnswer} />;
-            case 3:
+            case 'MultipleChoice':
                 return <MultipleChoice
                   choice={props.options}
                   value={props.answer}
@@ -40,7 +40,7 @@ export default function AnswerEditor(props: AnswerEditorProps) {
 export interface AnswerEditorProps {
     answer: string | undefined;
     options: Value[];
-    type: number;
+    type: string;
     setAnswer: (value: string | undefined) => void;
     opened: boolean;
     close: () => void;

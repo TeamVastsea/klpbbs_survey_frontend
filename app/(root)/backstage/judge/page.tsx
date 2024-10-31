@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AnswerApi, { AnswerInfo } from '@/api/AnswerApi';
+import ScoreApi, { AnswerInfo } from '@/api/ScoreApi';
 import AsyncPagedSelect from '@/app/(root)/backstage/judge/components/AsyncPagedSelect';
 
 export default function SurveyPage() {
@@ -29,7 +29,7 @@ export default function SurveyPage() {
 
     useEffect(() => {
         setSurveysLoading(true);
-        AnswerApi.searchAnswerList(page,
+        ScoreApi.searchAnswerList(page,
             10,
             surveySearch ? Number(surveySearch) : null,
             null,
@@ -37,7 +37,7 @@ export default function SurveyPage() {
             .then((res) => {
                 setSurveysLoading(false);
                 setMaxPage(res.total);
-                setAnswers(res.records);
+                setAnswers(res.data);
             });
     }, [surveySearch, unconfirmedOnly, page]);
 
@@ -92,7 +92,7 @@ export default function SurveyPage() {
                                                         <Table.Td>{element.id}</Table.Td>
                                                         <Table.Td>{element.survey}</Table.Td>
                                                         <Table.Td>{element.user}</Table.Td>
-                                                        <Table.Td>{element.create_time}</Table.Td>
+                                                        <Table.Td>{element.update_time}</Table.Td>
                                                         <Table.Td>{element.completed ? '已确认' : '待确认'}</Table.Td>
                                                     </Table.Tr>
                                                 ))}
