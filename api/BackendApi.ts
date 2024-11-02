@@ -2,7 +2,7 @@ import { notifications } from '@mantine/notifications';
 import { Cookie } from '@/components/cookie';
 
 export const SERVER_URL = process.env.NEXT_PUBLIC_BACKEND_URL === undefined ?
-    'https://wj.klpbbs.cn' : process.env.NEXT_PUBLIC_BACKEND_URL;
+    '' : process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const handleError = (errorMessage: string, status: number) => {
     if (status === 401) {
