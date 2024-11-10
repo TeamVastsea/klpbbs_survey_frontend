@@ -19,9 +19,9 @@ In order to make it easier and faster for KLPBBS users to fill out survey, KLPBB
 
 Using this system, KLPBBS users can quickly log in using their KLPBBS account without having to repeatedly register or create a new account, greatly optimizing the user experience
 
-## Licence
+## License
 
-This project is licensed under the MIT license, please refer to [LICENCE](./LICENSE) for details 
+This project is licensed under the MIT license, please refer to [LICENSE](./LICENSE) for details 
 
 ## Contribute
 
