@@ -21,7 +21,7 @@ Using this system, KLPBBS users can quickly log in using their KLPBBS account wi
 
 ## Licence
 
-This project is licensed under the MIT license, please refer to [LICENCE](./LICENSE) for details 
+This project is licensed under the MIT license, please refer to [LICENSE](./LICENSE) for details 
 
 ## Contribute
 
