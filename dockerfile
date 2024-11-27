@@ -1,24 +1,13 @@
-FROM node:18-alpine AS base
+# syntax=docker.io/docker/dockerfile:1
 
-FROM base AS deps
+FROM node:23-alpine AS base
+
+FROM base AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
-
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+RUN corepack enable yarn && yarn --frozen-lockfile && yarn run build
 
 FROM base AS runner
 WORKDIR /app
