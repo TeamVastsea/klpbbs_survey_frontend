@@ -2,25 +2,12 @@
 
 FROM node:23-alpine AS base
 
-FROM base AS deps
+FROM base AS builder
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json yarn.lock ./
-RUN \
-  if [ -f yarn.lock ]; then corepack enable yarn && yarn --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
-
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-RUN \
-  if [ -f yarn.lock ]; then yarn run build; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+RUN corepack enable yarn && yarn --frozen-lockfile && yarn run build
 
 FROM base AS runner
 WORKDIR /app
