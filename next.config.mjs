@@ -17,6 +17,7 @@ const nextConfig = {
         optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
     },
     pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+    output: "standalone",
 };
 
 export default withBundleAnalyzer(
