@@ -15,25 +15,22 @@
     "jest:watch": "jest --watch",
     "prettier:check": "prettier --check \"**/*.{ts,tsx}\"",
     "prettier:write": "prettier --write \"**/*.{ts,tsx}\"",
-    "test": "npm run prettier:check && npm run lint && npm run typecheck && npm run jest",
-    "storybook": "storybook dev -p 6006",
-    "storybook:build": "storybook build"
+    "test": "npm run prettier:check && npm run lint && npm run typecheck && npm run jest"
   },
   "dependencies": {
     "@mantine/core": "7.15.2",
     "@mantine/hooks": "7.15.2",
     "@next/bundle-analyzer": "^14.2.4",
     "@tabler/icons-react": "^3.6.0",
-    "next": "15.0.1",
+    "next": "15.1.2",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "swr": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",
     "@eslint/js": "^9.15.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
-    "@storybook/nextjs": "^8.1.10",
-    "@storybook/react": "^8.1.10",
     "@testing-library/dom": "^10.1.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
@@ -53,8 +50,6 @@
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.3.2",
-    "storybook": "^8.1.10",
-    "storybook-dark-mode": "^4.0.2",
     "stylelint": "^16.6.1",
     "stylelint-config-standard-scss": "^13.1.0",
     "ts-jest": "^29.1.5",
