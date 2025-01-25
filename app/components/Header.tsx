@@ -25,7 +25,9 @@ export default function Header({opened, toggle}: HeaderProps) {
   const router = useRouter();
   const user = useUser();
   const [modalOpened, {open, close}] = useDisclosure(false);
-  const avatar_url = `https://user.klpbbs.com/data/avatar/${user.user?.uid.substring(0, 3)}/${user.user?.uid.substring(3, 5)}/${user.user?.uid.substring(5, 7)}/${user.user?.uid.substring(7, 9)}_avatar_big.jpg`;
+  const id_str = user.user?.uid.padStart(9, '0');
+  const avatar_url = `https://user.klpbbs.com/data/avatar/${id_str?.substring(0, 3)}/${id_str?.substring(3, 5)}/${id_str?.substring(5, 7)}/${id_str?.substring(7, 9)}_avatar_big.jpg`;
+
 
   const handleClick = (link: string) => {
     if (link.startsWith('http')) {
@@ -76,8 +78,8 @@ export default function Header({opened, toggle}: HeaderProps) {
               </Popover.Target>
 
               <Popover.Dropdown>
-                <Stack>
-                  <Avatar src={avatar_url} alt={user.user?.username}/>
+                <Stack align="center">
+                  <Avatar size="lg" src={avatar_url} alt={user.user?.username}/>
                   <Text>用户名: {user.user?.username}</Text>
                   <Text>uid: {user.user?.uid}</Text>
                   <Button onClick={handleLogout}>退出</Button>
