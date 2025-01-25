@@ -1,33 +1,55 @@
+'use client';
+
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
 import React from 'react';
-import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
-import { theme } from '@/theme';
+import {AppShell, ColorSchemeScript, mantineHtmlProps, MantineProvider} from '@mantine/core';
+import {theme} from '@/theme';
 import {Notifications} from "@mantine/notifications";
+import {useDisclosure} from "@mantine/hooks";
+import Header from "@/app/components/Header";
 
-export const metadata = {
-  title: 'Mantine Next.js template',
-  description: 'I am using Mantine with Next.js!',
-};
+// export const metadata = {
+//   title: 'KLPBBS 问卷',
+//   description: '问卷系统',
+// };
 
-export default function RootLayout({ children }: { children: any }) {
+export default function RootLayout({children}: { children: any }) {
+  const [opened, {toggle}] = useDisclosure();
+
   return (
     <html lang="en" {...mantineHtmlProps}>
-      <head>
-        <ColorSchemeScript />
-        <link rel="shortcut icon" href="/favicon.svg" />
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
-        />
-      </head>
-      <body>
-        <MantineProvider theme={theme}>
-          <Notifications />
-          {children}
-        </MantineProvider>
-      </body>
+    <head>
+      <ColorSchemeScript/>
+      <link rel="shortcut icon" href="/favicon.svg"/>
+      <meta
+        name="viewport"
+        content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
+      />
+    </head>
+    <body>
+    <MantineProvider theme={theme}>
+      <Notifications/>
+      <AppShell
+        header={{height: 60}}
+        aside={{width: 0, breakpoint: 'sm', collapsed: {mobile: !opened}}}
+      >
+        <AppShell.Header>
+          <Header opened={opened} toggle={toggle}/>
+        </AppShell.Header>
+
+        <AppShell.Main>{children}</AppShell.Main>
+        <AppShell.Footer mah={120}>
+          {/*<Footer />*/}
+        </AppShell.Footer>
+
+        <AppShell.Aside>
+          {/*<NavbarList />*/}
+        </AppShell.Aside>
+      </AppShell>
+    </MantineProvider>
+    </body>
     </html>
   );
 }

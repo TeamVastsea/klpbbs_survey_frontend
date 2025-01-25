@@ -1,0 +1,25 @@
+.link {
+    display: block;
+    border-radius: var(--mantine-radius-sm);
+    text-decoration: none;
+    color: var(--mantine-color-gray-7);
+    font-size: var(--mantine-font-size-sm);
+
+    [data-active] {
+        background-color: var(--mantine-color-blue-filled);
+        color: var(--mantine-color-white);
+    }
+
+    [data-mantine-color-scheme="dark"] & {
+        color: var(--mantine-color-dark-0);
+
+        &:hover {
+            background-color: var(--mantine-color-dark-6);
+        }
+
+        [data-active] {
+            background-color: var(--mantine-color-blue-filled);
+            color: var(--mantine-color-white);
+        }
+    }
+}
