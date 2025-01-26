@@ -10,7 +10,8 @@ export function baseFetcher<T>(
   method: string,
   useToken: boolean,
   body?: string,
-  params?: URLSearchParams
+  params?: URLSearchParams,
+  needParse: boolean = true,
 ): () => Promise<T> {
   return async () => {
     let requestUrl = SERVER_URL + url;
@@ -45,6 +46,10 @@ export function baseFetcher<T>(
       throw new Error(responseText);
     }
 
+    if (!needParse) {
+      return responseText as unknown as T;
+    }
+
 
     return JSON.parse(responseText) as T;
   };
@@ -57,9 +62,7 @@ export function errorHandler(code: number, message: string, _path: string) {
       break;
     case 401: // Invalid token
       if (!location.href.endsWith('/oauth') && !location.href.endsWith('/')) {
-        localStorage.removeItem('token');
         notifications.show({title: '登录无效', message: '请先登录', color: 'red'});
-        location.href = '/oauth';
       }
       break;
     case 403: // Permission denied
