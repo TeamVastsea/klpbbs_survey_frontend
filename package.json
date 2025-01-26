@@ -20,6 +20,7 @@
   "dependencies": {
     "@mantine/core": "7.15.2",
     "@mantine/hooks": "7.15.2",
+    "@mantine/modals": "^7.16.1",
     "@mantine/notifications": "^7.15.2",
     "@next/bundle-analyzer": "^14.2.4",
     "@tabler/icons-react": "^3.6.0",
