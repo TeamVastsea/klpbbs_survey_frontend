@@ -3,11 +3,11 @@
 import React from 'react';
 import {Avatar, Burger, Button, Container, Group, Image, Popover, Stack, Text} from '@mantine/core';
 import {useRouter} from 'next/navigation';
-import {useDisclosure} from '@mantine/hooks';
 import {ColorSchemeToggle} from '@/components/ColorSchemeToggle';
 import classes from './Header.module.css';
 import logo from '@/public/favicon.svg';
 import useUser from "@/data/use-user";
+import {modals} from "@mantine/modals";
 
 interface Link {
   link: string;
@@ -24,7 +24,6 @@ const links: Link[] = [
 export default function Header({opened, toggle}: HeaderProps) {
   const router = useRouter();
   const user = useUser();
-  const [modalOpened, {open, close}] = useDisclosure(false);
   const id_str = user.user?.uid.padStart(9, '0');
   const avatar_url = `https://user.klpbbs.com/data/avatar/${id_str?.substring(0, 3)}/${id_str?.substring(3, 5)}/${id_str?.substring(5, 7)}/${id_str?.substring(7, 9)}_avatar_big.jpg`;
 
@@ -38,7 +37,7 @@ export default function Header({opened, toggle}: HeaderProps) {
   };
 
   const handleLogout = () => {
-    open();
+    modals.openConfirmModal({});
   };
 
   return (
@@ -63,7 +62,7 @@ export default function Header({opened, toggle}: HeaderProps) {
             <Text>苦力怕论坛 | 问卷系统</Text>
           </Button>
         </Group>
-        <Group gap={5} visibleFrom="xs">
+        <Group gap={5} visibleFrom="sm">
           {user.isLoggedIn ?
             <Popover>
               <Popover.Target>
@@ -78,8 +77,7 @@ export default function Header({opened, toggle}: HeaderProps) {
               <Popover.Dropdown>
                 <Stack align="center">
                   <Avatar size="lg" src={avatar_url} alt={user.user?.username}/>
-                  <Text>用户名: {user.user?.username}</Text>
-                  <Text>uid: {user.user?.uid}</Text>
+                  <Text>{`${user.user?.username}(${user.user?.uid})`}</Text>
                   <Button onClick={handleLogout}>退出</Button>
                 </Stack>
               </Popover.Dropdown>
@@ -118,7 +116,7 @@ export default function Header({opened, toggle}: HeaderProps) {
           ))}
           <ColorSchemeToggle/>
         </Group>
-        <Burger opened={opened} onClick={toggle} hiddenFrom="xs" size="sm"/>
+        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
       </Container>
     </header>
   );

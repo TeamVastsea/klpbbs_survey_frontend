@@ -9,6 +9,9 @@ import {theme} from '@/theme';
 import {Notifications} from "@mantine/notifications";
 import {useDisclosure} from "@mantine/hooks";
 import Header from "@/app/components/Header";
+import {ModalsProvider} from "@mantine/modals";
+import Footer from "@/app/components/Footer";
+import {NavbarList} from "@/app/components/NavbarList";
 
 // export const metadata = {
 //   title: 'KLPBBS 问卷',
@@ -30,24 +33,26 @@ export default function RootLayout({children}: { children: any }) {
     </head>
     <body>
     <MantineProvider theme={theme}>
-      <Notifications/>
-      <AppShell
-        header={{height: 60}}
-        aside={{width: 0, breakpoint: 'sm', collapsed: {mobile: !opened}}}
-      >
-        <AppShell.Header>
-          <Header opened={opened} toggle={toggle}/>
-        </AppShell.Header>
+      <ModalsProvider modalProps={{centered: true}}>
+        <Notifications/>
+        <AppShell
+          header={{height: 60}}
+          aside={{width: 0, breakpoint: 'sm', collapsed: {mobile: !opened}}}
+        >
+          <AppShell.Header>
+            <Header opened={opened} toggle={toggle}/>
+          </AppShell.Header>
 
-        <AppShell.Main>{children}</AppShell.Main>
-        <AppShell.Footer mah={120}>
-          {/*<Footer />*/}
-        </AppShell.Footer>
+          <AppShell.Main>{children}</AppShell.Main>
+          <AppShell.Footer mah={120}>
+            <Footer />
+          </AppShell.Footer>
 
-        <AppShell.Aside>
-          {/*<NavbarList />*/}
-        </AppShell.Aside>
-      </AppShell>
+          <AppShell.Aside>
+            <NavbarList />
+          </AppShell.Aside>
+        </AppShell>
+      </ModalsProvider>
     </MantineProvider>
     </body>
     </html>
