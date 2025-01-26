@@ -1,9 +1,11 @@
 import React, {useEffect} from 'react';
-import {Avatar, Button, Center, Group, Popover, Space, Stack, Text} from '@mantine/core';
+import {Avatar, Button, Group, Space, Stack, Text} from '@mantine/core';
 import {useRouter} from 'next/navigation';
 import classes from '@/app/components/Header.module.css';
 import {ColorSchemeToggle} from "@/components/ColorSchemeToggle";
 import useUser from "@/data/use-user";
+import {modals} from "@mantine/modals";
+import {notifications} from "@mantine/notifications";
 
 interface Link {
   link: string;
@@ -36,8 +38,21 @@ export function NavbarList() {
   };
 
   const handleLogout = () => {
-    sessionStorage.setItem('logOutAndRedirect', 'true');
-    window.location.reload();
+    modals.openConfirmModal({
+      title: '是否要在所有设备上退出登录？',
+      children: (
+        <Text size="sm">
+          退出后，您需要重新登录。如果您的账户在多个设备上登录，您可以选择退出所有设备或仅退出当前设备。如果您在公共设备上登录，请务必退出所有设备。
+        </Text>
+      ),
+      labels: { confirm: '退出所有设备', cancel: '退出当前设备' },
+      onCancel: () => {
+        notifications.show({ title: '退出成功', message: '您已经退出登录', color: 'teal' });
+      },
+      onConfirm: () => {
+        notifications.show({ title: '退出成功', message: '您已经退出所有登录', color: 'teal' });
+      },
+    });
   };
 
   useEffect(() => {
@@ -66,24 +81,11 @@ export function NavbarList() {
       <Stack align="flex-start">
         <Space w={10}/>
         {user.isLoggedIn ?
-          <Popover>
-            <Popover.Target>
-              <Button
-                className={classes.link}
-                variant="subtle"
-              >
-                您好，{user.user?.username}
-              </Button>
-            </Popover.Target>
-
-            <Popover.Dropdown>
-              <Stack align="center">
-                <Avatar size="lg" src={avatar_url} alt={user.user?.username}/>
-                <Text>{`${user.user?.username}(${user.user?.uid})`}</Text>
-                <Button onClick={handleLogout}>退出</Button>
-              </Stack>
-            </Popover.Dropdown>
-          </Popover> :
+          <Stack align="flex-start">
+            <Avatar size="lg" src={avatar_url} alt={user.user?.username}/>
+            <Text>{`${user.user?.username}(${user.user?.uid})`}</Text>
+            <Button onClick={handleLogout}>退出登录</Button>
+          </Stack> :
           <Button
             key="login"
             className={classes.loginButton}
@@ -105,7 +107,7 @@ export function NavbarList() {
         )}
         {items}
         {/*<Center>*/}
-          <ColorSchemeToggle/>
+        <ColorSchemeToggle/>
         {/*</Center>*/}
       </Stack>
     </Group>

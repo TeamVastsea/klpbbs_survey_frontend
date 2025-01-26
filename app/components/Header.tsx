@@ -8,6 +8,7 @@ import classes from './Header.module.css';
 import logo from '@/public/favicon.svg';
 import useUser from "@/data/use-user";
 import {modals} from "@mantine/modals";
+import {notifications} from "@mantine/notifications";
 
 interface Link {
   link: string;
@@ -37,7 +38,21 @@ export default function Header({opened, toggle}: HeaderProps) {
   };
 
   const handleLogout = () => {
-    modals.openConfirmModal({});
+    modals.openConfirmModal({
+      title: '是否要在所有设备上退出登录？',
+      children: (
+        <Text size="sm">
+          退出后，您需要重新登录。如果您的账户在多个设备上登录，您可以选择退出所有设备或仅退出当前设备。如果您在公共设备上登录，请务必退出所有设备。
+        </Text>
+      ),
+      labels: { confirm: '退出所有设备', cancel: '退出当前设备' },
+      onCancel: () => {
+        notifications.show({ title: '退出成功', message: '您已经退出登录', color: 'teal' });
+      },
+      onConfirm: () => {
+        notifications.show({ title: '退出成功', message: '您已经退出所有登录', color: 'teal' });
+      },
+    });
   };
 
   return (
