@@ -4,9 +4,7 @@ import UserNetwork from "@/network/user";
 
 export default function useUser() {
   const {data, mutate, error} = useSWR('api_user', UserNetwork.fetchUser,  {
-    onErrorRetry: () => {
-      return;
-    }
+    onErrorRetry: () => {}
   });
 
   return {

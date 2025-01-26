@@ -15,7 +15,7 @@ export function baseFetcher<T>(
   return async () => {
     let requestUrl = SERVER_URL + url;
     if (params !== undefined) {
-      requestUrl += '?' + params.toString();
+      requestUrl += `?${params.toString()}`;
     }
 
     const myHeaders = new Headers();
@@ -29,10 +29,8 @@ export function baseFetcher<T>(
       myHeaders.set('token', token);
     }
 
-    console.log(myHeaders);
-
     const requestOptions: RequestInit = {
-      method: method,
+      method,
       headers: myHeaders,
       redirect: 'follow',
       body: method === "GET" ? undefined : body,
@@ -40,26 +38,24 @@ export function baseFetcher<T>(
 
     const res = await fetch(requestUrl, requestOptions);
     const responseText = await res.text();
-    console.log(333);
+
 
     if (!res.ok) {
       errorHandler(res.status, responseText, url);
       throw new Error(responseText);
     }
-    console.log(222);
+
 
     return JSON.parse(responseText) as T;
   };
 }
 
-export function errorHandler(code: number, message: string, path: string) {
+export function errorHandler(code: number, message: string, _path: string) {
   switch (code) {
     case 400: // Invalid params
-      console.error('Invalid params on ' + path + ': ' + message);
-      notifications.show({title: '参数错误', message: message, color: 'red'});
+      notifications.show({title: '参数错误', message, color: 'red'});
       break;
     case 401: // Invalid token
-      console.log('Invalid token on ' + path + ': ' + message);
       if (!location.href.endsWith('/oauth') && !location.href.endsWith('/')) {
         localStorage.removeItem('token');
         notifications.show({title: '登录无效', message: '请先登录', color: 'red'});
@@ -67,20 +63,17 @@ export function errorHandler(code: number, message: string, path: string) {
       }
       break;
     case 403: // Permission denied
-      console.error('No permission on ' + path + ': ' + message);
       notifications.show({title: '权限不足', message: '请联系管理员', color: 'red'});
       break;
     case 404: // Not found
-      console.error('Not found request to ' + path);
+      notifications.show({title: '资源不存在', message, color: 'red'});
       break;
     case 429: // Too many requests
-      console.error('Too many requests on ' + path + ': ' + message);
       break;
     case 500: // Panic or database error
-      console.error('Internal server error on ' + path + ': ' + message);
       notifications.show({title: '服务器错误', message: '请稍后再试', color: 'red'});
       break;
     default:
-      console.error('Unknown error on ' + path + ': ' + message);
+
   }
 }

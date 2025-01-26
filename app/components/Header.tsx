@@ -41,8 +41,6 @@ export default function Header({opened, toggle}: HeaderProps) {
     open();
   };
 
-  console.log(user);
-
   return (
     <header
       className={classes.header}

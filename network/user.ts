@@ -5,7 +5,7 @@ import {useLocalStorage} from "@mantine/hooks";
 export default class UserNetwork {
 
   public static login = (token: string) => {
-    baseFetcher<string>("/api/oauth", "GET", false, undefined, new URLSearchParams({token: token}))()
+    baseFetcher<string>("/api/oauth", "GET", false, undefined, new URLSearchParams({token}))()
       .then((token) => {
         const [, setToken] = useLocalStorage({
           key: 'token',
