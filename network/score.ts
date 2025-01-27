@@ -10,4 +10,7 @@ export class ScoreNetwork {
 
   public static finishAnswer = (scoreId: number) =>
     baseFetcher<string>(`/api/score`, "PATCH", true, undefined, new URLSearchParams({id: scoreId.toString()}), false);
+
+  public static fetchUnfinishedAnswer = (survey: number) =>
+    baseFetcher<{id: number, answer: string, update_time: string}[]>(`/api/score`, "GET", true, undefined, new URLSearchParams({survey: survey.toString()}));
 }

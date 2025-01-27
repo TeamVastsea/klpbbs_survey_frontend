@@ -9,17 +9,21 @@ import {useQuestionByPage} from "@/data/use-question";
 import Question from "@/components/Question/Question";
 import {ScoreNetwork} from "@/network/score";
 import {notifications} from "@mantine/notifications";
+import {useDisclosure} from "@mantine/hooks";
+import LoadAnswerScreen from "@/app/survey/[id]/components/LoadAnswerScreen";
 
 export default function Survey() {
   const router = useRouter();
   const params = useParams();
   const survey = JSON.parse(params.id as string || '0') as number;
   const [pageIndex, setPageIndex] = useState(0);
-  const page = usePageByIndex(survey, pageIndex);
-  const questions = useQuestionByPage(page.page?.data.id || 0);
   const [answers, setAnswers] = useState(new Map());
   const [scoreId, setScoreId] = useState<number>();
   const [loading, setLoading] = useState(false);
+  const [loadable, setLoadable] = useState<{ id: number, answer: string, update_time: string }[]>([]);
+  const [loadableOpened, {open, close}] = useDisclosure(false);
+  const page = usePageByIndex(survey, pageIndex);
+  const questions = useQuestionByPage(page.page?.data.id || 0);
 
   const updateAnswer = (id: number, answer: string) => {
     setAnswers(prevAnswers => {
@@ -29,14 +33,41 @@ export default function Survey() {
     });
   };
 
+  const loadAnswer = (answer: number) => {
+    const answers = Object.entries(JSON.parse(loadable[answer].answer));
+    const answerMap = new Map(answers.map(([key, value]) => [Number(key), value]));
+    setAnswers(answerMap);
+    setScoreId(loadable[answer].id);
+
+    console.log(answers);
+  }
+
+  useEffect(() => {
+    if (pageIndex !== 0 || answers.size !== 0 || scoreId !== undefined) {
+      return;
+    }
+
+    ScoreNetwork.fetchUnfinishedAnswer(survey)()
+      .then((res) => {
+        if (res.length === 0) {
+          return;
+        }
+
+        setLoadable(res);
+        open();
+      })
+  }, []);
+
   useEffect(() => {
     if (answers.size === 0) {
       return;
     }
 
     ScoreNetwork.submitAnswer(survey, Object.fromEntries(answers), scoreId)()
-      .then((res) => {setScoreId(res)});
-      notifications.show({title: '保存成功', message: '当前的内容已保存', color: 'teal'});
+      .then((res) => {
+        setScoreId(res)
+      });
+    notifications.show({title: '保存成功', message: '当前的内容已保存', color: 'teal'});
   }, [pageIndex]);
 
   const handleFinish = () => {
@@ -56,10 +87,11 @@ export default function Survey() {
 
   return (
     <Container w="80%">
+      <LoadingOverlay visible={page.isLoading || questions.isLoading}/>
+      <LoadAnswerScreen opened={loadableOpened} records={loadable} onLoad={loadAnswer} onClose={close}/>
       <Center>
         <SafeHTML content={page.page?.data.title || ""}/>
       </Center>
-      <LoadingOverlay visible={page.isLoading || questions.isLoading}/>
       <Stack gap="xl">
         {questions.questionList?.map((question) => (
           <Question question={question} key={question.id} value={answers.get(question.id) || ''}
