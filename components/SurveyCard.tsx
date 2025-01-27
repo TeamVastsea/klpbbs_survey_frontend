@@ -4,6 +4,29 @@ import {IconSettings2} from "@tabler/icons-react";
 import SafeHTML from "@/components/SafeHTML";
 
 export default function SurveyCard(props: SurveyCardProps) {
+
+  enum ValidResult {
+    Valid,
+    NoReSubmit,
+    InValid,
+  }
+
+  const checkValid = () => {
+    const startDate = Date.parse(props.survey.start_date);
+    const endDate = Date.parse(props.survey.end_date);
+    const now = Date.now();
+
+    if (startDate > now || endDate < now) {
+      return ValidResult.InValid;
+    }
+    if (!props.survey.allow_re_submit) {
+      return ValidResult.NoReSubmit;
+    }
+
+    return ValidResult.Valid;
+  };
+
+
   return (
     <Card withBorder w={292.5}>
       <Card.Section h={150}>
@@ -33,7 +56,11 @@ export default function SurveyCard(props: SurveyCardProps) {
 
         <Group>
           {props.survey.badge === '          ' ? <></> : <Badge variant="light">{props.survey.badge}</Badge>}
-          {/*{getValidBadge()}*/}
+          {checkValid() === ValidResult.InValid
+            ? <Badge variant="light" color="red">已结束</Badge>
+            : checkValid() === ValidResult.NoReSubmit
+              ? <Badge variant="light" color="yellow">不可重复提交</Badge>
+              : <Badge variant="light" color="blue">进行中</Badge>}
         </Group>
       </Group>
 
@@ -47,7 +74,7 @@ export default function SurveyCard(props: SurveyCardProps) {
         fullWidth
         mt="md"
         radius="md"
-        // color={checkValid() === ValidResult.InValid ? 'red' : 'blue'}
+        color={checkValid() === ValidResult.InValid ? 'red' : 'blue'}
         onClick={props.onEnter}
       >
         进入
