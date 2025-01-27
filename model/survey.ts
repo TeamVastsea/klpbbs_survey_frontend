@@ -1,4 +1,4 @@
-export default interface Survey {
+export interface Survey {
   id: number;
   title: string;
   badge: string;

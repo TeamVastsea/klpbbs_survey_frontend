@@ -3,7 +3,7 @@
 import {Box, Center, Space, Stack} from '@mantine/core';
 import {useSearchParams} from 'next/navigation';
 import UserInfoCard from './components/UserInfoCard';
-import useUser from "@/data/use-user";
+import {useUser} from "@/data/use-user";
 import {useEffect} from "react";
 import {notifications} from "@mantine/notifications";
 import UserNetwork from "@/network/user";

@@ -1,6 +1,6 @@
 'use client';
 
-import useSurveyList from "@/data/use-survey";
+import {useSurveyList} from "@/data/use-survey";
 import {Center, Container, LoadingOverlay, SimpleGrid, Space, Stack, Text, Title} from "@mantine/core";
 import SurveyCard from "@/components/SurveyCard";
 import {useRouter} from "next/navigation";
@@ -12,8 +12,6 @@ const min = (a: number, b: number) => {
 export default function SurveyListPage() {
   const surveys = useSurveyList();
   const router = useRouter();
-
-  console.log(min(2, surveys.surveyList?.length || 0))
 
   return (
     <Container w="100%">

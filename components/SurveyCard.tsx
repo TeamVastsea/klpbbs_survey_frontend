@@ -1,5 +1,5 @@
 import {ActionIcon, Badge, Button, Card, Group, Image, ScrollArea, Space, Text} from "@mantine/core";
-import Survey from "@/model/survey";
+import {Survey} from "@/model/survey";
 import {IconSettings2} from "@tabler/icons-react";
 import SafeHTML from "@/components/SafeHTML";
 

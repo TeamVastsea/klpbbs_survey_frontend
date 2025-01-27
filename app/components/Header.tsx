@@ -6,7 +6,7 @@ import {useRouter} from 'next/navigation';
 import {ColorSchemeToggle} from '@/components/ColorSchemeToggle';
 import classes from './Header.module.css';
 import logo from '@/public/favicon.svg';
-import useUser from "@/data/use-user";
+import {useUser} from "@/data/use-user";
 import {modals} from "@mantine/modals";
 import {notifications} from "@mantine/notifications";
 

@@ -4,7 +4,7 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
 import React from 'react';
-import {AppShell, ColorSchemeScript, mantineHtmlProps, MantineProvider} from '@mantine/core';
+import {AppShell, ColorSchemeScript, mantineHtmlProps, MantineProvider, Space} from '@mantine/core';
 import {theme} from '@/theme';
 import {Notifications} from "@mantine/notifications";
 import {useDisclosure} from "@mantine/hooks";
@@ -43,8 +43,11 @@ export default function RootLayout({children}: { children: any }) {
             <Header opened={opened} toggle={toggle}/>
           </AppShell.Header>
 
-          <AppShell.Main>{children}</AppShell.Main>
-          <AppShell.Footer mah={120}>
+          <AppShell.Main>
+            {children}
+            <Space h={80}/>
+          </AppShell.Main>
+          <AppShell.Footer h={60}>
             <Footer />
           </AppShell.Footer>
 

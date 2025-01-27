@@ -1,5 +1,5 @@
 import {baseFetcher} from '@/network/base';
-import User from "@/model/user";
+import {User} from "@/model/user";
 
 export default class UserNetwork {
   public static login = async (token: string) => {

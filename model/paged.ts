@@ -1,4 +1,4 @@
-export default interface Paged<T> {
-  data: T[],
+export interface Paged<T> {
+  data: T,
   total: number
 }

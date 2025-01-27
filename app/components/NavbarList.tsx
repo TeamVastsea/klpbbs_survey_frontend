@@ -3,7 +3,7 @@ import {Avatar, Button, Group, Space, Stack, Text} from '@mantine/core';
 import {useRouter} from 'next/navigation';
 import classes from '@/app/components/Header.module.css';
 import {ColorSchemeToggle} from "@/components/ColorSchemeToggle";
-import useUser from "@/data/use-user";
+import {useUser} from "@/data/use-user";
 import {modals} from "@mantine/modals";
 import {notifications} from "@mantine/notifications";
 
