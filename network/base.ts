@@ -12,6 +12,7 @@ export function baseFetcher<T>(
   body?: string,
   params?: URLSearchParams,
   needParse: boolean = true,
+  contentType: string = 'text/plain;charset=UTF-8'
 ): () => Promise<T> {
   return async () => {
     let requestUrl = SERVER_URL + url;
@@ -20,6 +21,7 @@ export function baseFetcher<T>(
     }
 
     const myHeaders = new Headers();
+    myHeaders.append('Content-Type', contentType);
 
     if (useToken) {
       const token = localStorage.getItem("token");

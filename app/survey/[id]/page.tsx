@@ -1,20 +1,25 @@
 'use client';
 
-import {useParams} from "next/navigation";
-import {useRef, useState} from "react";
+import {useParams, useRouter} from "next/navigation";
+import {useEffect, useState} from "react";
 import {usePageByIndex} from "@/data/use-page";
 import {Button, ButtonGroup, Center, Container, LoadingOverlay, Space, Stack} from "@mantine/core";
 import SafeHTML from "@/components/SafeHTML";
 import {useQuestionByPage} from "@/data/use-question";
 import Question from "@/components/Question/Question";
+import {ScoreNetwork} from "@/network/score";
+import {notifications} from "@mantine/notifications";
 
 export default function Survey() {
+  const router = useRouter();
   const params = useParams();
-  const survey = (params.id || 0) as number;
+  const survey = JSON.parse(params.id as string || '0') as number;
   const [pageIndex, setPageIndex] = useState(0);
   const page = usePageByIndex(survey, pageIndex);
   const questions = useQuestionByPage(page.page?.data.id || 0);
   const [answers, setAnswers] = useState(new Map());
+  const [scoreId, setScoreId] = useState<number>();
+  const [loading, setLoading] = useState(false);
 
   const updateAnswer = (id: number, answer: string) => {
     setAnswers(prevAnswers => {
@@ -24,8 +29,29 @@ export default function Survey() {
     });
   };
 
+  useEffect(() => {
+    if (answers.size === 0) {
+      return;
+    }
+
+    ScoreNetwork.submitAnswer(survey, Object.fromEntries(answers), scoreId)()
+      .then((res) => {setScoreId(res)});
+      notifications.show({title: '保存成功', message: '当前的内容已保存', color: 'teal'});
+  }, [pageIndex]);
+
   const handleFinish = () => {
-    console.log(answers);
+    if (scoreId === undefined) {
+      return
+    }
+
+    setLoading(true);
+
+    ScoreNetwork.finishAnswer(scoreId)()
+      .then(() => {
+        notifications.show({title: '提交成功', message: '您已经成功提交问卷', color: 'teal'});
+        router.push(`/survey/${survey}/finished`);
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
@@ -44,8 +70,9 @@ export default function Survey() {
       <ButtonGroup>
         <Button onClick={() => setPageIndex(pageIndex - 1)} fullWidth disabled={pageIndex === 0}>上一页</Button>
         <Button onClick={() => pageIndex + 1 >= (page.page?.total || 0) ? handleFinish() : setPageIndex(pageIndex + 1)}
-                fullWidth
-                color={pageIndex + 1 >= (page.page?.total || 0) ? "green" : "blue"}>下一页</Button>
+                fullWidth color={pageIndex + 1 >= (page.page?.total || 0) ? "green" : "blue"} loading={loading}>
+          {pageIndex + 1 >= (page.page?.total || 0) ? "提交" : "下一页"}
+        </Button>
       </ButtonGroup>
     </Container>
   );
