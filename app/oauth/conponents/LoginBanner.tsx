@@ -2,7 +2,7 @@
 
 import {Button, Container, Image, SimpleGrid, Space, Stack, Text, Title} from '@mantine/core';
 import {useState} from 'react';
-import {useRouter} from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import image from './logo.png';
 import classes from './LoginBanner.module.css';
 import {useUser} from "@/data/use-user";
@@ -11,8 +11,12 @@ export function LoginBanner() {
   const [loading, setLoading] = useState(false);
   const user = useUser();
   const router = useRouter();
+  const path = usePathname();
+
+  console.log(path);
 
   function getLogin() {
+    localStorage.setItem('redirect', path);
     setLoading(true);
 
     window.location.href =
