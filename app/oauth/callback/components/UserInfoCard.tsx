@@ -6,10 +6,6 @@ export default function UserInfoCard(props: UserInfoCardProps) {
     const id_str = props.uid.padStart(9, '0');
     const avatar_url = `https://user.klpbbs.com/data/avatar/${id_str.substring(0, 3)}/${id_str.substring(3, 5)}/${id_str.substring(5, 7)}/${id_str.substring(7, 9)}_avatar_big.jpg`;
 
-    function handleConfirm() {
-        router.push('/');
-    }
-
     return (
         <Container w="100%">
             <Card padding="xl" component="a" withBorder>
@@ -40,7 +36,7 @@ export default function UserInfoCard(props: UserInfoCardProps) {
                 </Center>
 
                 <Space h={10} />
-                <Button fullWidth onClick={handleConfirm}>
+                <Button fullWidth onClick={() => router.push('/survey')}>
                     让我们开始吧
                 </Button>
                 {/*<Center>*/}

@@ -63,9 +63,6 @@ export function errorHandler(code: number, message: string, _path: string) {
       notifications.show({title: '参数错误', message, color: 'red'});
       break;
     case 401: // Invalid token
-      if (!location.href.endsWith('/oauth') && !location.href.endsWith('/')) {
-        notifications.show({title: '登录无效', message: '请先登录', color: 'red'});
-      }
       break;
     case 403: // Permission denied
       notifications.show({title: '权限不足', message: '请联系管理员', color: 'red'});

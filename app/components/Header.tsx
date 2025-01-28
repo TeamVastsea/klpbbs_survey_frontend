@@ -16,10 +16,10 @@ interface Link {
 }
 
 const links: Link[] = [
-  {link: '/', label: '首页'},
   {link: 'https://klpbbs.com', label: '主站'},
   {link: '/about', label: '关于'},
   {link: '/tos', label: '条款'},
+  {link: '/survey', label: '问卷'},
 ];
 
 export default function Header({opened, toggle}: HeaderProps) {
@@ -47,9 +47,13 @@ export default function Header({opened, toggle}: HeaderProps) {
       ),
       labels: { confirm: '退出所有设备', cancel: '退出当前设备' },
       onCancel: () => {
+        localStorage.removeItem('token');
+        user.mutate().then(() => {});
         notifications.show({ title: '退出成功', message: '您已经退出登录', color: 'teal' });
       },
       onConfirm: () => {
+        localStorage.removeItem('token');
+        user.mutate().then(() => {});
         notifications.show({ title: '退出成功', message: '您已经退出所有登录', color: 'teal' });
       },
     });

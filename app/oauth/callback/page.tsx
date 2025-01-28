@@ -17,9 +17,19 @@ export default function CallbackPage() {
     UserNetwork.login(token as string)
       .then(() => {
         user.mutate()
-          .then(() => {
-            if (!user.isLoggedIn) {
-              notifications.show({title: '登录失败', message: '请重试', color: 'red'});
+          .then((data) => {
+            if (data) {
+              notifications.show({
+                title: '登录成功',
+                message: `欢迎回来，${data.username}`,
+                color: 'teal',
+              });
+            } else {
+              notifications.show({
+                title: '登录失败',
+                message: '请重试',
+                color: 'red',
+              })
             }
           });
       })

@@ -34,7 +34,7 @@ export default function RootLayout({children}: { children: any }) {
     <body>
     <MantineProvider theme={theme}>
       <ModalsProvider modalProps={{centered: true}}>
-        <Notifications/>
+        <Notifications position="top-right"/>
         <AppShell
           header={{height: 60}}
           aside={{width: 0, breakpoint: 'sm', collapsed: {mobile: !opened}}}
