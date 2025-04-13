@@ -13,8 +13,6 @@ export function LoginBanner() {
   const router = useRouter();
   const path = usePathname();
 
-  console.log(path);
-
   function getLogin() {
     localStorage.setItem('redirect', path);
     setLoading(true);

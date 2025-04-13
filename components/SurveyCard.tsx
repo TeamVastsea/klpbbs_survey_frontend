@@ -1,9 +1,14 @@
+'use client';
+
 import {ActionIcon, Badge, Button, Card, Group, Image, ScrollArea, Space, Text} from "@mantine/core";
 import {Survey} from "@/model/survey";
 import {IconSettings2} from "@tabler/icons-react";
 import SafeHTML from "@/components/SafeHTML";
+import SurveyCardEdit from "@/components/SurveyCardEdit";
+import {useDisclosure} from "@mantine/hooks";
 
 export default function SurveyCard(props: SurveyCardProps) {
+  const [modalOpened, { open, close }] = useDisclosure(false);
 
   enum ValidResult {
     Valid,
@@ -33,9 +38,11 @@ export default function SurveyCard(props: SurveyCardProps) {
         <Image src={props.survey.image} alt={props.survey.title} h={150} w={292.5} />
       </Card.Section>
 
+      <SurveyCardEdit opened={modalOpened} onClose={close} survey={props.survey} />
+
       {props.editable && (
         <ActionIcon
-          // onClick={handleEdit}
+          onClick={open}
           style={{
             position: 'absolute',
             top: 10,

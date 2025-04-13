@@ -2,6 +2,7 @@
 
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/dates/styles.css';
 
 import React from 'react';
 import {AppShell, ColorSchemeScript, mantineHtmlProps, MantineProvider, Space} from '@mantine/core';

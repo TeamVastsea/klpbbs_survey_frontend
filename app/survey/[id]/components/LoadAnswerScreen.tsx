@@ -6,7 +6,7 @@ export default function LoadAnswerScreen(props: LoadAnswerScreenProps) {
 
   return (
     <>
-      <Modal opened={props.opened} onClose={props.onClose} title="检测到未提交的答卷，是否加载？">
+      <Modal opened={props.opened} onClose={props.onClose} title="检测到未提交的答卷，是否加载？" centered>
         <Stack>
           <Radio.Group value={use} onChange={setUse}>
             {props.records.map((answer, index) => (

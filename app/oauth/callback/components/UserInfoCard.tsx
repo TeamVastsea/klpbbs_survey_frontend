@@ -1,3 +1,5 @@
+'use client';
+
 import {Button, Card, Center, Container, Space, Text, Avatar, LoadingOverlay} from '@mantine/core';
 import {useRouter} from "next/navigation";
 

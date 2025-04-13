@@ -38,8 +38,6 @@ export default function Survey() {
     const answerMap = new Map(answers.map(([key, value]) => [Number(key), value]));
     setAnswers(answerMap);
     setScoreId(loadable[answer].id);
-
-    console.log(answers);
   }
 
   useEffect(() => {
