@@ -91,16 +91,16 @@ export default function HomePage() {
                                 <Button
                                   color="blue"
                                   component="a"
-                                  href="https://github.com/orgs/TeamVastsea/teams/klpbbs_survey"
+                                  href="https://github.com/TeamVastsea"
                                   target="_blank"
                                 >
                                     <Group gap="xs">
                                         <Avatar
                                           src={github.src}
-                                          alt="Github"
+                                          alt="GitHub"
                                           size="1.1rem"
                                         />
-                                        Github
+                                        GitHub
                                     </Group>
                                 </Button>
                                 <Button color="gray" onClick={handleButtonClick}>
