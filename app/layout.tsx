@@ -2,6 +2,7 @@
 
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/tiptap/styles.css';
 import '@mantine/dates/styles.css';
 
 import React from 'react';
@@ -49,11 +50,11 @@ export default function RootLayout({children}: { children: any }) {
             <Space h={80}/>
           </AppShell.Main>
           <AppShell.Footer h={60}>
-            <Footer />
+            <Footer/>
           </AppShell.Footer>
 
           <AppShell.Aside>
-            <NavbarList />
+            <NavbarList/>
           </AppShell.Aside>
         </AppShell>
       </ModalsProvider>

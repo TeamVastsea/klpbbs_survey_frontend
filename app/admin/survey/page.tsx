@@ -1,12 +1,13 @@
 'use client';
 
-import {Button, Card, Center, Container, SimpleGrid, Space, Stack, Title} from "@mantine/core";
+import {Card, Center, Container, SimpleGrid, Space, Stack, Title} from "@mantine/core";
 import SurveyCard from "@/components/SurveyCard";
 import {useSurveyList} from "@/data/use-survey";
 import {useRouter} from "next/navigation";
 import {IconFilePlus} from "@tabler/icons-react";
 import {useDisclosure} from "@mantine/hooks";
 import SurveyCardEdit from "@/components/SurveyCardEdit";
+
 const min = (a: number, b: number) => {
   return a > b ? b : a
 };
@@ -35,7 +36,7 @@ export default function EditSurveyPage() {
           }}>
           {surveys.surveyList?.map((survey) => (
             <SurveyCard key={survey.id} survey={survey} onEnter={() => router.push(`/admin/survey/${survey.id}`)}
-                        editable/>
+                        editable onAfterSave={surveys.mutate}/>
           ))}
 
           <Card withBorder onClick={open} style={{cursor: "pointer"}}>
@@ -50,7 +51,7 @@ export default function EditSurveyPage() {
                 id: 0, title: "", badge: "", description: "", image: "https://placehold.co/600x400",
                 start_date: new Date().toUTCString(), end_date: new Date().toUTCString(), allow_submit: true,
                 allow_view: true, allow_judge: true, allow_re_submit: false
-              }}/>
+              }} onAfterSave={surveys.mutate}/>
             </Center>
           </Card>
         </SimpleGrid>

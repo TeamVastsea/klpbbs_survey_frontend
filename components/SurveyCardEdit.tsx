@@ -2,8 +2,11 @@
 
 import {Badge, Button, Card, Group, Image, Modal, ScrollArea, Space, Switch, TextInput} from "@mantine/core";
 import {Survey} from "@/model/survey";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {DateTimePicker} from "@mantine/dates";
+import RichTextHTMLEditor from "@/components/RichTextHTMLEditor";
+import SurveyNetwork from "@/network/survey";
+import {notifications} from "@mantine/notifications";
 
 export default function SurveyCardEdit(props: SurveyCardEditProps) {
   const [title, setTitle] = useState(props.survey.title);
@@ -17,8 +20,48 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
   const [allowJudge, setAllowJudge] = useState(props.survey.allow_judge);
   const [allowReSubmit, setAllowReSubmit] = useState(props.survey.allow_re_submit);
 
+  useEffect(() => {
+    setTitle(props.survey.title);
+    setDescription(props.survey.description);
+    setImage(props.survey.image);
+    setBadge(props.survey.badge);
+    setStartTime(new Date(props.survey.start_date));
+    setEndTime(new Date(props.survey.end_date));
+    setAllowSubmit(props.survey.allow_submit);
+    setAllowView(props.survey.allow_view);
+    setAllowJudge(props.survey.allow_judge);
+    setAllowReSubmit(props.survey.allow_re_submit);
+  }, [props.opened]);
+
+  const save = () => {
+    SurveyNetwork.saveSurvey({
+      allow_judge: allowJudge,
+      allow_re_submit: allowReSubmit,
+      allow_submit: allowSubmit,
+      allow_view: allowView,
+      badge,
+      description,
+      end_date: endTime.toISOString(),
+      id: props.survey.id,
+      image,
+      start_date: startTime.toISOString(),
+      title,
+    }, props.survey.id === 0)
+      .then(() => {
+        notifications.show({
+          title: '保存成功',
+          message: '问卷已保存',
+          color: 'teal',
+        });
+        if (props.onAfterSave) {
+          props.onAfterSave();
+        }
+      })
+  }
+
   return (
     <Modal opened={props.opened} onClose={() => {
+      setTimeout(props.onClose, 0);
     }} mah="70%" title={`编辑问卷 ${props.survey.title}`} withCloseButton={false} centered>
       <ScrollArea>
         <Card withBorder radius="md">
@@ -28,6 +71,9 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
               value={title}
               onChange={(e) => setTitle(e.currentTarget.value)}
             />
+          </Card.Section>
+          <Card.Section withBorder inheritPadding py="xs">
+            <RichTextHTMLEditor content={description} setContent={setDescription}/>
           </Card.Section>
           <Card.Section withBorder inheritPadding py="xs">
             <Group justify="space-between" align="center">
@@ -90,6 +136,7 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
           setTimeout(props.onClose, 0);
         }}>取消</Button>
         <Button onClick={() => {
+          save();
           setTimeout(props.onClose, 0);
         }}>保存</Button>
       </Group>
@@ -101,4 +148,5 @@ export interface SurveyCardEditProps {
   survey: Survey;
   opened: boolean;
   onClose: () => void;
+  onAfterSave?: () => void;
 }

@@ -38,7 +38,7 @@ export default function SurveyCard(props: SurveyCardProps) {
         <Image src={props.survey.image} alt={props.survey.title} h={150} w={292.5} />
       </Card.Section>
 
-      <SurveyCardEdit opened={modalOpened} onClose={close} survey={props.survey} />
+      <SurveyCardEdit opened={modalOpened} onClose={close} survey={props.survey} onAfterSave={props.onAfterSave} />
 
       {props.editable && (
         <ActionIcon
@@ -94,4 +94,5 @@ export interface SurveyCardProps {
   survey: Survey,
   editable: boolean,
   onEnter: () => void,
+  onAfterSave?: () => void,
 }
