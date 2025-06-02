@@ -3,11 +3,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 export default function Watermark({
-                                    text = 'watermark',
-                                    fontSize = 40,
-                                    gap = 20,
-                                    children,
-                                  }: WatermarkProps) {
+  text = 'watermark',
+  fontSize = 40,
+  gap = 20,
+  children,
+}: WatermarkProps) {
   const parentRef = useRef<HTMLDivElement>(null);
   const [flag, setFlag] = useState(0);
 
@@ -65,10 +65,7 @@ export default function Watermark({
     const parent = parentRef.current;
     if (parent) {
       (div as HTMLDivElement | null)?.remove();
-      const {
-        base64,
-        styleSize,
-      } = bg;
+      const { base64, styleSize } = bg;
       div = document.createElement('div');
       div.style.cssText = `
         position: fixed;

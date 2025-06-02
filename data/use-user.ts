@@ -1,9 +1,10 @@
 'use client';
-import useSWR from "swr";
-import UserNetwork from "@/network/user";
+
+import useSWR from 'swr';
+import UserNetwork from '@/network/user';
 
 export function useUser() {
-  const {data, mutate, error} = useSWR('api_user', UserNetwork.fetchUser,  {
+  const { data, mutate, error } = useSWR('api_user', UserNetwork.fetchUser, {
     onErrorRetry: () => {},
   });
 
@@ -11,6 +12,6 @@ export function useUser() {
     user: data,
     isLoading: !error && !data,
     isLoggedIn: !error && data !== undefined,
-    mutate
-  }
+    mutate,
+  };
 }

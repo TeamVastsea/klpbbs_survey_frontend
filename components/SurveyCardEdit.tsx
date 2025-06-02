@@ -1,12 +1,23 @@
 'use client';
 
-import {Badge, Button, Card, Group, Image, Modal, ScrollArea, Space, Switch, TextInput} from "@mantine/core";
-import {Survey} from "@/model/survey";
-import {useEffect, useState} from "react";
-import {DateTimePicker} from "@mantine/dates";
-import RichTextHTMLEditor from "@/components/RichTextHTMLEditor";
-import SurveyNetwork from "@/network/survey";
-import {notifications} from "@mantine/notifications";
+import { useEffect, useState } from 'react';
+import {
+  Badge,
+  Button,
+  Card,
+  Group,
+  Image,
+  Modal,
+  ScrollArea,
+  Space,
+  Switch,
+  TextInput,
+} from '@mantine/core';
+import { DateTimePicker } from '@mantine/dates';
+import { notifications } from '@mantine/notifications';
+import RichTextHTMLEditor from '@/components/RichTextHTMLEditor';
+import { Survey } from '@/model/survey';
+import SurveyNetwork from '@/network/survey';
 
 export default function SurveyCardEdit(props: SurveyCardEditProps) {
   const [title, setTitle] = useState(props.survey.title);
@@ -34,35 +45,44 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
   }, [props.opened]);
 
   const save = () => {
-    SurveyNetwork.saveSurvey({
-      allow_judge: allowJudge,
-      allow_re_submit: allowReSubmit,
-      allow_submit: allowSubmit,
-      allow_view: allowView,
-      badge,
-      description,
-      end_date: endTime.toISOString(),
-      id: props.survey.id,
-      image,
-      start_date: startTime.toISOString(),
-      title,
-    }, props.survey.id === 0)
-      .then(() => {
-        notifications.show({
-          title: '保存成功',
-          message: '问卷已保存',
-          color: 'teal',
-        });
-        if (props.onAfterSave) {
-          props.onAfterSave();
-        }
-      })
-  }
+    SurveyNetwork.saveSurvey(
+      {
+        allow_judge: allowJudge,
+        allow_re_submit: allowReSubmit,
+        allow_submit: allowSubmit,
+        allow_view: allowView,
+        badge,
+        description,
+        end_date: endTime.toISOString(),
+        id: props.survey.id,
+        image,
+        start_date: startTime.toISOString(),
+        title,
+      },
+      props.survey.id === 0
+    ).then(() => {
+      notifications.show({
+        title: '保存成功',
+        message: '问卷已保存',
+        color: 'teal',
+      });
+      if (props.onAfterSave) {
+        props.onAfterSave();
+      }
+    });
+  };
 
   return (
-    <Modal opened={props.opened} onClose={() => {
-      setTimeout(props.onClose, 0);
-    }} mah="70%" title={`编辑问卷 ${props.survey.title}`} withCloseButton={false} centered>
+    <Modal
+      opened={props.opened}
+      onClose={() => {
+        setTimeout(props.onClose, 0);
+      }}
+      mah="70%"
+      title={`编辑问卷 ${props.survey.title}`}
+      withCloseButton={false}
+      centered
+    >
       <ScrollArea>
         <Card withBorder radius="md">
           <Card.Section withBorder inheritPadding py="xs">
@@ -73,7 +93,7 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
             />
           </Card.Section>
           <Card.Section withBorder inheritPadding py="xs">
-            <RichTextHTMLEditor content={description} setContent={setDescription}/>
+            <RichTextHTMLEditor content={description} setContent={setDescription} />
           </Card.Section>
           <Card.Section withBorder inheritPadding py="xs">
             <Group justify="space-between" align="center">
@@ -91,18 +111,24 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
               value={image}
               onChange={(e) => setImage(e.currentTarget.value)}
             />
-            <Space h={20}/>
-            <Image src={image} h={200.5}/>
+            <Space h={20} />
+            <Image src={image} h={200.5} />
           </Card.Section>
           <Card.Section withBorder inheritPadding py="xs">
-            <DateTimePicker label="起始日期" value={startTime}
-                            onChange={(e) => setStartTime(new Date(e?.toLocaleString() || ''))}
-                            valueFormat="YYYY/MM/DD HH:mm"/>
+            <DateTimePicker
+              label="起始日期"
+              value={startTime}
+              onChange={(e) => setStartTime(new Date(e?.toLocaleString() || ''))}
+              valueFormat="YYYY/MM/DD HH:mm"
+            />
           </Card.Section>
           <Card.Section withBorder inheritPadding py="xs">
-            <DateTimePicker label="截止日期" value={endTime}
-                            onChange={(e) => setEndTime(new Date(e?.toLocaleString() || ''))}
-                            valueFormat="YYYY/MM/DD HH:mm"/>
+            <DateTimePicker
+              label="截止日期"
+              value={endTime}
+              onChange={(e) => setEndTime(new Date(e?.toLocaleString() || ''))}
+              valueFormat="YYYY/MM/DD HH:mm"
+            />
           </Card.Section>
           <Card.Section withBorder inheritPadding py="xs">
             <Group>
@@ -130,15 +156,24 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
           </Card.Section>
         </Card>
       </ScrollArea>
-      <Space h={20}/>
+      <Space h={20} />
       <Group grow>
-        <Button variant="outline" onClick={() => {
-          setTimeout(props.onClose, 0);
-        }}>取消</Button>
-        <Button onClick={() => {
-          save();
-          setTimeout(props.onClose, 0);
-        }}>保存</Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setTimeout(props.onClose, 0);
+          }}
+        >
+          取消
+        </Button>
+        <Button
+          onClick={() => {
+            save();
+            setTimeout(props.onClose, 0);
+          }}
+        >
+          保存
+        </Button>
       </Group>
     </Modal>
   );

@@ -1,11 +1,21 @@
 'use client';
 
-import {ActionIcon, Badge, Button, Card, Group, Image, ScrollArea, Space, Text} from "@mantine/core";
-import {Survey} from "@/model/survey";
-import {IconSettings2} from "@tabler/icons-react";
-import SafeHTML from "@/components/SafeHTML";
-import SurveyCardEdit from "@/components/SurveyCardEdit";
-import {useDisclosure} from "@mantine/hooks";
+import { IconSettings2 } from '@tabler/icons-react';
+import {
+  ActionIcon,
+  Badge,
+  Button,
+  Card,
+  Group,
+  Image,
+  ScrollArea,
+  Space,
+  Text,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import SafeHTML from '@/components/SafeHTML';
+import SurveyCardEdit from '@/components/SurveyCardEdit';
+import { Survey } from '@/model/survey';
 
 export default function SurveyCard(props: SurveyCardProps) {
   const [modalOpened, { open, close }] = useDisclosure(false);
@@ -31,14 +41,18 @@ export default function SurveyCard(props: SurveyCardProps) {
     return ValidResult.Valid;
   };
 
-
   return (
     <Card withBorder w={292.5}>
       <Card.Section h={150}>
         <Image src={props.survey.image} alt={props.survey.title} h={150} w={292.5} />
       </Card.Section>
 
-      <SurveyCardEdit opened={modalOpened} onClose={close} survey={props.survey} onAfterSave={props.onAfterSave} />
+      <SurveyCardEdit
+        opened={modalOpened}
+        onClose={close}
+        survey={props.survey}
+        onAfterSave={props.onAfterSave}
+      />
 
       {props.editable && (
         <ActionIcon
@@ -62,12 +76,24 @@ export default function SurveyCard(props: SurveyCardProps) {
         </Text>
 
         <Group>
-          {props.survey.badge === '          ' ? <></> : <Badge variant="light">{props.survey.badge}</Badge>}
-          {checkValid() === ValidResult.InValid
-            ? <Badge variant="light" color="red">已结束</Badge>
-            : checkValid() === ValidResult.NoReSubmit
-              ? <Badge variant="light" color="yellow">不可重复提交</Badge>
-              : <Badge variant="light" color="blue">进行中</Badge>}
+          {props.survey.badge === '          ' ? (
+            <></>
+          ) : (
+            <Badge variant="light">{props.survey.badge}</Badge>
+          )}
+          {checkValid() === ValidResult.InValid ? (
+            <Badge variant="light" color="red">
+              已结束
+            </Badge>
+          ) : checkValid() === ValidResult.NoReSubmit ? (
+            <Badge variant="light" color="yellow">
+              不可重复提交
+            </Badge>
+          ) : (
+            <Badge variant="light" color="blue">
+              进行中
+            </Badge>
+          )}
         </Group>
       </Group>
 
@@ -87,12 +113,12 @@ export default function SurveyCard(props: SurveyCardProps) {
         进入
       </Button>
     </Card>
-  )
+  );
 }
 
 export interface SurveyCardProps {
-  survey: Survey,
-  editable: boolean,
-  onEnter: () => void,
-  onAfterSave?: () => void,
+  survey: Survey;
+  editable: boolean;
+  onEnter: () => void;
+  onAfterSave?: () => void;
 }

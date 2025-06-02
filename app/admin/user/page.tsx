@@ -1,4 +1,4 @@
-import {Space, Title } from "@mantine/core";
+import { Space, Title } from '@mantine/core';
 
 export default function EditUserPage() {
   return (

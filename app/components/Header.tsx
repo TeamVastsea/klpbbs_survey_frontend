@@ -1,14 +1,24 @@
 'use client';
 
 import React from 'react';
-import {Avatar, Burger, Button, Container, Group, Image, Popover, Stack, Text} from '@mantine/core';
-import {useRouter} from 'next/navigation';
-import {ColorSchemeToggle} from '@/components/ColorSchemeToggle';
-import classes from './Header.module.css';
+import { useRouter } from 'next/navigation';
+import {
+  Avatar,
+  Burger,
+  Button,
+  Container,
+  Group,
+  Image,
+  Popover,
+  Stack,
+  Text,
+} from '@mantine/core';
+import { modals } from '@mantine/modals';
+import { notifications } from '@mantine/notifications';
+import { ColorSchemeToggle } from '@/components/ColorSchemeToggle';
+import { useUser } from '@/data/use-user';
 import logo from '@/public/favicon.svg';
-import {useUser} from "@/data/use-user";
-import {modals} from "@mantine/modals";
-import {notifications} from "@mantine/notifications";
+import classes from './Header.module.css';
 
 interface Link {
   link: string;
@@ -16,18 +26,17 @@ interface Link {
 }
 
 const links: Link[] = [
-  {link: 'https://klpbbs.com', label: '主站'},
-  {link: '/about', label: '关于'},
-  {link: '/tos', label: '条款'},
-  {link: '/survey', label: '问卷'},
+  { link: 'https://klpbbs.com', label: '主站' },
+  { link: '/about', label: '关于' },
+  { link: '/tos', label: '条款' },
+  { link: '/survey', label: '问卷' },
 ];
 
-export default function Header({opened, toggle}: HeaderProps) {
+export default function Header({ opened, toggle }: HeaderProps) {
   const router = useRouter();
   const user = useUser();
   const id_str = user.user?.uid.padStart(9, '0');
   const avatar_url = `https://user.klpbbs.com/data/avatar/${id_str?.substring(0, 3)}/${id_str?.substring(3, 5)}/${id_str?.substring(5, 7)}/${id_str?.substring(7, 9)}_avatar_big.jpg`;
-
 
   const handleClick = (link: string) => {
     if (link.startsWith('http')) {
@@ -75,32 +84,30 @@ export default function Header({opened, toggle}: HeaderProps) {
             className={classes.link}
             tabIndex={0}
             variant="subtle"
-            leftSection={(<Image src={logo.src} w={28} h={28}/>)}
+            leftSection={<Image src={logo.src} w={28} h={28} />}
             onClick={() => router.push('/')}
           >
             <Text>苦力怕论坛 | 问卷系统</Text>
           </Button>
         </Group>
         <Group gap={5} visibleFrom="sm">
-          {user.isLoggedIn ?
+          {user.isLoggedIn ? (
             <Popover>
               <Popover.Target>
-                <Button
-                  className={classes.link}
-                  variant="subtle"
-                >
+                <Button className={classes.link} variant="subtle">
                   您好，{user.user?.username}
                 </Button>
               </Popover.Target>
 
               <Popover.Dropdown>
                 <Stack align="center">
-                  <Avatar size="lg" src={avatar_url} alt={user.user?.username}/>
+                  <Avatar size="lg" src={avatar_url} alt={user.user?.username} />
                   <Text>{`${user.user?.username}(${user.user?.uid})`}</Text>
                   <Button onClick={handleLogout}>退出</Button>
                 </Stack>
               </Popover.Dropdown>
-            </Popover> :
+            </Popover>
+          ) : (
             <Button
               key="login"
               className={classes.loginButton}
@@ -108,7 +115,8 @@ export default function Header({opened, toggle}: HeaderProps) {
               aria-label="Login"
             >
               登录
-            </Button>}
+            </Button>
+          )}
           {user.isLoggedIn && user.user?.admin && (
             <Button
               key="admin"
@@ -133,9 +141,9 @@ export default function Header({opened, toggle}: HeaderProps) {
               {link.label}
             </Button>
           ))}
-          <ColorSchemeToggle/>
+          <ColorSchemeToggle />
         </Group>
-        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
+        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
       </Container>
     </header>
   );

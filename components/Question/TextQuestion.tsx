@@ -1,5 +1,5 @@
-import {QuestionProps} from "@/components/Question/Question";
-import {Textarea} from "@mantine/core";
+import { Textarea } from '@mantine/core';
+import { QuestionProps } from '@/components/Question/Question';
 
 export default function TextQuestion(props: QuestionProps) {
   return (

@@ -1,4 +1,4 @@
-import {Container} from '@mantine/core';
+import { Container } from '@mantine/core';
 import classes from './Footer.module.css';
 
 export default function Footer() {
@@ -12,7 +12,7 @@ export default function Footer() {
           href="https://github.com/TeamVastsea"
           target="_blank"
           rel="noreferrer"
-          style={{textDecoration: 'none'}}
+          style={{ textDecoration: 'none' }}
         >
           瀚海工艺
         </a>
@@ -21,7 +21,7 @@ export default function Footer() {
           href="https://klpbbs.com"
           target="_blank"
           rel="noreferrer"
-          style={{textDecoration: 'none'}}
+          style={{ textDecoration: 'none' }}
         >
           苦力怕论坛
         </a>

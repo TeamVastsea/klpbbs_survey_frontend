@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react';
-import {Avatar, Button, Group, Space, Stack, Text} from '@mantine/core';
-import {useRouter} from 'next/navigation';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Avatar, Button, Group, Space, Stack, Text } from '@mantine/core';
+import { modals } from '@mantine/modals';
+import { notifications } from '@mantine/notifications';
 import classes from '@/app/components/Header.module.css';
-import {ColorSchemeToggle} from "@/components/ColorSchemeToggle";
-import {useUser} from "@/data/use-user";
-import {modals} from "@mantine/modals";
-import {notifications} from "@mantine/notifications";
+import { ColorSchemeToggle } from '@/components/ColorSchemeToggle';
+import { useUser } from '@/data/use-user';
 
 interface Link {
   link: string;
@@ -13,10 +13,10 @@ interface Link {
 }
 
 const links: Link[] = [
-  {link: '/', label: '首页'},
-  {link: 'https://klpbbs.com', label: '主站'},
-  {link: '/about', label: '关于'},
-  {link: '/tos', label: '条款'},
+  { link: '/', label: '首页' },
+  { link: 'https://klpbbs.com', label: '主站' },
+  { link: '/about', label: '关于' },
+  { link: '/tos', label: '条款' },
 ];
 
 export function NavbarList() {
@@ -25,9 +25,7 @@ export function NavbarList() {
   const id_str = user.user?.uid.padStart(9, '0');
   const avatar_url = `https://user.klpbbs.com/data/avatar/${id_str?.substring(0, 3)}/${id_str?.substring(3, 5)}/${id_str?.substring(5, 7)}/${id_str?.substring(7, 9)}_avatar_big.jpg`;
 
-
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   const handleClick = (link: string) => {
     if (link.startsWith('http')) {
@@ -77,15 +75,16 @@ export function NavbarList() {
 
   return (
     <Group>
-      <Space w={10}/>
+      <Space w={10} />
       <Stack align="flex-start">
-        <Space w={10}/>
-        {user.isLoggedIn ?
+        <Space w={10} />
+        {user.isLoggedIn ? (
           <Stack align="flex-start">
-            <Avatar size="lg" src={avatar_url} alt={user.user?.username}/>
+            <Avatar size="lg" src={avatar_url} alt={user.user?.username} />
             <Text>{`${user.user?.username}(${user.user?.uid})`}</Text>
             <Button onClick={handleLogout}>退出登录</Button>
-          </Stack> :
+          </Stack>
+        ) : (
           <Button
             key="login"
             className={classes.loginButton}
@@ -93,7 +92,8 @@ export function NavbarList() {
             aria-label="Login"
           >
             登录
-          </Button>}
+          </Button>
+        )}
         {user.isLoggedIn && user.user?.admin && (
           <Button
             key="admin"
@@ -107,7 +107,7 @@ export function NavbarList() {
         )}
         {items}
         {/*<Center>*/}
-        <ColorSchemeToggle/>
+        <ColorSchemeToggle />
         {/*</Center>*/}
       </Stack>
     </Group>

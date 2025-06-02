@@ -1,11 +1,11 @@
 'use client';
 
-import {Button, Container, Image, SimpleGrid, Space, Stack, Text, Title} from '@mantine/core';
-import {useState} from 'react';
-import {usePathname, useRouter} from 'next/navigation';
+import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Button, Container, Image, SimpleGrid, Space, Stack, Text, Title } from '@mantine/core';
+import { useUser } from '@/data/use-user';
 import image from './logo.png';
 import classes from './LoginBanner.module.css';
-import {useUser} from "@/data/use-user";
 
 export function LoginBanner() {
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ export function LoginBanner() {
           }}
         >
           <Container w={256} className={classes.loginBannerImage}>
-            <Image src={image.src} w="100%"/>
+            <Image src={image.src} w="100%" />
           </Container>
           <div className={classes.body}>
             <Title className={classes.title}>苦力怕论坛</Title>
@@ -44,17 +44,19 @@ export function LoginBanner() {
                 c="blue"
                 td="underline"
                 onClick={() => router.push('/tos')}
-                style={{cursor: 'pointer'}}
+                style={{ cursor: 'pointer' }}
                 component="span"
                 inherit
               >
                 服务条款
               </Text>
             </Text>
-            <Space h={30}/>
+            <Space h={30} />
             {user.isLoggedIn ? (
               <Stack>
-                <Text fz="sm" c="dimmed">您已经登录</Text>
+                <Text fz="sm" c="dimmed">
+                  您已经登录
+                </Text>
                 <Button onClick={() => router.push('/')}>开始使用</Button>
               </Stack>
             ) : (

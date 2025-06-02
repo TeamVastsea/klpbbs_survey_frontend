@@ -1,18 +1,18 @@
 'use client';
 
-import {ActionIcon, MantineColorScheme, rem, useMantineColorScheme} from '@mantine/core';
-import {IconBrightness2, IconBrightnessAuto, IconMoonStars} from '@tabler/icons-react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
+import { IconBrightness2, IconBrightnessAuto, IconMoonStars } from '@tabler/icons-react';
+import { ActionIcon, MantineColorScheme, rem, useMantineColorScheme } from '@mantine/core';
 import classes from '@/components/ColorSchemeToggle.module.css';
 
 const schemes = [
-  {scheme: 'auto', icon: <IconBrightnessAuto style={{width: rem(20)}} stroke={1.5}/>},
-  {scheme: 'light', icon: <IconBrightness2 style={{width: rem(20)}} stroke={1.5}/>},
-  {scheme: 'dark', icon: <IconMoonStars style={{width: rem(18)}} stroke={1.5}/>},
+  { scheme: 'auto', icon: <IconBrightnessAuto style={{ width: rem(20) }} stroke={1.5} /> },
+  { scheme: 'light', icon: <IconBrightness2 style={{ width: rem(20) }} stroke={1.5} /> },
+  { scheme: 'dark', icon: <IconMoonStars style={{ width: rem(18) }} stroke={1.5} /> },
 ];
 
 export function ColorSchemeToggle() {
-  const {setColorScheme} = useMantineColorScheme();
+  const { setColorScheme } = useMantineColorScheme();
   const [selected, setSelected] = useState(0);
 
   function selectNextColorScheme() {
