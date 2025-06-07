@@ -1,10 +1,43 @@
 .title {
   color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
-  font-size: rem(100px);
+  font-size: rem(48px);
   font-weight: 900;
-  letter-spacing: rem(-2px);
+  letter-spacing: rem(-1px);
+  line-height: 1.1;
 
   @media (max-width: $mantine-breakpoint-md) {
-    font-size: rem(50px);
+    font-size: rem(36px);
+  }
+}
+
+.subtitle {
+  color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  font-size: rem(32px);
+  font-weight: 700;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    font-size: rem(24px);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    padding-bottom: rem(30px);
+    text-align: center;
+  }
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  
+  @media (max-width: $mantine-breakpoint-md) {
+    max-width: 80%;
+    margin: 0 auto;
   }
 }
