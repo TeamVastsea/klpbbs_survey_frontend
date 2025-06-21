@@ -11,7 +11,7 @@ export function Welcome() {
             苦力怕论坛
           </Title>
           <Title className={classes.subtitle} order={2} mt="xs">
-            > 问卷系统
+            &gt; 问卷系统
           </Title>
           <Text c="dimmed" size="lg" mt="md">
             收集更好的数据，作出更好的决策。
