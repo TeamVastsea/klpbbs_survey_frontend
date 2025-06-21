@@ -1,5 +1,5 @@
-import { Anchor, Button, Container, Group, Image, SimpleGrid, Text, Title } from '@mantine/core';
 import { IconBrandGithub } from '@tabler/icons-react';
+import { Button, Container, Group, Image, SimpleGrid, Text, Title } from '@mantine/core';
 import classes from './Welcome.module.css';
 
 export function Welcome() {
@@ -28,12 +28,7 @@ export function Welcome() {
             >
               GitHub
             </Button>
-            <Button
-              component="a"
-              href="/survey"
-              variant="filled"
-              size="md"
-            >
+            <Button component="a" href="/survey" variant="filled" size="md">
               立即使用
             </Button>
           </Group>
