@@ -145,6 +145,40 @@ export default class ScoreApi {
         return (await res.json()) as Score;
     }
 
+    public static async exportAnswer(survey: number): Promise<String> {
+        const myHeaders = new Headers();
+        myHeaders.append('token', Cookie.getCookie('token'));
+
+        const requestOptions: RequestInit = {
+            method: 'GET',
+            headers: myHeaders,
+        };
+
+        const res = await fetch(`${SERVER_URL}/api/score/${survey}/export`, requestOptions);
+
+        if (!res.ok) {
+            if (res.status === 429) {
+                notifications.show({
+                    title: '重复提交',
+                    message: '该问卷已经确认分数，不支持重复提交',
+                    color: 'red',
+                });
+
+                throw new Error('Already judged');
+            }
+
+            notifications.show({
+                title: '获取问卷答案失败, 请将以下信息反馈给管理员',
+                message: `${res.statusText}: ${await res.text()}`,
+                color: 'red',
+            });
+
+            throw new Error('Failed to get answer');
+        }
+
+        return res.text();
+    }
+
     public static async searchAnswerList(page: number,
                                          size: number | null,
                                          survey: number | null,

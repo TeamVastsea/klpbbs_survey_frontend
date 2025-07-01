@@ -8,11 +8,13 @@ import {
     Text,
     Input,
     useCombobox,
-    CloseButton,
+    CloseButton, ActionIcon, Flex, Menu,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { notifications } from '@mantine/notifications';
+import { IconDownload, IconX } from '@tabler/icons-react';
 import SurveyApi, { SurveyInfo } from '@/api/SurveyApi';
+import ScoreApi from '@/api/ScoreApi';
 
 function Options(props: SurveyInfo) {
     function removeTags(input: string): string {
@@ -83,6 +85,38 @@ export default function AsyncPagedSelect(props: SelectProps) {
         });
     }
 
+    const exportAnswer = () => {
+        ScoreApi.exportAnswer(Number(props.value))
+          .then((result) => {
+              // 添加UTF-8 BOM解决Excel中文乱码问题
+              const BOM = '\uFEFF';
+              const csvData = BOM + result;
+
+              // 创建Blob对象
+              const blob = new Blob([csvData], {
+                  type: 'text/csv;charset=utf-8',
+              });
+
+              // 创建下载链接
+              const link = document.createElement('a');
+              const url = URL.createObjectURL(blob);
+
+              // 设置下载属性
+              link.href = url;
+              link.download = `Survey ${props.value}.csv`;
+
+              // 触发下载
+              document.body.appendChild(link);
+              link.click();
+
+              // 清理资源
+              setTimeout(() => {
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(url);
+              }, 100);
+          });
+    };
+
     useEffect(() => {
         loadMore();
     }, []);
@@ -101,14 +135,30 @@ export default function AsyncPagedSelect(props: SelectProps) {
                   component="button"
                   type="button"
                   pointer
+                  leftSection={
+                    props.value !== '' ? (
+                      <ActionIcon
+                        size="sm"
+                        variant="subtle"
+                        color="gray"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() => exportAnswer()}
+                      >
+                          <IconDownload />
+                      </ActionIcon>
+                    ) : <></>
+                  }
                   rightSection={
                       props.value !== '' ? (
-                          <CloseButton
+                          <ActionIcon
                             size="sm"
+                            variant="subtle"
+                            color="gray"
                             onMouseDown={(event) => event.preventDefault()}
                             onClick={() => props.onChange('')}
-                            aria-label="清空搜索"
-                          />
+                          >
+                              <IconX />
+                          </ActionIcon>
                       ) : (
                           <Combobox.Chevron />
                       )
