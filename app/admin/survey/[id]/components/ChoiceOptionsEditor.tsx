@@ -1,11 +1,23 @@
 import { Button, Checkbox, Group, Input, Radio } from '@mantine/core';
+import { useRef } from 'react';
 
 export default function ChoiceOptionsEditor({type, values, setValues, answer, setAnswer, handleSave}: any) {
+  // 使用ref记录上一次的值，避免不必要的onBlur触发
+  const prevValuesRef = useRef(JSON.stringify(values));
   // 选项操作
   const handleOptionChange = (idx: number, value: string) => {
     const newValues = [...values];
     newValues[idx] = { ...newValues[idx], title: value };
     setValues(newValues);
+  };
+  
+  // 只有当值发生变化时才触发onBlur
+  const handleOptionBlur = () => {
+    const currentValues = JSON.stringify(values);
+    if (prevValuesRef.current !== currentValues) {
+      prevValuesRef.current = currentValues;
+      handleSave();
+    }
   };
   const handleContentChange = (idx: number, value: string) => {
     const newValues = [...values];
@@ -62,14 +74,14 @@ export default function ChoiceOptionsEditor({type, values, setValues, answer, se
                 placeholder="选项标题"
                 value={opt.title}
                 onChange={e => handleOptionChange(idx, e.target.value)}
-                onBlur={handleSave}
+                onBlur={handleOptionBlur}
                 style={{marginBottom: 4}}
               />
               <Input
                 placeholder="选项内容"
                 value={opt.content}
                 onChange={e => handleContentChange(idx, e.target.value)}
-                onBlur={handleSave}
+                onBlur={handleOptionBlur}
               />
             </div>
             <Button color="red" size="xs" onClick={() => handleRemoveOption(idx)} style={{marginTop: 8}}>-</Button>
@@ -79,4 +91,4 @@ export default function ChoiceOptionsEditor({type, values, setValues, answer, se
       <Button size="xs" onClick={handleAddOption} mt={4}>添加选项</Button>
     </div>
   );
-} 
+}

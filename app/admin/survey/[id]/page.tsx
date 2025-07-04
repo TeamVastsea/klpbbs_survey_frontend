@@ -68,9 +68,8 @@ export default function EditSurveyPage() {
     }
   };
 
-  // 使用refreshKey确保组件在数据更新时重新渲染
   return (
-    <div key={refreshKey}>
+    <div>
       <Container w="80%">
         <Space h={50}/>
         {page.page?.data.title && (
@@ -91,8 +90,7 @@ export default function EditSurveyPage() {
         )}
 
         <Space h={20}/>
-        {/* 使用key确保DragDropContext在数据更新时重新渲染 */}
-        <DragDropContext onDragEnd={handleDragEnd} key={`dnd-${refreshKey}`}>
+        <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="questions-list">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -120,10 +118,19 @@ export default function EditSurveyPage() {
                             </div>
                           }
                           onSave={(updatedQuestion) => {
-                            QuestionNetwork.modifyQuestion(updatedQuestion)().then(() => {
-                              // 使用刷新函数强制更新UI
-                              return refreshQuestions();
-                            });
+                            // 使用本地更新优化用户体验
+                            if (questions.questionList) {
+                              const newQuestionList = [...questions.questionList];
+                              const index = newQuestionList.findIndex(q => q.id === updatedQuestion.id);
+                              if (index !== -1) {
+                                newQuestionList[index] = updatedQuestion;
+                                // 先用本地数据更新UI，不触发重新验证
+                                questions.mutate(newQuestionList, false);
+                              }
+                            }
+                            
+                            // 发送网络请求，但不强制刷新UI
+                            QuestionNetwork.modifyQuestion(updatedQuestion)();
                           }}
                         />
                       </div>
