@@ -7,6 +7,9 @@ export function useQuestionByPage(page: number) {
     QuestionNetwork.fetchQuestionByPage(page),
     {
       onErrorRetry: () => {},
+      revalidateOnFocus: true,
+      revalidateIfStale: true,
+      dedupingInterval: 0, // 禁用重复请求的去重，确保每次都获取最新数据
     }
   );
 

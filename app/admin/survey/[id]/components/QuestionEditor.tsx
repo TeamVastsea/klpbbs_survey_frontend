@@ -1,7 +1,6 @@
 import {useState} from 'react';
-import {Stack} from '@mantine/core';
+import {Group, Stack} from '@mantine/core';
 import {useFocusWithin} from '@mantine/hooks';
-import TextQuestion from '@/components/Question/TextQuestion';
 import {Question} from '@/model/question';
 import QuestionTypeAndScore from './QuestionTypeAndScore';
 import TitleAndContentEditor from './TitleAndContentEditor';
@@ -39,35 +38,36 @@ export default function QuestionEditor(props: QuestionEditorProps) {
     props.onSave(newQuestion);
   };
   return (
-    <div ref={ref} style={{border: '1px solid #eee', borderRadius: 8, padding: 16, marginBottom: 16}}>
-      <Stack>
-        <QuestionTypeAndScore
-          type={type}
-          allPoints={allPoints}
-          setAllPoints={setAllPoints}
-          subPoints={subPoints}
-          setSubPoints={setSubPoints}
-        />
-        <TitleAndContentEditor
-          title={title}
-          setTitle={setTitle}
-          content={content}
-          setContent={setContent}
-          onBlur={handleSave}
-        />
-        {type === 'Text' && (
-          <TextQuestion {...props} value="" setValue={() => {}} />
-        )}
-        {(type === 'SingleChoice' || type === 'MultipleChoice') && (
-          <ChoiceOptionsEditor
+    <div ref={ref} style={{border: '1px solid #eee', borderRadius: 8, padding: 16, marginBottom: 16, width: '100%'}}>
+      <Stack style={{width: '100%'}}>
+        <Group justify="space-between">
+          <QuestionTypeAndScore
             type={type}
-            values={values}
-            setValues={setValues}
-            answer={answer}
-            setAnswer={setAnswer}
-            handleSave={handleSave}
+            setType={setType}
+            allPoints={allPoints}
+            setAllPoints={setAllPoints}
+            subPoints={subPoints}
+            setSubPoints={setSubPoints}
           />
-        )}
+          {props.dragHandle}
+        </Group>
+          <TitleAndContentEditor
+            title={title}
+            setTitle={setTitle}
+            content={content}
+            setContent={setContent}
+            onBlur={handleSave}
+          />
+          {(type === 'SingleChoice' || type === 'MultipleChoice') && (
+            <ChoiceOptionsEditor
+              type={type}
+              values={values}
+              setValues={setValues}
+              answer={answer}
+              setAnswer={setAnswer}
+              handleSave={handleSave}
+            />
+          )}
       </Stack>
     </div>
   );
@@ -75,5 +75,6 @@ export default function QuestionEditor(props: QuestionEditorProps) {
 
 export interface QuestionEditorProps {
   question: Question;
+  dragHandle?: React.ReactNode;
   onSave: (question: Question) => void;
 }

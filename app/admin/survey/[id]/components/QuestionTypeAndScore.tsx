@@ -6,7 +6,7 @@ const QUESTION_TYPES = [
   {label: '多选题', value: 'MultipleChoice'},
 ];
 
-export default function QuestionTypeAndScore({type, allPoints, setAllPoints, subPoints, setSubPoints}: any) {
+export default function QuestionTypeAndScore({type, setType, allPoints, setAllPoints, subPoints, setSubPoints}: any) {
   return (
     <Group align="end" mb={0} gap={16}>
       <div>
@@ -14,6 +14,7 @@ export default function QuestionTypeAndScore({type, allPoints, setAllPoints, sub
         <Select
           data={QUESTION_TYPES}
           value={type}
+          onChange={setType}
           style={{maxWidth: 120, minWidth: 100}}
         />
       </div>
@@ -45,4 +46,4 @@ export default function QuestionTypeAndScore({type, allPoints, setAllPoints, sub
       )}
     </Group>
   );
-} 
+}
