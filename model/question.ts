@@ -17,4 +17,5 @@ export interface Answer {
 export interface Value {
   content: string;
   title: string;
+  options?: string[];
 }
