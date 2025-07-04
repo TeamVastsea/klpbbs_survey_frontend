@@ -26,28 +26,58 @@ export default function ChoiceOptionsEditor({type, values, setValues, answer, se
   };
   const handleAddOption = () => {
     setValues([...values, { title: '', content: '' }]);
+    // 添加选项后立即保存
+    handleSave();
   };
   const handleRemoveOption = (idx: number) => {
-    const removed = values[idx]?.title;
+    const idxStr = idx.toString();
     setValues(values.filter((_: any, i: number) => i !== idx));
-    if (type === 'SingleChoice' && answer === removed) setAnswer('');
-    if (type === 'MultipleChoice' && Array.isArray(answer)) setAnswer(answer.filter((a: string) => a !== removed));
+    if (type === 'SingleChoice' && answer === idxStr) setAnswer('');
+    if (type === 'MultipleChoice' && Array.isArray(answer)) setAnswer(answer.filter((a: string) => a !== idxStr));
+    
+    // 更新索引大于被删除选项的答案
+    if (type === 'MultipleChoice' && Array.isArray(answer)) {
+      setAnswer(answer.map((a: string) => {
+        const aNum = parseInt(a);
+        return aNum > idx ? (aNum - 1).toString() : a;
+      }));
+    } else if (type === 'SingleChoice' && answer !== '') {
+      const answerNum = parseInt(answer);
+      if (answerNum > idx) {
+        setAnswer((answerNum - 1).toString());
+      }
+    }
+    
+    // 删除选项后立即保存
+    handleSave();
   };
   const handleSetAnswer = (idx: number) => {
-    const opt = values[idx]?.title;
-    if (!opt) return;
-    if (type === 'SingleChoice') setAnswer(opt);
+    const idxStr = idx.toString();
+    if (type === 'SingleChoice') {
+      setAnswer(idxStr);
+      // 单选题选择后立即保存
+      handleSave();
+    }
     else if (type === 'MultipleChoice') {
       if (!Array.isArray(answer)) return;
-      if (answer.includes(opt)) setAnswer(answer.filter((a: string) => a !== opt));
-      else setAnswer([...answer, opt]);
+      if (answer.includes(idxStr)) {
+        setAnswer(answer.filter((a: string) => a !== idxStr));
+      } else {
+        setAnswer([...answer, idxStr]);
+      }
+      // 多选题选择后立即保存
+      handleSave();
     }
   };
   return (
     <div>
       <Group justify="space-between" align="center" mb={8}>
         <div>选项：</div>
-        <Button size="xs" color="gray" variant="outline" onClick={() => setAnswer(type === 'MultipleChoice' ? [] : '')}>
+        <Button size="xs" color="gray" variant="outline" onClick={() => {
+          setAnswer(type === 'MultipleChoice' ? [] : '');
+          // 清空选择后立即保存
+          handleSave();
+        }}>
           清空选择
         </Button>
       </Group>
@@ -56,16 +86,16 @@ export default function ChoiceOptionsEditor({type, values, setValues, answer, se
           <Group align="flex-start">
             {type === 'SingleChoice' ? (
               <Radio
-                checked={answer === opt.title}
+                checked={answer === idx.toString()}
                 onChange={() => handleSetAnswer(idx)}
-                value={opt.title}
+                value={idx.toString()}
                 style={{marginRight: 8, marginTop: 8}}
               />
             ) : (
               <Checkbox
-                checked={Array.isArray(answer) && answer.includes(opt.title)}
+                checked={Array.isArray(answer) && answer.includes(idx.toString())}
                 onChange={() => handleSetAnswer(idx)}
-                value={opt.title}
+                value={idx.toString()}
                 style={{marginRight: 8, marginTop: 8}}
               />
             )}
