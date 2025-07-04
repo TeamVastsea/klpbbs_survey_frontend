@@ -39,5 +39,5 @@ export class QuestionNetwork {
       undefined,
       false,
       'application/json'
-    )
+    );
 }
