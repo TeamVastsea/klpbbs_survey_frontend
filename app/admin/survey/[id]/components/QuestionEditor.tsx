@@ -39,33 +39,6 @@ export default function QuestionEditor(props: QuestionEditorProps) {
 
     // 设置新的定时器，延迟500ms执行保存
     saveTimeoutRef.current = setTimeout(() => {
-      // 检查是否有实际变化，避免不必要的保存
-      // 注释掉条件检查，确保每次调用都会保存
-      // 特别是对于条件编辑器的更改
-      // if (
-      //   type === props.question.type &&
-      //   title === props.question.content.title &&
-      //   content === (props.question.content.content || '') &&
-      //   JSON.stringify(values) === JSON.stringify(props.question.values || []) &&
-      //   JSON.stringify(answer) ===
-      //     JSON.stringify(
-      //       props.question.answer?.answer
-      //         ? props.question.type === 'MultipleChoice'
-      //           ? JSON.parse(props.question.answer.answer)
-      //           : props.question.answer.answer
-      //         : props.question.type === 'MultipleChoice'
-      //           ? []
-      //           : ''
-      //     ) &&
-      //   allPoints === (props.question.answer?.all_points ?? '') &&
-      //   subPoints === (props.question.answer?.sub_points ?? '') &&
-      //   required === (props.question.required ?? true) &&
-      //   JSON.stringify(conditions) === JSON.stringify(props.question.condition || [])
-      // ) {
-      //   console.log('没有变化，不需要保存');
-      //   return; // 没有变化，不需要保存
-      // }
-
       const newQuestion: Question = {
         ...props.question,
         type,
