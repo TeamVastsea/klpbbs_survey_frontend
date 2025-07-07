@@ -113,6 +113,18 @@ export default function EditSurveyPage() {
                               <IconGripVertical size={18} />
                             </div>
                           }
+                          availableQuestions={
+                            questions.questionList
+                              ? questions.questionList
+                                  .filter((q) => q.id !== question.id) // 排除当前问题
+                                  .map((q) => ({
+                                    id: q.id,
+                                    title: q.content.title,
+                                    type: q.type,
+                                    values: q.values
+                                  }))
+                              : []
+                          }
                           onSave={(updatedQuestion) => {
                             // 使用本地更新优化用户体验
                             if (questions.questionList) {

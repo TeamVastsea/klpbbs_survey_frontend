@@ -4,9 +4,19 @@ export interface Question {
   content: Value;
   type: string;
   values: Value[];
-  condition: object[] | undefined;
+  condition: Condition[] | undefined;
   required: boolean | undefined;
   answer: Answer | undefined;
+}
+
+export interface Condition {
+  type: 'and' | 'or' | 'not';
+  conditions: ConditionInner[];
+}
+
+export interface ConditionInner {
+  id: number;
+  value: any;
 }
 export interface Answer {
   all_points?: number;

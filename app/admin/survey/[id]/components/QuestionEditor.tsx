@@ -1,8 +1,9 @@
 import { useCallback, useRef, useState } from 'react';
-import { Group, Stack } from '@mantine/core';
+import { Group, Stack, Switch } from '@mantine/core';
 import { useFocusWithin } from '@mantine/hooks';
-import { Question } from '@/model/question';
+import { Condition, Question } from '@/model/question';
 import ChoiceOptionsEditor from './ChoiceOptionsEditor';
+import ConditionEditor from './ConditionEditor';
 import QuestionTypeAndScore from './QuestionTypeAndScore';
 import TitleAndContentEditor from './TitleAndContentEditor';
 
@@ -22,6 +23,8 @@ export default function QuestionEditor(props: QuestionEditorProps) {
   );
   const [allPoints, setAllPoints] = useState(props.question.answer?.all_points ?? '');
   const [subPoints, setSubPoints] = useState(props.question.answer?.sub_points ?? '');
+  const [required, setRequired] = useState(props.question.required ?? true);
+  const [conditions, setConditions] = useState<Condition[]>(props.question.condition || []);
   // 使用ref但不在onBlur时自动保存，避免频繁触发保存
   const { ref } = useFocusWithin();
   // 添加防抖逻辑，避免频繁保存
@@ -37,26 +40,31 @@ export default function QuestionEditor(props: QuestionEditorProps) {
     // 设置新的定时器，延迟500ms执行保存
     saveTimeoutRef.current = setTimeout(() => {
       // 检查是否有实际变化，避免不必要的保存
-      if (
-        type === props.question.type &&
-        title === props.question.content.title &&
-        content === (props.question.content.content || '') &&
-        JSON.stringify(values) === JSON.stringify(props.question.values || []) &&
-        JSON.stringify(answer) ===
-          JSON.stringify(
-            props.question.answer?.answer
-              ? props.question.type === 'MultipleChoice'
-                ? JSON.parse(props.question.answer.answer)
-                : props.question.answer.answer
-              : props.question.type === 'MultipleChoice'
-                ? []
-                : ''
-          ) &&
-        allPoints === (props.question.answer?.all_points ?? '') &&
-        subPoints === (props.question.answer?.sub_points ?? '')
-      ) {
-        return; // 没有变化，不需要保存
-      }
+      // 注释掉条件检查，确保每次调用都会保存
+      // 特别是对于条件编辑器的更改
+      // if (
+      //   type === props.question.type &&
+      //   title === props.question.content.title &&
+      //   content === (props.question.content.content || '') &&
+      //   JSON.stringify(values) === JSON.stringify(props.question.values || []) &&
+      //   JSON.stringify(answer) ===
+      //     JSON.stringify(
+      //       props.question.answer?.answer
+      //         ? props.question.type === 'MultipleChoice'
+      //           ? JSON.parse(props.question.answer.answer)
+      //           : props.question.answer.answer
+      //         : props.question.type === 'MultipleChoice'
+      //           ? []
+      //           : ''
+      //     ) &&
+      //   allPoints === (props.question.answer?.all_points ?? '') &&
+      //   subPoints === (props.question.answer?.sub_points ?? '') &&
+      //   required === (props.question.required ?? true) &&
+      //   JSON.stringify(conditions) === JSON.stringify(props.question.condition || [])
+      // ) {
+      //   console.log('没有变化，不需要保存');
+      //   return; // 没有变化，不需要保存
+      // }
 
       const newQuestion: Question = {
         ...props.question,
@@ -81,15 +89,21 @@ export default function QuestionEditor(props: QuestionEditorProps) {
                   type === 'MultipleChoice' && subPoints !== '' ? Number(subPoints) : undefined,
               }
             : undefined,
+        required,
+        condition: conditions.length > 0 ? conditions : undefined,
       };
       props.onSave(newQuestion);
     }, 500); // 500ms的防抖延迟
-  }, [type, title, content, values, answer, allPoints, subPoints, props]);
+  }, [type, title, content, values, answer, allPoints, subPoints, required, conditions, props]);
 
   // 暴露给子组件的保存函数
   const handleSave = useCallback(() => {
     debouncedSave();
   }, [debouncedSave]);
+
+  // 获取可用于条件的问题列表
+  const availableQuestions = props.availableQuestions || [];
+
   return (
     <div
       ref={ref}
@@ -130,6 +144,23 @@ export default function QuestionEditor(props: QuestionEditorProps) {
             handleSave={handleSave}
           />
         )}
+        <Group>
+          <Switch
+            label="必填"
+            checked={required}
+            onChange={(event) => {
+              setRequired(event.currentTarget.checked);
+              // 状态变化后立即保存
+              setTimeout(handleSave, 0);
+            }}
+          />
+        </Group>
+        <ConditionEditor
+          conditions={conditions}
+          setConditions={setConditions}
+          availableQuestions={availableQuestions}
+          handleSave={handleSave}
+        />
       </Stack>
     </div>
   );
@@ -139,4 +170,5 @@ export interface QuestionEditorProps {
   question: Question;
   dragHandle?: React.ReactNode;
   onSave: (question: Question) => void;
+  availableQuestions?: { id: number; title: string }[];
 }
