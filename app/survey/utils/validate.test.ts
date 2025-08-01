@@ -251,7 +251,7 @@ describe('validate', () => {
       const questions = createTestQuestions();
 
       // 场景1：选择了"其他"性别，但没有填写其他性别说明
-      let answers = new Map<number, string>([
+      const answers = new Map<number, string>([
         [1, '张三'],
         [2, '2'], // 选择了"其他"
         [4, JSON.stringify(['0'])],
@@ -270,13 +270,13 @@ describe('validate', () => {
       const questions = createTestQuestions();
 
       // 场景1：选择了阅读，触发问题6显示
-      let answers = new Map<number, string>([
+      const answers = new Map<number, string>([
         [1, '张三'],
         [2, '0'],
         [4, JSON.stringify(['0', '1'])], // 选择了阅读和运动
       ]);
 
-      let unanswered = checkNecessaryQuestions(answers, questions);
+      const unanswered = checkNecessaryQuestions(answers, questions);
       expect(unanswered).toEqual([]);
 
       let visibleUnanswered = getVisibleUnansweredQuestions(answers, questions);

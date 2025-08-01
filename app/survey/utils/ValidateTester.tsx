@@ -24,7 +24,7 @@ import { checkVisibility } from './visibility';
 
 export default function ValidateTester() {
   // 创建测试问题
-  const [questions, setQuestions] = useState<Question[]>([
+  const questions: Question[] = [
     // 问题1：必填文本题
     {
       id: 1,
@@ -129,7 +129,7 @@ export default function ValidateTester() {
       required: false,
       answer: undefined,
     },
-  ]);
+  ];
 
   // 用户回答
   const [answers, setAnswers] = useState<Map<number, string>>(new Map());
