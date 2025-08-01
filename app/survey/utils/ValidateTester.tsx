@@ -307,7 +307,7 @@ export default function ValidateTester() {
                           let selectedOptions: string[] = [];
                           try {
                             selectedOptions = JSON.parse(currentAnswer);
-                          } catch (e) {}
+                          } catch (e) { /* empty */ }
 
                           return (
                             <Checkbox
@@ -369,7 +369,7 @@ export default function ValidateTester() {
             <Stack gap="md">
               {Array.from(answers.entries()).map(([id, value]) => {
                 const question = questions.find((q) => q.id === Number(id));
-                if (!question) return null;
+                if (!question) {return null;}
 
                 return (
                   <Group key={id} justify="space-between">
