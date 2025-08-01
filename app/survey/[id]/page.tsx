@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   Button,
@@ -19,6 +19,8 @@ import SafeHTML from '@/components/SafeHTML';
 import { usePageByIndex } from '@/data/use-page';
 import { useQuestionByPage } from '@/data/use-question';
 import { ScoreNetwork } from '@/network/score';
+import { checkVisibility } from '@/app/survey/utils/visibility';
+import { checkNecessaryQuestions } from '@/app/survey/utils/validate';
 
 export default function Survey() {
   const router = useRouter();
@@ -34,6 +36,17 @@ export default function Survey() {
   const [loadableOpened, { open, close }] = useDisclosure(false);
   const page = usePageByIndex(survey, pageIndex);
   const questions = useQuestionByPage(page.page?.data.id || 0);
+
+  // 验证相关状态
+  const [unansweredQuestions, setUnansweredQuestions] = useState<any[]>([]);
+  const questionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+
+  // 计算问题可见性
+  const visibleQuestions = useMemo(() => {
+    if (!questions.questionList) {return [];}
+    const visibility = checkVisibility(answers, questions.questionList);
+    return questions.questionList.filter((_, index) => visibility[index]);
+  }, [questions.questionList, answers]);
 
   const updateAnswer = (id: number, answer: string) => {
     setAnswers((prevAnswers) => {
@@ -76,6 +89,85 @@ export default function Survey() {
     notifications.show({ title: '保存成功', message: '当前的内容已保存', color: 'teal' });
   }, [pageIndex]);
 
+  // 验证逻辑：当页面或答案变化时检查必填题
+  useEffect(() => {
+    if (!questions.questionList) {
+      return;
+    }
+
+    const unanswered = checkNecessaryQuestions(answers, questions.questionList);
+
+    setUnansweredQuestions(unanswered);
+  }, [answers, questions.questionList, pageIndex]);
+
+  // 处理页面切换，检查当前页面是否有未回答的必填题
+  const handlePageChange = (newPageIndex: number) => {
+    if (!questions.questionList) {
+      setPageIndex(newPageIndex);
+      return;
+    }
+
+    // 如果是最后一页（提交），检查所有页面的必填题
+    if (newPageIndex >= (page.page?.total || 0)) {
+      const unanswered = checkNecessaryQuestions(answers, questions.questionList);
+      if (unanswered.length > 0) {
+        // 找到第一个未回答的必填题
+        const firstUnanswered = unanswered[0];
+
+        notifications.show({
+          title: '还有必填题未完成',
+          message: `请先完成"${firstUnanswered.title}"再提交`,
+          color: 'orange'
+        });
+
+        // 延迟滚动到问题
+        setTimeout(() => {
+          const questionElement = questionRefs.current[firstUnanswered.id];
+          if (questionElement) {
+            questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            questionElement.classList.add('highlight-unanswered');
+            setTimeout(() => {
+              questionElement.classList.remove('highlight-unanswered');
+            }, 3000);
+          }
+        }, 300);
+
+        return;
+      }
+      handleFinish();
+      return;
+    }
+
+    // 检查当前页面的必填题
+    const currentQuestions = questions.questionList.filter(q => q.page === pageIndex + 1);
+    const currentUnanswered = checkNecessaryQuestions(answers, currentQuestions);
+
+    if (currentUnanswered.length > 0) {
+      const firstUnanswered = currentUnanswered[0];
+      notifications.show({
+        title: '当前页面还有必填题未完成',
+        message: `请先完成"${firstUnanswered.title}"再进入下一页`,
+        color: 'orange'
+      });
+
+      // 滚动到第一个未回答的问题
+      setTimeout(() => {
+        const questionElement = questionRefs.current[firstUnanswered.id];
+        if (questionElement) {
+          questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          questionElement.classList.add('highlight-unanswered');
+          setTimeout(() => {
+            questionElement.classList.remove('highlight-unanswered');
+          }, 3000);
+        }
+      }, 100);
+
+      return;
+    }
+
+    setPageIndex(newPageIndex);
+  };
+
   const handleFinish = () => {
     if (scoreId === undefined) {
       return;
@@ -100,28 +192,40 @@ export default function Survey() {
         onLoad={loadAnswer}
         onClose={close}
       />
+
       <Center>
         <SafeHTML content={page.page?.data.title || ''} />
       </Center>
+
       <Stack gap="xl">
-        {questions.questionList?.map((question) => (
-          <Question
-            question={question}
+        {visibleQuestions.map((question) => (
+          <div
             key={question.id}
-            value={answers.get(question.id) || ''}
-            setValue={(answer) => updateAnswer(question.id, answer)}
-          />
+            ref={(el) => {
+              if (el) {questionRefs.current[question.id] = el;}
+            }}
+            className={unansweredQuestions.some(q => q.id === question.id) ? 'unanswered-question' : ''}
+          >
+            <Question
+              question={question}
+              value={answers.get(question.id) || ''}
+              setValue={(answer) => updateAnswer(question.id, answer)}
+            />
+          </div>
         ))}
       </Stack>
+
       <Space h="lg" />
       <ButtonGroup>
-        <Button onClick={() => setPageIndex(pageIndex - 1)} fullWidth disabled={pageIndex === 0}>
+        <Button
+          onClick={() => setPageIndex(pageIndex - 1)}
+          fullWidth
+          disabled={pageIndex === 0}
+        >
           上一页
         </Button>
         <Button
-          onClick={() =>
-            pageIndex + 1 >= (page.page?.total || 0) ? handleFinish() : setPageIndex(pageIndex + 1)
-          }
+          onClick={() => handlePageChange(pageIndex + 1)}
           fullWidth
           color={pageIndex + 1 >= (page.page?.total || 0) ? 'green' : 'blue'}
           loading={loading}

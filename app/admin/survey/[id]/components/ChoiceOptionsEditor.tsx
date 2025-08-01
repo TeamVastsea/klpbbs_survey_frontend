@@ -1,6 +1,11 @@
 import { useRef } from 'react';
 import { Button, Checkbox, Group, Input, Radio } from '@mantine/core';
 
+interface ChoiceOption {
+  title: string;
+  content: string;
+}
+
 export default function ChoiceOptionsEditor({
   type,
   values,
@@ -33,46 +38,53 @@ export default function ChoiceOptionsEditor({
   };
   const handleAddOption = () => {
     setValues([...values, { title: '', content: '' }]);
-    // 添加选项后立即保存
     handleSave();
   };
   const handleRemoveOption = (idx: number) => {
     const idxStr = idx.toString();
-    setValues(values.filter((_: any, i: number) => i !== idx));
-    if (type === 'SingleChoice' && answer === idxStr) setAnswer('');
-    if (type === 'MultipleChoice' && Array.isArray(answer))
-      setAnswer(answer.filter((a: string) => a !== idxStr));
 
-    // 更新索引大于被删除选项的答案
-    if (type === 'MultipleChoice' && Array.isArray(answer)) {
-      setAnswer(
-        answer.map((a: string) => {
-          const aNum = parseInt(a);
-          return aNum > idx ? (aNum - 1).toString() : a;
-        })
-      );
-    } else if (type === 'SingleChoice' && answer !== '') {
-      const answerNum = parseInt(answer);
-      if (answerNum > idx) {
-        setAnswer((answerNum - 1).toString());
+    // 过滤掉被删除的选项
+    setValues(values.filter((_: ChoiceOption, i: number) => i !== idx));
+
+    // 更新答案索引
+    const updateAnswerIndex = (answerValue: string) => {
+      const answerNum = parseInt(answerValue, 10);
+      return answerNum > idx ? (answerNum - 1).toString() : answerValue;
+    };
+
+    // 处理单选答案
+    if (type === 'SingleChoice') {
+      if (typeof answer === 'string') {
+        if (answer === idxStr) {
+          setAnswer('');
+        } else {
+          setAnswer(updateAnswerIndex(answer));
+        }
       }
     }
+    // 处理多选答案
+    else if (type === 'MultipleChoice' && Array.isArray(answer)) {
+      // 移除被删除选项的答案并更新索引
+      const updatedAnswer = answer
+        .filter((a: string) => a !== idxStr)
+        .map(updateAnswerIndex);
+      setAnswer(updatedAnswer);
+    }
 
-    // 删除选项后立即保存
     handleSave();
   };
   const handleSetAnswer = (idx: number) => {
     const idxStr = idx.toString();
+
     if (type === 'SingleChoice') {
       setAnswer(idxStr);
-      // 单选题选择后立即保存
-      handleSave();
     } else if (type === 'MultipleChoice') {
-      if (!Array.isArray(answer)) return;
-      if (answer.includes(idxStr)) {
-        setAnswer(answer.filter((a: string) => a !== idxStr));
+      const currentAnswer = Array.isArray(answer) ? answer : [];
+
+      if (currentAnswer.includes(idxStr)) {
+        setAnswer(currentAnswer.filter((a: string) => a !== idxStr));
       } else {
-        setAnswer([...answer, idxStr]);
+        setAnswer([...currentAnswer, idxStr]);
       }
       // 多选题选择后立即保存
       handleSave();
@@ -88,14 +100,13 @@ export default function ChoiceOptionsEditor({
           variant="outline"
           onClick={() => {
             setAnswer(type === 'MultipleChoice' ? [] : '');
-            // 清空选择后立即保存
             handleSave();
           }}
         >
           清空选择
         </Button>
       </Group>
-      {values.map((opt: any, idx: number) => (
+      {values.map((opt: ChoiceOption, idx: number) => (
         <div
           key={idx}
           style={{
