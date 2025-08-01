@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
 import {
   ActionIcon,

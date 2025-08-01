@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import {
-  Button,
   Card,
   Checkbox,
   Group,
@@ -12,8 +11,8 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
-import { Condition, ConditionInner, Question } from '@/model/question';
 import { checkVisibility } from './visibility';
+import {Question} from "@/model/question";
 
 /**
  * 条件可见性测试组件
@@ -21,7 +20,7 @@ import { checkVisibility } from './visibility';
  */
 export default function VisibilityTester() {
   // 创建测试问题
-  const [questions, setQuestions] = useState<Question[]>([
+  const questions: Question[] = [
     // 问题1：无条件，始终显示
     {
       id: 1,
@@ -113,7 +112,7 @@ export default function VisibilityTester() {
       required: false,
       answer: undefined,
     },
-  ]);
+  ];
 
   // 用户回答
   const [answers, setAnswers] = useState<Map<number, string>>(new Map());
@@ -164,49 +163,6 @@ export default function VisibilityTester() {
     setAnswers(newAnswers);
   };
 
-  // 添加条件
-  const addCondition = (questionId: number, conditionType: 'and' | 'or' | 'not') => {
-    const newQuestions = [...questions];
-    const questionIndex = newQuestions.findIndex((q) => q.id === questionId);
-
-    if (questionIndex === -1) return;
-
-    const newCondition: Condition = {
-      type: conditionType,
-      conditions: [],
-    };
-
-    if (!newQuestions[questionIndex].condition) {
-      newQuestions[questionIndex].condition = [];
-    }
-
-    newQuestions[questionIndex].condition?.push(newCondition);
-    setQuestions(newQuestions);
-  };
-
-  // 添加内部条件
-  const addInnerCondition = (
-    questionId: number,
-    conditionGroupIndex: number,
-    targetQuestionId: number,
-    value: string
-  ) => {
-    const newQuestions = [...questions];
-    const questionIndex = newQuestions.findIndex((q) => q.id === questionId);
-
-    if (questionIndex === -1) return;
-    if (!newQuestions[questionIndex].condition) return;
-    if (conditionGroupIndex >= (newQuestions[questionIndex].condition?.length || 0)) return;
-
-    const newInnerCondition: ConditionInner = {
-      id: targetQuestionId,
-      value,
-    };
-
-    newQuestions[questionIndex].condition[conditionGroupIndex].conditions.push(newInnerCondition);
-    setQuestions(newQuestions);
-  };
-
   return (
     <Stack gap="xl">
       <Title order={2}>条件可见性测试</Title>
@@ -254,7 +210,7 @@ export default function VisibilityTester() {
                       let selectedOptions: string[] = [];
                       try {
                         selectedOptions = JSON.parse(currentAnswer);
-                      } catch (e) {}
+                      } catch (e) { /* empty */ }
 
                       return (
                         <Checkbox
@@ -286,7 +242,6 @@ export default function VisibilityTester() {
                         </Text>
                         <Stack gap={5}>
                           {conditionGroup.conditions.map((condition, condIdx) => {
-                            const targetQuestion = questions.find((q) => q.id === condition.id);
                             return (
                               <Text key={condIdx} size="xs">
                                 问题{condition.id}
@@ -314,7 +269,7 @@ export default function VisibilityTester() {
             <Stack gap="md">
               {Array.from(answers.entries()).map(([id, value]) => {
                 const question = questions.find((q) => q.id === Number(id));
-                if (!question) return null;
+                if (!question) {return null;}
 
                 return (
                   <Group key={id} justify="space-between">

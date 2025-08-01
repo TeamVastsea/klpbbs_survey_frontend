@@ -1,4 +1,4 @@
-import { Condition, Question } from '@/model/question';
+import { Question } from '@/model/question';
 import { checkVisibility } from './visibility';
 
 describe('checkVisibility', () => {
@@ -145,7 +145,7 @@ describe('checkVisibility', () => {
 
   it('应该正确处理已回答/未回答条件', () => {
     const questions = createTestQuestions();
-    let answers = new Map<number, string>();
+    const answers = new Map<number, string>();
 
     // 问题1未回答
     let visibility = checkVisibility(answers, questions);
