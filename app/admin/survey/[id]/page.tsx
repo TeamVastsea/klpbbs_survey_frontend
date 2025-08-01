@@ -121,7 +121,7 @@ export default function EditSurveyPage() {
                                     id: q.id,
                                     title: q.content.title,
                                     type: q.type,
-                                    values: q.values
+                                    values: q.values,
                                   }))
                               : []
                           }

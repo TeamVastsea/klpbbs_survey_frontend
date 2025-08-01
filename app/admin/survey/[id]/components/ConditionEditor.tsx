@@ -1,12 +1,27 @@
 import { useCallback, useState } from 'react';
-import { Button, Group, Select, Stack, Text, ActionIcon, Box, Paper, MultiSelect } from '@mantine/core';
 import { IconPlus, IconTrash } from '@tabler/icons-react';
+import {
+  ActionIcon,
+  Box,
+  Button,
+  Group,
+  MultiSelect,
+  Paper,
+  Select,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { Condition, ConditionInner } from '@/model/question';
 
 export interface ConditionEditorProps {
   conditions: Condition[];
   setConditions: React.Dispatch<React.SetStateAction<Condition[]>>;
-  availableQuestions: { id: number; title: string; type?: string; values?: { title: string; content: string }[] }[];
+  availableQuestions: {
+    id: number;
+    title: string;
+    type?: string;
+    values?: { title: string; content: string }[];
+  }[];
   handleSave: () => void;
 }
 
@@ -95,45 +110,45 @@ export default function ConditionEditor({
     },
     [conditions, setConditions, handleSave]
   );
-  
+
   // 获取问题的类型
   const getQuestionType = useCallback(
     (questionId: number) => {
-      const question = availableQuestions.find(q => q.id === questionId);
+      const question = availableQuestions.find((q) => q.id === questionId);
       return question?.type || '';
     },
     [availableQuestions]
   );
-  
+
   // 获取问题的选项
   const getQuestionOptions = useCallback(
     (questionId: number) => {
-      const question = availableQuestions.find(q => q.id === questionId);
+      const question = availableQuestions.find((q) => q.id === questionId);
       return question?.values || [];
     },
     [availableQuestions]
   );
-  
+
   // 根据问题类型生成答案选项
   const getAnswerOptions = useCallback(
     (questionId: number) => {
       const questionType = getQuestionType(questionId);
       const options = getQuestionOptions(questionId);
-      
+
       if (questionType === 'SingleChoice' || questionType === 'MultipleChoice') {
         return [
           { value: 'true', label: '已回答' },
           { value: 'false', label: '未回答' },
           ...options.map((option, index) => ({
             value: index.toString(),
-            label: `选择了: ${option.title}`
-          }))
+            label: `选择了: ${option.title}`,
+          })),
         ];
       }
-      
+
       return [
         { value: 'true', label: '已回答' },
-        { value: 'false', label: '未回答' }
+        { value: 'false', label: '未回答' },
       ];
     },
     [getQuestionType, getQuestionOptions]
@@ -160,7 +175,9 @@ export default function ConditionEditor({
                 <Select
                   size="xs"
                   value={conditionGroup.type}
-                  onChange={(value) => updateConditionType(groupIndex, value as 'and' | 'or' | 'not')}
+                  onChange={(value) =>
+                    updateConditionType(groupIndex, value as 'and' | 'or' | 'not')
+                  }
                   data={[
                     { value: 'and', label: '全部满足 (AND)' },
                     { value: 'or', label: '任一满足 (OR)' },
@@ -182,51 +199,59 @@ export default function ConditionEditor({
                   请添加条件
                 </Text>
               ) : (
-                conditionGroup.conditions.map((innerCondition: ConditionInner, innerIndex: number) => (
-                  <Box key={innerIndex} pl={10}>
-                    <Group>
-                      <Select
-                        size="xs"
-                        placeholder="选择问题"
-                        value={innerCondition.id.toString()}
-                        onChange={(value) =>
-                          updateInnerConditionId(groupIndex, innerIndex, parseInt(value || '0'))
-                        }
-                        data={availableQuestions.map((q) => ({
-                          value: q.id.toString(),
-                          label: q.title,
-                        }))}
-                        style={{ flex: 1 }}
-                      />
-                      {getQuestionType(innerCondition.id) === 'MultipleChoice' ? (
-                        <MultiSelect
-                          size="xs"
-                          placeholder="选择答案"
-                          value={Array.isArray(innerCondition.value) ? innerCondition.value : []}
-                          onChange={(value) => updateInnerConditionValue(groupIndex, innerIndex, value)}
-                          data={getAnswerOptions(innerCondition.id).filter(option => option.value !== 'true' && option.value !== 'false')}
-                          style={{ width: 200 }}
-                        />
-                      ) : (
+                conditionGroup.conditions.map(
+                  (innerCondition: ConditionInner, innerIndex: number) => (
+                    <Box key={innerIndex} pl={10}>
+                      <Group>
                         <Select
                           size="xs"
-                          placeholder="选择答案"
-                          value={innerCondition.value}
-                          onChange={(value) => updateInnerConditionValue(groupIndex, innerIndex, value)}
-                          data={getAnswerOptions(innerCondition.id)}
-                          style={{ width: 200 }}
+                          placeholder="选择问题"
+                          value={innerCondition.id.toString()}
+                          onChange={(value) =>
+                            updateInnerConditionId(groupIndex, innerIndex, parseInt(value || '0'))
+                          }
+                          data={availableQuestions.map((q) => ({
+                            value: q.id.toString(),
+                            label: q.title,
+                          }))}
+                          style={{ flex: 1 }}
                         />
-                      )}
-                      <ActionIcon
-                        color="red"
-                        variant="subtle"
-                        onClick={() => removeInnerCondition(groupIndex, innerIndex)}
-                      >
-                        <IconTrash size={16} />
-                      </ActionIcon>
-                    </Group>
-                  </Box>
-                ))
+                        {getQuestionType(innerCondition.id) === 'MultipleChoice' ? (
+                          <MultiSelect
+                            size="xs"
+                            placeholder="选择答案"
+                            value={Array.isArray(innerCondition.value) ? innerCondition.value : []}
+                            onChange={(value) =>
+                              updateInnerConditionValue(groupIndex, innerIndex, value)
+                            }
+                            data={getAnswerOptions(innerCondition.id).filter(
+                              (option) => option.value !== 'true' && option.value !== 'false'
+                            )}
+                            style={{ width: 200 }}
+                          />
+                        ) : (
+                          <Select
+                            size="xs"
+                            placeholder="选择答案"
+                            value={innerCondition.value}
+                            onChange={(value) =>
+                              updateInnerConditionValue(groupIndex, innerIndex, value)
+                            }
+                            data={getAnswerOptions(innerCondition.id)}
+                            style={{ width: 200 }}
+                          />
+                        )}
+                        <ActionIcon
+                          color="red"
+                          variant="subtle"
+                          onClick={() => removeInnerCondition(groupIndex, innerIndex)}
+                        >
+                          <IconTrash size={16} />
+                        </ActionIcon>
+                      </Group>
+                    </Box>
+                  )
+                )
               )}
 
               <Button

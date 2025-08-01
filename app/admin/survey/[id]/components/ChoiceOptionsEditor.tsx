@@ -65,9 +65,7 @@ export default function ChoiceOptionsEditor({
     // 处理多选答案
     else if (type === 'MultipleChoice' && Array.isArray(answer)) {
       // 移除被删除选项的答案并更新索引
-      const updatedAnswer = answer
-        .filter((a: string) => a !== idxStr)
-        .map(updateAnswerIndex);
+      const updatedAnswer = answer.filter((a: string) => a !== idxStr).map(updateAnswerIndex);
       setAnswer(updatedAnswer);
     }
 

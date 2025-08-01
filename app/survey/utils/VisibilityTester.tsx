@@ -1,9 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Button, Card, Checkbox, Group, Select, Stack, Text, TextInput, Title } from '@mantine/core';
-import { checkVisibility } from './visibility';
+import { useEffect, useState } from 'react';
+import {
+  Button,
+  Card,
+  Checkbox,
+  Group,
+  Select,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import { Condition, ConditionInner, Question } from '@/model/question';
+import { checkVisibility } from './visibility';
 
 /**
  * 条件可见性测试组件
@@ -21,7 +31,7 @@ export default function VisibilityTester() {
       values: [],
       condition: undefined,
       required: true,
-      answer: undefined
+      answer: undefined,
     },
     // 问题2：单选题
     {
@@ -31,11 +41,11 @@ export default function VisibilityTester() {
       content: { title: '问题2（单选题）', content: '这是一个单选题' },
       values: [
         { title: '选项1', content: '选项1' },
-        { title: '选项2', content: '选项2' }
+        { title: '选项2', content: '选项2' },
       ],
       condition: undefined,
       required: true,
-      answer: undefined
+      answer: undefined,
     },
     // 问题3：多选题
     {
@@ -46,11 +56,11 @@ export default function VisibilityTester() {
       values: [
         { title: '选项A', content: '选项A' },
         { title: '选项B', content: '选项B' },
-        { title: '选项C', content: '选项C' }
+        { title: '选项C', content: '选项C' },
       ],
       condition: undefined,
       required: false,
-      answer: undefined
+      answer: undefined,
     },
     // 问题4：条件问题
     {
@@ -62,11 +72,11 @@ export default function VisibilityTester() {
       condition: [
         {
           type: 'and',
-          conditions: [{ id: 1, value: 'answered' }]
-        }
+          conditions: [{ id: 1, value: 'answered' }],
+        },
       ],
       required: false,
-      answer: undefined
+      answer: undefined,
     },
     // 问题5：条件问题
     {
@@ -78,11 +88,11 @@ export default function VisibilityTester() {
       condition: [
         {
           type: 'and',
-          conditions: [{ id: 2, value: '0' }]
-        }
+          conditions: [{ id: 2, value: '0' }],
+        },
       ],
       required: false,
-      answer: undefined
+      answer: undefined,
     },
     // 问题6：条件问题
     {
@@ -96,18 +106,18 @@ export default function VisibilityTester() {
           type: 'or',
           conditions: [
             { id: 3, value: '0' },
-            { id: 3, value: '1' }
-          ]
-        }
+            { id: 3, value: '1' },
+          ],
+        },
       ],
       required: false,
-      answer: undefined
-    }
+      answer: undefined,
+    },
   ]);
 
   // 用户回答
   const [answers, setAnswers] = useState<Map<number, string>>(new Map());
-  
+
   // 计算问题可见性
   const [visibility, setVisibility] = useState<boolean[]>([]);
 
@@ -135,7 +145,7 @@ export default function VisibilityTester() {
     const newAnswers = new Map(answers);
     const currentAnswer = answers.get(id);
     let selectedOptions: string[] = [];
-    
+
     try {
       if (currentAnswer) {
         selectedOptions = JSON.parse(currentAnswer);
@@ -143,13 +153,13 @@ export default function VisibilityTester() {
     } catch (e) {
       // 解析错误，重置选项
     }
-    
+
     if (checked && !selectedOptions.includes(optionIndex)) {
       selectedOptions.push(optionIndex);
     } else if (!checked) {
-      selectedOptions = selectedOptions.filter(option => option !== optionIndex);
+      selectedOptions = selectedOptions.filter((option) => option !== optionIndex);
     }
-    
+
     newAnswers.set(id, JSON.stringify(selectedOptions));
     setAnswers(newAnswers);
   };
@@ -157,37 +167,42 @@ export default function VisibilityTester() {
   // 添加条件
   const addCondition = (questionId: number, conditionType: 'and' | 'or' | 'not') => {
     const newQuestions = [...questions];
-    const questionIndex = newQuestions.findIndex(q => q.id === questionId);
-    
+    const questionIndex = newQuestions.findIndex((q) => q.id === questionId);
+
     if (questionIndex === -1) return;
-    
+
     const newCondition: Condition = {
       type: conditionType,
-      conditions: []
+      conditions: [],
     };
-    
+
     if (!newQuestions[questionIndex].condition) {
       newQuestions[questionIndex].condition = [];
     }
-    
+
     newQuestions[questionIndex].condition?.push(newCondition);
     setQuestions(newQuestions);
   };
 
   // 添加内部条件
-  const addInnerCondition = (questionId: number, conditionGroupIndex: number, targetQuestionId: number, value: string) => {
+  const addInnerCondition = (
+    questionId: number,
+    conditionGroupIndex: number,
+    targetQuestionId: number,
+    value: string
+  ) => {
     const newQuestions = [...questions];
-    const questionIndex = newQuestions.findIndex(q => q.id === questionId);
-    
+    const questionIndex = newQuestions.findIndex((q) => q.id === questionId);
+
     if (questionIndex === -1) return;
     if (!newQuestions[questionIndex].condition) return;
     if (conditionGroupIndex >= (newQuestions[questionIndex].condition?.length || 0)) return;
-    
+
     const newInnerCondition: ConditionInner = {
       id: targetQuestionId,
-      value
+      value,
     };
-    
+
     newQuestions[questionIndex].condition[conditionGroupIndex].conditions.push(newInnerCondition);
     setQuestions(newQuestions);
   };
@@ -195,11 +210,11 @@ export default function VisibilityTester() {
   return (
     <Stack gap="xl">
       <Title order={2}>条件可见性测试</Title>
-      
+
       <Group grow>
         <Stack gap="md" style={{ flex: 1 }}>
           <Title order={3}>问题列表</Title>
-          
+
           {questions.map((question, index) => (
             <Card key={question.id} shadow="sm" padding="lg" withBorder>
               <Stack gap="xs">
@@ -209,9 +224,9 @@ export default function VisibilityTester() {
                     {visibility[index] ? '可见' : '不可见'}
                   </Text>
                 </Group>
-                
+
                 <Text size="sm">{question.content.content}</Text>
-                
+
                 {question.type === 'Text' && (
                   <TextInput
                     placeholder="输入回答"
@@ -219,7 +234,7 @@ export default function VisibilityTester() {
                     onChange={(e) => updateTextAnswer(question.id, e.target.value)}
                   />
                 )}
-                
+
                 {question.type === 'SingleChoice' && (
                   <Select
                     placeholder="选择一个选项"
@@ -227,11 +242,11 @@ export default function VisibilityTester() {
                     onChange={(value) => updateSingleChoiceAnswer(question.id, value || '')}
                     data={question.values.map((value, idx) => ({
                       value: idx.toString(),
-                      label: value.title
+                      label: value.title,
                     }))}
                   />
                 )}
-                
+
                 {question.type === 'MultipleChoice' && (
                   <Stack gap="xs">
                     {question.values.map((value, idx) => {
@@ -240,38 +255,46 @@ export default function VisibilityTester() {
                       try {
                         selectedOptions = JSON.parse(currentAnswer);
                       } catch (e) {}
-                      
+
                       return (
                         <Checkbox
                           key={idx}
                           label={value.title}
                           checked={selectedOptions.includes(idx.toString())}
-                          onChange={(e) => updateMultipleChoiceAnswer(
-                            question.id,
-                            idx.toString(),
-                            e.target.checked
-                          )}
+                          onChange={(e) =>
+                            updateMultipleChoiceAnswer(
+                              question.id,
+                              idx.toString(),
+                              e.target.checked
+                            )
+                          }
                         />
                       );
                     })}
                   </Stack>
                 )}
-                
+
                 {question.id > 3 && (
                   <Stack gap="xs">
-                    <Text size="sm" fw={500}>显示条件:</Text>
+                    <Text size="sm" fw={500}>
+                      显示条件:
+                    </Text>
                     {question.condition?.map((conditionGroup, groupIdx) => (
                       <Card key={groupIdx} padding="xs" withBorder>
-                        <Text size="sm">条件组 {groupIdx + 1} (类型: {conditionGroup.type})</Text>
+                        <Text size="sm">
+                          条件组 {groupIdx + 1} (类型: {conditionGroup.type})
+                        </Text>
                         <Stack gap={5}>
                           {conditionGroup.conditions.map((condition, condIdx) => {
-                            const targetQuestion = questions.find(q => q.id === condition.id);
+                            const targetQuestion = questions.find((q) => q.id === condition.id);
                             return (
                               <Text key={condIdx} size="xs">
-                                问题{condition.id} 
-                                {condition.value === 'answered' ? '已回答' : 
-                                 condition.value === 'unanswered' ? '未回答' : 
-                                 `选择了 ${condition.value}`}
+                                问题{condition.id}
+                                {condition.value === 'answered'
+                                  ? '已回答'
+                                  : condition.value === 'unanswered'
+                                    ? '未回答'
+                                    : `选择了 ${condition.value}`}
                               </Text>
                             );
                           })}
@@ -284,23 +307,23 @@ export default function VisibilityTester() {
             </Card>
           ))}
         </Stack>
-        
+
         <Stack gap="md" style={{ flex: 1 }}>
           <Title order={3}>当前回答</Title>
           <Card shadow="sm" padding="lg" withBorder>
             <Stack gap="md">
               {Array.from(answers.entries()).map(([id, value]) => {
-                const question = questions.find(q => q.id === Number(id));
+                const question = questions.find((q) => q.id === Number(id));
                 if (!question) return null;
-                
+
                 return (
                   <Group key={id} justify="space-between">
                     <Text>{question.content.title}:</Text>
                     <Text>
-                      {question.type === 'MultipleChoice' 
-                        ? `选择了 ${JSON.parse(value).map((v: string) => 
-                            question.values[Number(v)]?.title || v
-                          ).join(', ')}` 
+                      {question.type === 'MultipleChoice'
+                        ? `选择了 ${JSON.parse(value)
+                            .map((v: string) => question.values[Number(v)]?.title || v)
+                            .join(', ')}`
                         : question.type === 'SingleChoice'
                           ? `选择了 ${question.values[Number(value)]?.title || value}`
                           : value}
@@ -308,13 +331,11 @@ export default function VisibilityTester() {
                   </Group>
                 );
               })}
-              
-              {answers.size === 0 && (
-                <Text c="dimmed">暂无回答</Text>
-              )}
+
+              {answers.size === 0 && <Text c="dimmed">暂无回答</Text>}
             </Stack>
           </Card>
-          
+
           <Title order={3}>可见性结果</Title>
           <Card shadow="sm" padding="lg" withBorder>
             <Stack gap="md">

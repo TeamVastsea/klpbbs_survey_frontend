@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import {
   Button,
@@ -14,13 +14,13 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import LoadAnswerScreen from '@/app/survey/[id]/components/LoadAnswerScreen';
+import { checkNecessaryQuestions } from '@/app/survey/utils/validate';
+import { checkVisibility } from '@/app/survey/utils/visibility';
 import Question from '@/components/Question/Question';
 import SafeHTML from '@/components/SafeHTML';
 import { usePageByIndex } from '@/data/use-page';
 import { useQuestionByPage } from '@/data/use-question';
 import { ScoreNetwork } from '@/network/score';
-import { checkVisibility } from '@/app/survey/utils/visibility';
-import { checkNecessaryQuestions } from '@/app/survey/utils/validate';
 
 export default function Survey() {
   const router = useRouter();
@@ -43,7 +43,9 @@ export default function Survey() {
 
   // 计算问题可见性
   const visibleQuestions = useMemo(() => {
-    if (!questions.questionList) {return [];}
+    if (!questions.questionList) {
+      return [];
+    }
     const visibility = checkVisibility(answers, questions.questionList);
     return questions.questionList.filter((_, index) => visibility[index]);
   }, [questions.questionList, answers]);
@@ -117,7 +119,7 @@ export default function Survey() {
         notifications.show({
           title: '还有必填题未完成',
           message: `请先完成"${firstUnanswered.title}"再提交`,
-          color: 'orange'
+          color: 'orange',
         });
 
         // 延迟滚动到问题
@@ -139,7 +141,7 @@ export default function Survey() {
     }
 
     // 检查当前页面的必填题
-    const currentQuestions = questions.questionList.filter(q => q.page === pageIndex + 1);
+    const currentQuestions = questions.questionList.filter((q) => q.page === pageIndex + 1);
     const currentUnanswered = checkNecessaryQuestions(answers, currentQuestions);
 
     if (currentUnanswered.length > 0) {
@@ -147,7 +149,7 @@ export default function Survey() {
       notifications.show({
         title: '当前页面还有必填题未完成',
         message: `请先完成"${firstUnanswered.title}"再进入下一页`,
-        color: 'orange'
+        color: 'orange',
       });
 
       // 滚动到第一个未回答的问题
@@ -202,9 +204,13 @@ export default function Survey() {
           <div
             key={question.id}
             ref={(el) => {
-              if (el) {questionRefs.current[question.id] = el;}
+              if (el) {
+                questionRefs.current[question.id] = el;
+              }
             }}
-            className={unansweredQuestions.some(q => q.id === question.id) ? 'unanswered-question' : ''}
+            className={
+              unansweredQuestions.some((q) => q.id === question.id) ? 'unanswered-question' : ''
+            }
           >
             <Question
               question={question}
@@ -217,11 +223,7 @@ export default function Survey() {
 
       <Space h="lg" />
       <ButtonGroup>
-        <Button
-          onClick={() => setPageIndex(pageIndex - 1)}
-          fullWidth
-          disabled={pageIndex === 0}
-        >
+        <Button onClick={() => setPageIndex(pageIndex - 1)} fullWidth disabled={pageIndex === 0}>
           上一页
         </Button>
         <Button

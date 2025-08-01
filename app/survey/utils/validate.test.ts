@@ -1,5 +1,9 @@
-import { checkNecessaryQuestions, areAllNecessaryQuestionsAnswered, getVisibleUnansweredQuestions } from './validate';
 import { Question } from '@/model/question';
+import {
+  areAllNecessaryQuestionsAnswered,
+  checkNecessaryQuestions,
+  getVisibleUnansweredQuestions,
+} from './validate';
 
 describe('validate', () => {
   // 创建测试用的问题列表
@@ -13,7 +17,7 @@ describe('validate', () => {
       values: [],
       condition: undefined,
       required: true,
-      answer: undefined
+      answer: undefined,
     },
     // 问题2：必填单选题
     {
@@ -24,11 +28,11 @@ describe('validate', () => {
       values: [
         { title: '男', content: '男' },
         { title: '女', content: '女' },
-        { title: '其他', content: '其他' }
+        { title: '其他', content: '其他' },
       ],
       condition: undefined,
       required: true,
-      answer: undefined
+      answer: undefined,
     },
     // 问题3：非必填文本题
     {
@@ -39,7 +43,7 @@ describe('validate', () => {
       values: [],
       condition: undefined,
       required: false,
-      answer: undefined
+      answer: undefined,
     },
     // 问题4：必填多选题
     {
@@ -50,11 +54,11 @@ describe('validate', () => {
       values: [
         { title: '阅读', content: '阅读' },
         { title: '运动', content: '运动' },
-        { title: '音乐', content: '音乐' }
+        { title: '音乐', content: '音乐' },
       ],
       condition: undefined,
       required: true,
-      answer: undefined
+      answer: undefined,
     },
     // 问题5：条件问题（如果性别选择了"其他"，则显示）
     {
@@ -66,11 +70,11 @@ describe('validate', () => {
       condition: [
         {
           type: 'and',
-          conditions: [{ id: 2, value: '2' }]
-        }
+          conditions: [{ id: 2, value: '2' }],
+        },
       ],
       required: true,
-      answer: undefined
+      answer: undefined,
     },
     // 问题6：条件问题（如果选择了阅读，则显示）
     {
@@ -82,12 +86,12 @@ describe('validate', () => {
       condition: [
         {
           type: 'and',
-          conditions: [{ id: 4, value: '0' }]
-        }
+          conditions: [{ id: 4, value: '0' }],
+        },
       ],
       required: false,
-      answer: undefined
-    }
+      answer: undefined,
+    },
   ];
 
   describe('checkNecessaryQuestions', () => {
@@ -96,7 +100,7 @@ describe('validate', () => {
       const answers = new Map<number, string>([
         [1, '张三'],
         [2, '0'],
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       const unanswered = checkNecessaryQuestions(answers, questions);
@@ -108,14 +112,12 @@ describe('validate', () => {
       const questions = createTestQuestions();
       const answers = new Map<number, string>([
         [1, '张三'],
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       const unanswered = checkNecessaryQuestions(answers, questions);
 
-      expect(unanswered).toEqual([
-        { id: 2, title: '性别', reason: 'required' }
-      ]);
+      expect(unanswered).toEqual([{ id: 2, title: '性别', reason: 'required' }]);
     });
 
     it('应该忽略不可见的必填题', () => {
@@ -123,7 +125,7 @@ describe('validate', () => {
       const answers = new Map<number, string>([
         [1, '张三'],
         [2, '0'], // 选择了"男"，不触发问题5的显示条件
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       const unanswered = checkNecessaryQuestions(answers, questions);
@@ -136,14 +138,12 @@ describe('validate', () => {
       const answers = new Map<number, string>([
         [1, '张三'],
         [2, '2'], // 选择了"其他"，触发问题5的显示条件
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       const unanswered = checkNecessaryQuestions(answers, questions);
 
-      expect(unanswered).toEqual([
-        { id: 5, title: '其他性别说明', reason: 'required' }
-      ]);
+      expect(unanswered).toEqual([{ id: 5, title: '其他性别说明', reason: 'required' }]);
     });
 
     it('应该忽略非必填题', () => {
@@ -151,7 +151,7 @@ describe('validate', () => {
       const answers = new Map<number, string>([
         [1, '张三'],
         [2, '0'],
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       const unanswered = checkNecessaryQuestions(answers, questions);
@@ -164,7 +164,7 @@ describe('validate', () => {
       const answers = {
         1: '张三',
         2: '0',
-        4: JSON.stringify(['0'])
+        4: JSON.stringify(['0']),
       };
 
       const unanswered = checkNecessaryQuestions(answers, questions);
@@ -179,7 +179,7 @@ describe('validate', () => {
       const answers = new Map<number, string>([
         [1, '张三'],
         [2, '0'],
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       const result = areAllNecessaryQuestionsAnswered(answers, questions);
@@ -191,7 +191,7 @@ describe('validate', () => {
       const questions = createTestQuestions();
       const answers = new Map<number, string>([
         [1, '张三'],
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       const result = areAllNecessaryQuestionsAnswered(answers, questions);
@@ -206,14 +206,14 @@ describe('validate', () => {
       const answers = new Map<number, string>([
         [1, '张三'],
         [2, '0'],
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       const unanswered = getVisibleUnansweredQuestions(answers, questions);
 
       expect(unanswered).toEqual([
         { id: 3, title: '邮箱', reason: 'visible' },
-        { id: 6, title: '喜欢的书籍', reason: 'visible' }
+        { id: 6, title: '喜欢的书籍', reason: 'visible' },
       ]);
     });
 
@@ -222,14 +222,12 @@ describe('validate', () => {
       const answers = new Map<number, string>([
         [1, '张三'],
         [2, '0'], // 选择了"男"，问题5不可见
-        [4, JSON.stringify(['1', '2'])] // 没有选择阅读，问题6不可见
+        [4, JSON.stringify(['1', '2'])], // 没有选择阅读，问题6不可见
       ]);
 
       const unanswered = getVisibleUnansweredQuestions(answers, questions);
 
-      expect(unanswered).toEqual([
-        { id: 3, title: '邮箱', reason: 'visible' }
-      ]);
+      expect(unanswered).toEqual([{ id: 3, title: '邮箱', reason: 'visible' }]);
     });
 
     it('应该忽略已回答的问题', () => {
@@ -239,7 +237,7 @@ describe('validate', () => {
         [2, '0'],
         [3, 'test@example.com'],
         [4, JSON.stringify(['0'])],
-        [6, '红楼梦']
+        [6, '红楼梦'],
       ]);
 
       const unanswered = getVisibleUnansweredQuestions(answers, questions);
@@ -256,13 +254,11 @@ describe('validate', () => {
       let answers = new Map<number, string>([
         [1, '张三'],
         [2, '2'], // 选择了"其他"
-        [4, JSON.stringify(['0'])]
+        [4, JSON.stringify(['0'])],
       ]);
 
       let unanswered = checkNecessaryQuestions(answers, questions);
-      expect(unanswered).toEqual([
-        { id: 5, title: '其他性别说明', reason: 'required' }
-      ]);
+      expect(unanswered).toEqual([{ id: 5, title: '其他性别说明', reason: 'required' }]);
 
       // 场景2：填写了其他性别说明
       answers.set(5, '自定义性别');
@@ -277,7 +273,7 @@ describe('validate', () => {
       let answers = new Map<number, string>([
         [1, '张三'],
         [2, '0'],
-        [4, JSON.stringify(['0', '1'])] // 选择了阅读和运动
+        [4, JSON.stringify(['0', '1'])], // 选择了阅读和运动
       ]);
 
       let unanswered = checkNecessaryQuestions(answers, questions);
@@ -286,16 +282,14 @@ describe('validate', () => {
       let visibleUnanswered = getVisibleUnansweredQuestions(answers, questions);
       expect(visibleUnanswered).toEqual([
         { id: 3, title: '邮箱', reason: 'visible' },
-        { id: 6, title: '喜欢的书籍', reason: 'visible' }
+        { id: 6, title: '喜欢的书籍', reason: 'visible' },
       ]);
 
       // 场景2：没有选择阅读，问题6不可见
       answers.set(4, JSON.stringify(['1', '2'])); // 只选择了运动和音乐
 
       visibleUnanswered = getVisibleUnansweredQuestions(answers, questions);
-      expect(visibleUnanswered).toEqual([
-        { id: 3, title: '邮箱', reason: 'visible' }
-      ]);
+      expect(visibleUnanswered).toEqual([{ id: 3, title: '邮箱', reason: 'visible' }]);
     });
   });
 });
