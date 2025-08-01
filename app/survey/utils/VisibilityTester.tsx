@@ -1,18 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  Card,
-  Checkbox,
-  Group,
-  Select,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import { Card, Checkbox, Group, Select, Stack, Text, TextInput, Title } from '@mantine/core';
+import { Question } from '@/model/question';
 import { checkVisibility } from './visibility';
-import {Question} from "@/model/question";
 
 /**
  * 条件可见性测试组件
@@ -210,7 +201,9 @@ export default function VisibilityTester() {
                       let selectedOptions: string[] = [];
                       try {
                         selectedOptions = JSON.parse(currentAnswer);
-                      } catch (e) { /* empty */ }
+                      } catch (e) {
+                        /* empty */
+                      }
 
                       return (
                         <Checkbox
@@ -269,7 +262,9 @@ export default function VisibilityTester() {
             <Stack gap="md">
               {Array.from(answers.entries()).map(([id, value]) => {
                 const question = questions.find((q) => q.id === Number(id));
-                if (!question) {return null;}
+                if (!question) {
+                  return null;
+                }
 
                 return (
                   <Group key={id} justify="space-between">
