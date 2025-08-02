@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import {useEffect, useRef} from 'react';
 import { Button, Checkbox, Group, Input, Radio } from '@mantine/core';
 
 interface ChoiceOption {
@@ -14,6 +14,12 @@ export default function ChoiceOptionsEditor({
   setAnswer,
   handleSave,
 }: any) {
+  useEffect(()=>{
+    if (!answer.length){
+      return;
+    }
+    handleSave();
+  }, [answer]);
   // 使用ref记录上一次的值，避免不必要的onBlur触发
   const prevValuesRef = useRef(JSON.stringify(values));
   // 选项操作
@@ -68,7 +74,6 @@ export default function ChoiceOptionsEditor({
       const updatedAnswer = answer.filter((a: string) => a !== idxStr).map(updateAnswerIndex);
       setAnswer(updatedAnswer);
     }
-
     handleSave();
   };
   const handleSetAnswer = (idx: number) => {
