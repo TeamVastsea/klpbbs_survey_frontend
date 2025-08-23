@@ -48,7 +48,6 @@ export default function EditSurveyPage() {
     }
 
     const pageId = page.page?.data.id || 0;
-
     // 立即更新本地数据，提供更好的用户体验
     if (questions.questionList) {
       const newQuestionList = [...questions.questionList];
@@ -58,12 +57,13 @@ export default function EditSurveyPage() {
       // 先用本地数据更新UI
       questions.mutate(newQuestionList, false);
 
+
       // 然后发送网络请求并刷新数据
-      QuestionNetwork.swapQuestion(pageId, sourceIndex, destinationIndex)().then(() => {
-        console.log('交换位置请求完成，刷新数据');
-        // 使用刷新函数强制更新UI，确保与服务器数据同步
-        return refreshQuestions();
-      });
+      QuestionNetwork.swapQuestion(pageId, sourceIndex, destinationIndex)()
+      .then(() => {})
+      .catch(() => {
+        // 或许这里需要增加一个回滚
+      })
     }
   };
 
