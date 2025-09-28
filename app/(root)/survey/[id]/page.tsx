@@ -28,47 +28,39 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
     // const answerId = useRef(searchParams.get('answer'));
 
     function save() {
-        // if (questions == null) {
-        //     return false;
-        // }
-        // const answerObject: any = {};
-        // answers.forEach((value, key) => {
-        //     answerObject[key] = value;
-        // });
-        //
-        // const surveyID = Number(params.id);
-        // const raw: SaveRequest = {
-        //     survey: surveyID,
-        //     content: answerObject,
-        //     complete: completed,
-        // };
-        //
-        // if (answerId.current != null) {
-        //     raw.id = Number(answerId.current);
-        // }
-        //
-        // let flag = false;
-        // for (const q of questions.content || []) {
-        //     if (
-        //         (!answers.has(q) || answers.get(q) === undefined) &&
-        //         checkAccess(questionsProps.current.get(q)?.condition || null) &&
-        //         questionsProps.current.get(q)?.required
-        //     ) {
-        //         flag = true;
-        //     }
-        // }
-        // if (flag) {
-        //     notifications.show({
-        //         title: '请填写所有题目',
-        //         message: '请填写所有题目后再提交',
-        //         color: 'red',
-        //     });
-        //     return false;
-        // }
-        //
-        // AnswerApi.submitAnswer(raw).then((result) => {
-        //     answerId.current = result.toString();
-        // });
+        if (questions == null) {
+            return false;
+        }
+
+        // 验证必填题
+        let hasUnfilledRequired = false;
+        const unfilledQuestions: string[] = [];
+
+        for (const question of questions) {
+            // 检查题目是否可见（满足条件）
+            const isVisible = checkAccess(JSON.stringify(question.condition));
+            
+            // 如果题目可见且为必填题
+            if (isVisible && question.required) {
+                const answer = answers.get(question.id);
+                
+                // 检查答案是否为空
+                if (!answer || answer.trim() === '' || answer === '[]') {
+                    hasUnfilledRequired = true;
+                    unfilledQuestions.push(question.content.title || `题目 ${question.id}`);
+                }
+            }
+        }
+
+        if (hasUnfilledRequired) {
+            notifications.show({
+                title: '请填写所有必填题',
+                message: `以下必填题尚未完成：${unfilledQuestions.join('、')}`,
+                color: 'red',
+                autoClose: 5000,
+            });
+            return false;
+        }
 
         ScoreApi.submitAnswer({
             id: answerId,
