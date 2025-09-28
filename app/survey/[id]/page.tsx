@@ -162,6 +162,10 @@ export default function Survey() {
   };
 
   const handleFinish = () => {
+    ScoreNetwork.submitAnswer(survey, Object.fromEntries(answers), scoreId)().then((res) => {
+      setScoreId(res);
+    });
+
     if (scoreId === undefined) {
       return;
     }
