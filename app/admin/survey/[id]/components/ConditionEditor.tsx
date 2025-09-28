@@ -137,8 +137,8 @@ export default function ConditionEditor({
 
       if (questionType === 'SingleChoice' || questionType === 'MultipleChoice') {
         return [
-          { value: 'true', label: '已回答' },
-          { value: 'false', label: '未回答' },
+          { value: 'answered', label: '已回答' },
+          { value: 'unanswered', label: '未回答' },
           ...options.map((option, index) => ({
             value: index.toString(),
             label: `选择了: ${option.title}`,
@@ -147,8 +147,8 @@ export default function ConditionEditor({
       }
 
       return [
-        { value: 'true', label: '已回答' },
-        { value: 'false', label: '未回答' },
+        { value: 'answered', label: '已回答' },
+        { value: 'unanswered', label: '未回答' },
       ];
     },
     [getQuestionType, getQuestionOptions]
@@ -208,7 +208,7 @@ export default function ConditionEditor({
                           placeholder="选择问题"
                           value={innerCondition.id.toString()}
                           onChange={(value) =>
-                            updateInnerConditionId(groupIndex, innerIndex, parseInt(value || '0'))
+                            updateInnerConditionId(groupIndex, innerIndex, parseInt(value || '0', 10))
                           }
                           data={availableQuestions.map((q) => ({
                             value: q.id.toString(),

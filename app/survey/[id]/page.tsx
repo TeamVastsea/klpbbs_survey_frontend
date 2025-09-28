@@ -1,26 +1,18 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import {
-  Button,
-  ButtonGroup,
-  Center,
-  Container,
-  LoadingOverlay,
-  Space,
-  Stack,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
+import {useEffect, useMemo, useRef, useState} from 'react';
+import {useParams, useRouter} from 'next/navigation';
+import {Button, ButtonGroup, Center, Container, LoadingOverlay, Space, Stack,} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
+import {notifications} from '@mantine/notifications';
 import LoadAnswerScreen from '@/app/survey/[id]/components/LoadAnswerScreen';
-import { checkNecessaryQuestions } from '@/app/survey/utils/validate';
-import { checkVisibility } from '@/app/survey/utils/visibility';
+import {checkNecessaryQuestions} from '@/app/survey/utils/validate';
+import {checkVisibility} from '@/app/survey/utils/visibility';
 import Question from '@/components/Question/Question';
 import SafeHTML from '@/components/SafeHTML';
-import { usePageByIndex } from '@/data/use-page';
-import { useQuestionByPage } from '@/data/use-question';
-import { ScoreNetwork } from '@/network/score';
+import {usePageByIndex} from '@/data/use-page';
+import {useQuestionByPage} from '@/data/use-question';
+import {ScoreNetwork} from '@/network/score';
 
 export default function Survey() {
   const router = useRouter();
@@ -141,8 +133,7 @@ export default function Survey() {
     }
 
     // 检查当前页面的必填题
-    const currentQuestions = questions.questionList.filter((q) => q.page === pageIndex + 1);
-    const currentUnanswered = checkNecessaryQuestions(answers, currentQuestions);
+    const currentUnanswered = checkNecessaryQuestions(answers, visibleQuestions);
 
     if (currentUnanswered.length > 0) {
       const firstUnanswered = currentUnanswered[0];

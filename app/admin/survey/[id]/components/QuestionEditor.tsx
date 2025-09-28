@@ -120,9 +120,10 @@ export default function QuestionEditor(props: QuestionEditorProps) {
         <Group>
           <Switch
             label="必填"
-            checked={!required}
+            checked={required}
             onChange={(event) => {
-              setRequired(!event.currentTarget.checked);
+                console.log(required, event.target.checked);
+              setRequired(event.currentTarget.checked);
               setTimeout(handleSave, 100);
             }}
           />
