@@ -3,8 +3,8 @@
 import useSWR from 'swr';
 import SurveyNetwork from '@/network/survey';
 
-export function useSurveyList() {
-  const { data, mutate, error } = useSWR('api_survey', SurveyNetwork.fetchSurveyList, {
+export function useSurveyList(page: number, size: number) {
+  const { data, mutate, error } = useSWR(`api_survey_${page}_${size}`, SurveyNetwork.fetchSurveyList(page, size), {
     onErrorRetry: () => {},
   });
 

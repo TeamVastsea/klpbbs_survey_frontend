@@ -13,7 +13,7 @@ const min = (a: number, b: number) => {
 };
 
 export default function EditSurveyPage() {
-  const surveys = useSurveyList();
+  const surveys = useSurveyList(0, 20);
   const router = useRouter();
   const [newModalOpened, { open, close }] = useDisclosure(false);
 

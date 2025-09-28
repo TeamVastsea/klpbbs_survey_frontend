@@ -19,7 +19,7 @@ const min = (a: number, b: number) => {
 };
 
 export default function SurveyListPage() {
-  const surveys = useSurveyList();
+  const surveys = useSurveyList(0, 10);
   const router = useRouter();
 
   return (
