@@ -6,6 +6,7 @@ import ChoiceOptionsEditor from './ChoiceOptionsEditor';
 import ConditionEditor from './ConditionEditor';
 import QuestionTypeAndScore from './QuestionTypeAndScore';
 import TitleAndContentEditor from './TitleAndContentEditor';
+import { useEffect } from 'react';
 
 export default function QuestionEditor(props: QuestionEditorProps) {
   const [type, setType] = useState(props.question.type);
@@ -73,10 +74,12 @@ export default function QuestionEditor(props: QuestionEditorProps) {
   const handleSave = useCallback(() => {
     debouncedSave();
   }, [debouncedSave]);
+  useEffect(()=>{
+    handleSave();
+  }, [type, title, content, values, answer, allPoints, subPoints, required, conditions]);
 
   // 获取可用于条件的问题列表
   const availableQuestions = props.availableQuestions || [];
-
   return (
     <div
       ref={ref}
@@ -122,9 +125,7 @@ export default function QuestionEditor(props: QuestionEditorProps) {
             label="必填"
             checked={required}
             onChange={(event) => {
-                console.log(required, event.target.checked);
               setRequired(event.currentTarget.checked);
-              setTimeout(handleSave, 100);
             }}
           />
         </Group>
