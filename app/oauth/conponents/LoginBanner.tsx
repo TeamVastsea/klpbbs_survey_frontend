@@ -14,7 +14,9 @@ export function LoginBanner() {
   const path = usePathname();
 
   function getLogin() {
-    localStorage.setItem('redirect', path);
+    if (!path.endsWith('/oauth')) {
+      localStorage.setItem('redirect', path);
+    }
     setLoading(true);
 
     window.location.href =
@@ -57,7 +59,7 @@ export function LoginBanner() {
                 <Text fz="sm" c="dimmed">
                   您已经登录
                 </Text>
-                <Button onClick={() => router.push('/')}>开始使用</Button>
+                <Button onClick={() => router.push('/survey')}>填写问卷</Button>
               </Stack>
             ) : (
               <Button w="100%" onClick={getLogin} loading={loading}>
