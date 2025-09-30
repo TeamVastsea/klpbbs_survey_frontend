@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
 import { IconGripVertical } from '@tabler/icons-react';
-import { Button, Center, Container, Pagination, Space, Stack } from '@mantine/core';
+import {Button, Card, Center, Container, Pagination, Space, Stack} from '@mantine/core';
 import QuestionEditor from '@/app/admin/survey/[id]/components/QuestionEditor';
 import RichTextHTMLEditor from '@/components/RichTextHTMLEditor';
 import { usePageByIndex } from '@/data/use-page';
@@ -116,13 +116,13 @@ export default function EditSurveyPage() {
                           availableQuestions={
                             questions.questionList
                               ? questions.questionList
-                                  .filter((q) => q.id !== question.id) // 排除当前问题
-                                  .map((q) => ({
-                                    id: q.id,
-                                    title: q.content.title,
-                                    type: q.type,
-                                    values: q.values,
-                                  }))
+                                .filter((q) => q.id !== question.id) // 排除当前问题
+                                .map((q) => ({
+                                  id: q.id,
+                                  title: q.content.title,
+                                  type: q.type,
+                                  values: q.values,
+                                }))
                               : []
                           }
                           onSave={(updatedQuestion) => {

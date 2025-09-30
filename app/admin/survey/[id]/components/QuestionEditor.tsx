@@ -1,12 +1,11 @@
-import { useCallback, useRef, useState } from 'react';
-import { Group, Stack, Switch } from '@mantine/core';
-import { useFocusWithin } from '@mantine/hooks';
-import { Condition, Question } from '@/model/question';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {Card, Group, Stack, Switch} from '@mantine/core';
+import {useFocusWithin} from '@mantine/hooks';
+import {Condition, Question} from '@/model/question';
 import ChoiceOptionsEditor from './ChoiceOptionsEditor';
 import ConditionEditor from './ConditionEditor';
 import QuestionTypeAndScore from './QuestionTypeAndScore';
 import TitleAndContentEditor from './TitleAndContentEditor';
-import { useEffect } from 'react';
 
 export default function QuestionEditor(props: QuestionEditorProps) {
   const [type, setType] = useState(props.question.type);
@@ -81,16 +80,7 @@ export default function QuestionEditor(props: QuestionEditorProps) {
   // 获取可用于条件的问题列表
   const availableQuestions = props.availableQuestions || [];
   return (
-    <div
-      ref={ref}
-      style={{
-        border: '1px solid #eee',
-        borderRadius: 8,
-        padding: 16,
-        marginBottom: 16,
-        width: '100%',
-      }}
-    >
+    <Card ref={ref} withBorder style={{ width: '100%' }}>
       <Stack style={{ width: '100%' }}>
         <Group justify="space-between">
           <QuestionTypeAndScore
@@ -136,7 +126,19 @@ export default function QuestionEditor(props: QuestionEditorProps) {
           handleSave={handleSave}
         />
       </Stack>
-    </div>
+    </Card>
+    // <div
+    //   ref={ref}
+    //   style={{
+    //     border: '1px solid #eee',
+    //     borderRadius: 8,
+    //     padding: 16,
+    //     marginBottom: 16,
+    //     width: '100%',
+    //   }}
+    // >
+
+    // </div>
   );
 }
 

@@ -2,7 +2,6 @@
   display: flex;
   align-items: flex-start;
   border-radius: 8px;
-  background-color: var(--mantine-color-body);
   margin-bottom: 10px;
   position: relative;
   width: 100%;
@@ -11,11 +10,9 @@
 
 .itemDragging {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: var(--mantine-color-gray-0);
 }
 
 .dragHandle {
-  color: var(--mantine-color-gray-5);
   cursor: grab;
   display: flex;
   align-items: center;
