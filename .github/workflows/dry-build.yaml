@@ -1,0 +1,17 @@
+name: Dry build
+on:
+  pull_request:
+
+jobs:
+  DryBuild:
+    name: Dry build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - run: pnpm i --frozen-lockfile
+      - run: pnpm run build
