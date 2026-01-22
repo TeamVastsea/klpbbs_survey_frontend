@@ -199,6 +199,21 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
             <Center>
               <Text>阅卷时间: {answer?.judge_time}</Text>
             </Center>
+            <Center>
+              <Text>
+                填写用户:&nbsp;
+                <Text
+                  component="a"
+                  href={`https://klpbbs.com/?${answer?.user}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  c="blue"
+                  style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                >
+                  {answer?.user}
+                </Text>
+              </Text>
+            </Center>
           </Alert>
         </Center>
         <Container maw={1600} w="90%">
