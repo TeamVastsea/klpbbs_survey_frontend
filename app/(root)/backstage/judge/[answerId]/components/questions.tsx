@@ -10,7 +10,7 @@ export default function QuestionCard(props: PageQuestionProps) {
             {!props.checkAccess(JSON.stringify(props.question.condition))
                 ? '(隐藏题目, 用户无需作答)'
                 : null}
-            {generateQuestion(props.question, props.value, props.setValue, true)}
+            {generateQuestion(props.question, props.value, props.setValue, true, props.question.answer?.answer)}
             {props.question.answer?.answer &&
                 <Group>
                     <Text>标准答案：{props.question.answer.answer}</Text>

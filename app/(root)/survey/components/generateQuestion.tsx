@@ -11,6 +11,7 @@ export function generateQuestion(
     value: string | undefined,
     setValue: (value: string) => void,
     isDisable: boolean = false,
+    correctAnswer?: string,
 ) {
     const titleContent = (
         <Title order={3}>
@@ -42,6 +43,7 @@ export function generateQuestion(
                       value={value}
                       setValue={setValue}
                       disabled={isDisable}
+                      correctAnswer={correctAnswer}
                     />
                 </div>
             );
@@ -55,6 +57,7 @@ export function generateQuestion(
                       value={value}
                       setValue={setValue}
                       disabled={isDisable}
+                      correctAnswer={correctAnswer}
                     />
                 </div>
             );
