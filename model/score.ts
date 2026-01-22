@@ -4,4 +4,5 @@ export interface Score {
   user: string;
   update_time: string;
   completed: boolean;
+  answer: string;
 }

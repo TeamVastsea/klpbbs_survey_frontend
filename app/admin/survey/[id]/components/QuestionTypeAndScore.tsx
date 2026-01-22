@@ -15,12 +15,6 @@ export default function QuestionTypeAndScore({
   subPoints,
   setSubPoints,
 }: any) {
-  // 添加一个onSave属性
-  const onSave = () => {
-    // 这里不做任何操作，因为类型变化会直接触发组件重新渲染
-    // 分数变化会在Input的onBlur中处理
-  };
-
   // 使用ref记录上一次的值
   const prevAllPointsRef = useRef(allPoints);
   const prevSubPointsRef = useRef(subPoints);
@@ -29,14 +23,12 @@ export default function QuestionTypeAndScore({
   const handleAllPointsBlur = () => {
     if (prevAllPointsRef.current !== allPoints) {
       prevAllPointsRef.current = allPoints;
-      onSave();
     }
   };
 
   const handleSubPointsBlur = () => {
     if (prevSubPointsRef.current !== subPoints) {
       prevSubPointsRef.current = subPoints;
-      onSave();
     }
   };
   return (

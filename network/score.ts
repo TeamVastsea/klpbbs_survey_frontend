@@ -66,4 +66,25 @@ export class ScoreNetwork {
       undefined,
       false
     )();
+
+  public static fetchScoreById = (id: number) =>
+    baseFetcher<Score>(
+      `/api/score/${id}`,
+      'GET',
+      true,
+    );
+
+  public static confirmScore = (id: number) =>
+    baseFetcher<Score>(
+      `/api/score/${id}`,
+      'POST',
+      true,
+    )();
+
+  public static rejudgeScore = (id: number) =>
+    baseFetcher<Score>(
+      `/api/score/${id}`,
+      'PATCH',
+      true,
+    )();
 }
