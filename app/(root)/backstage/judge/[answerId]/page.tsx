@@ -148,6 +148,25 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
           <Title>阅卷系统</Title>
         </Center>
         <Center>
+          <Stack gap="xs">
+            <Text size="sm" c="dimmed">选择题颜色说明:</Text>
+            <Group gap="md" justify="center">
+              <Group gap={5}>
+                <div style={{ width: 16, height: 16, backgroundColor: 'rgba(255, 0, 0, 0.3)', border: '1px solid rgba(255, 0, 0, 0.5)' }} />
+                <Text size="sm">用户选择但错误</Text>
+              </Group>
+              <Group gap={5}>
+                <div style={{ width: 16, height: 16, backgroundColor: 'rgba(0, 0, 255, 0.3)', border: '1px solid rgba(0, 0, 255, 0.5)' }} />
+                <Text size="sm">用户选择且正确</Text>
+              </Group>
+              <Group gap={5}>
+                <div style={{ width: 16, height: 16, backgroundColor: 'rgba(0, 255, 0, 0.3)', border: '1px solid rgba(0, 255, 0, 0.5)' }} />
+                <Text size="sm">用户未选择但正确</Text>
+              </Group>
+            </Group>
+          </Stack>
+        </Center>
+        <Center>
           <Alert
             variant="light"
             color={completed ? 'green' : 'blue'}
