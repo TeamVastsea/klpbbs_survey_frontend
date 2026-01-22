@@ -233,7 +233,8 @@ export interface AnswerInfo {
     survey: number;
     user: number;
     answers: Object;
-    score: null | number;
+    full_scores: null | number;
+    user_scores: null | number;
     update_time: string;
     completed: boolean;
 }

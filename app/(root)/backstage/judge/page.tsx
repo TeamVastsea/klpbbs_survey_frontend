@@ -25,9 +25,40 @@ export default function SurveyPage() {
     const [page, setPage] = useState(0);
     const [maxPage, setMaxPage] = useState(1);
     const [answers, setAnswers] = useState<AnswerInfo[]>([]);
+    const [initialized, setInitialized] = useState(false);
     const router = useRouter();
 
+    // 从localStorage恢复状态
     useEffect(() => {
+        const saved = localStorage.getItem('judgePageState');
+        if (saved) {
+            try {
+                const state = JSON.parse(saved);
+                setSurveySearch(state.surveySearch || '');
+                setUnconfirmedOnly(state.unconfirmedOnly || false);
+                setPage(state.page || 0);
+            } catch (e) {
+                console.error('Failed to parse saved state:', e);
+            }
+        }
+        setInitialized(true);
+    }, []);
+
+    // 保存状态到localStorage
+    useEffect(() => {
+        if (!initialized) return;
+        
+        const state = {
+            surveySearch,
+            unconfirmedOnly,
+            page,
+        };
+        localStorage.setItem('judgePageState', JSON.stringify(state));
+    }, [surveySearch, unconfirmedOnly, page, initialized]);
+
+    useEffect(() => {
+        if (!initialized) return;
+        
         setSurveysLoading(true);
         ScoreApi.searchAnswerList(page,
             10,
@@ -39,7 +70,7 @@ export default function SurveyPage() {
                 setMaxPage(res.total);
                 setAnswers(res.data);
             });
-    }, [surveySearch, unconfirmedOnly, page]);
+    }, [surveySearch, unconfirmedOnly, page, initialized]);
 
     return (
         <Center>
@@ -62,6 +93,7 @@ export default function SurveyPage() {
                                       onChange={setSurveySearch}
                                     />
                                     <Checkbox
+                                      checked={unconfirmedOnly}
                                       onChange={(e) =>
                                           setUnconfirmedOnly(e.currentTarget.checked)}
                                       label="仅显示未确认的问卷"
@@ -79,6 +111,7 @@ export default function SurveyPage() {
                                                     <Table.Th>问卷ID</Table.Th>
                                                     <Table.Th>用户ID</Table.Th>
                                                     <Table.Th>提交时间</Table.Th>
+                                                    <Table.Th>分数</Table.Th>
                                                     <Table.Th>问卷状态</Table.Th>
                                                 </Table.Tr>
                                             </Table.Thead>
@@ -93,6 +126,7 @@ export default function SurveyPage() {
                                                         <Table.Td>{element.survey}</Table.Td>
                                                         <Table.Td>{element.user}</Table.Td>
                                                         <Table.Td>{element.update_time}</Table.Td>
+                                                        <Table.Td>{element.user_scores}/{element.full_scores}</Table.Td>
                                                         <Table.Td>{element.completed ? '已确认' : '待确认'}</Table.Td>
                                                     </Table.Tr>
                                                 ))}
