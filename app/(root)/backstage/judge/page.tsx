@@ -79,6 +79,7 @@ export default function SurveyPage() {
                                                     <Table.Th>问卷ID</Table.Th>
                                                     <Table.Th>用户ID</Table.Th>
                                                     <Table.Th>提交时间</Table.Th>
+                                                    <Table.Th>分数</Table.Th>
                                                     <Table.Th>问卷状态</Table.Th>
                                                 </Table.Tr>
                                             </Table.Thead>
@@ -93,6 +94,7 @@ export default function SurveyPage() {
                                                         <Table.Td>{element.survey}</Table.Td>
                                                         <Table.Td>{element.user}</Table.Td>
                                                         <Table.Td>{element.update_time}</Table.Td>
+                                                        <Table.Td>{element.user_scores}/{element.full_scores}</Table.Td>
                                                         <Table.Td>{element.completed ? '已确认' : '待确认'}</Table.Td>
                                                     </Table.Tr>
                                                 ))}
