@@ -94,15 +94,23 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return;
         }
 
-        await ScoreApi.finishAnswer(answerId);
+        try {
+            await ScoreApi.finishAnswer(answerId);
 
-        notifications.show({
-            title: '提交成功',
-            message: '试卷已成功提交',
-            color: 'green',
-        });
+            notifications.show({
+                title: '提交成功',
+                message: '试卷已成功提交',
+                color: 'green',
+            });
 
-        router.push(`/survey/${params.id}/completed?fs=true`);
+            router.push(`/survey/${params.id}/completed?fs=true`);
+        } catch (error) {
+            notifications.show({
+                title: '提交失败',
+                message: '试卷提交时发生错误，请重试',
+                color: 'red',
+            });
+        }
     }
 
     function prevPage() {
