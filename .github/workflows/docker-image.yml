@@ -2,67 +2,58 @@ name: CI/CD
 
 on:
   push:
-    branches: ["main", "feat-user-manage"]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   build_docker:
     name: Build Docker
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+            ${{ vars.CR }}/${{ vars.NAMESPACE }}/${{ vars.IMAGE_NAME }}
+            ${{ vars.ACR }}/${{ vars.NAMESPACE }}/${{ vars.IMAGE_NAME }}
+          tags: |
+            type=sha
+            latest
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v4
+      - name: Login to CR
+        uses: docker/login-action@v3
         with:
-          context: .
+          registry: ${{ vars.CR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_TOKEN }}
+      - name: Login to ACR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.ACR }}
+          username: ${{ vars.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
           push: true
-          platforms: linux/amd64
-          tags: |
-            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ github.ref == 'refs/heads/main' && 'latest' || 'user' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-  build_docker_acr:
-    name: Build Docker ACR
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Login to ACR
-        uses: aliyun/acr-login@v1
-        with:
-          login-server: https://${{ vars.REGISTRY_ADDRESS }}
-          username: "${{ vars.REGISTRY_USERNAME }}"
-          password: "${{ secrets.REGISTRY_PASSWORD }}"
-      - name: Build and push image
-        run: |
-          docker build -t ${{ vars.REGISTRY_ADDRESS }}/${{ vars.REGISTRY_NAMESPACE }}/${{ vars.IMAGE_NAME }}:${{ github.ref == 'refs/heads/main' && 'latest' || 'user' }} .
-          docker push ${{ vars.REGISTRY_ADDRESS }}/${{ vars.REGISTRY_NAMESPACE }}/${{ vars.IMAGE_NAME }}:${{ github.ref == 'refs/heads/main' && 'latest' || 'user' }}
-
-  deploy:
-    name: Deploy
-    needs: [build_docker, build_docker_acr]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    steps:
       - name: SSH To Host
-        uses: appleboy/ssh-action@v1.0.1
+        uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd ${{ secrets.PROJECT_PATH }}
-            sudo bash ./deploy.sh
+          script_path: ${{ secrets.PROJECT_PATH }}/deploy.sh
