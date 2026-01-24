@@ -27,7 +27,7 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
 
     // const answerId = useRef(searchParams.get('answer'));
 
-    function save() {
+    async function save() {
         if (questions == null) {
             return false;
         }
@@ -39,11 +39,11 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
         for (const question of questions) {
             // 检查题目是否可见（满足条件）
             const isVisible = checkAccess(JSON.stringify(question.condition));
-            
+
             // 如果题目可见且为必填题
             if (isVisible && question.required) {
                 const answer = answers.get(question.id);
-                
+
                 // 检查答案是否为空
                 if (!answer || answer.trim() === '' || answer === '[]') {
                     hasUnfilledRequired = true;
@@ -62,20 +62,22 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return false;
         }
 
-        ScoreApi.submitAnswer({
-            id: answerId,
-            survey: Number(params.id),
-            content: Object.fromEntries(answers),
-        })
-            .then((res) => {
-                setAnswerId(res);
+        try {
+            const res = await ScoreApi.submitAnswer({
+                id: answerId,
+                survey: Number(params.id),
+                content: Object.fromEntries(answers),
             });
-
-        return true;
+            setAnswerId(res);
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 
-    function nextPage() {
-        if (!save()) {
+    async function nextPage() {
+        const saved = await save();
+        if (!saved) {
             return;
         }
 
@@ -92,15 +94,23 @@ export default function SurveyPage({ params }: { params: { id: number } }) {
             return;
         }
 
-        ScoreApi.finishAnswer(answerId).then(() => {});
+        try {
+            await ScoreApi.finishAnswer(answerId);
 
-        notifications.show({
-            title: '提交成功',
-            message: '试卷已成功提交',
-            color: 'green',
-        });
+            notifications.show({
+                title: '提交成功',
+                message: '试卷已成功提交',
+                color: 'green',
+            });
 
-        router.push(`/survey/${params.id}/completed?fs=true`);
+            router.push(`/survey/${params.id}/completed?fs=true`);
+        } catch (error) {
+            notifications.show({
+                title: '提交失败',
+                message: '试卷提交时发生错误，请重试',
+                color: 'red',
+            });
+        }
     }
 
     function prevPage() {
