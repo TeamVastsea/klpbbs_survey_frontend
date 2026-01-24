@@ -46,7 +46,7 @@
     "dompurify": "^3.1.6",
     "less": "^4.2.0",
     "micromatch": "^4.0.8",
-    "next": "14.2.15",
+    "next": "14.2.35",
     "next-plugin-less": "^1.0.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
