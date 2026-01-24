@@ -56,5 +56,4 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          script_path: ${{ secrets.PROJECT_PATH }}
-          script: sudo bash ./deploy.sh
+          script_path: ${{ secrets.PROJECT_PATH }}/deploy.sh
