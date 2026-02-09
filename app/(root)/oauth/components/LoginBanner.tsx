@@ -12,12 +12,12 @@ export function LoginBanner() {
     setLoading(true);
 
     window.location.href =
-      'https://klpbbs.com/plugin.php?id=klpbbs_api:oauth2&appid=4474a21e0077bcd413dd975e5c9aacc339e1fd54&state=123';
+      'https://klpbbs.us/plugin.php?id=klpbbs_api:oauth2&appid=4474a21e0077bcd413dd975e5c9aacc339e1fd54&state=123';
 
     // UserApi.getToken()
     //     .then(result => {
     //         Cookie.setCookie('token', result, 7);
-    //         window.location.href = `https://klpbbs.com/plugin.php?id=klpbbs_api:oauth2&appid=4474a21e0077bcd413dd975e5c9aacc339e1fd54&state=${result}`;
+    //         window.location.href = `https://klpbbs.us/plugin.php?id=klpbbs_api:oauth2&appid=4474a21e0077bcd413dd975e5c9aacc339e1fd54&state=${result}`;
     //     });
   }
 
