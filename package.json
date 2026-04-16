@@ -43,7 +43,7 @@
     "@types/mdx": "^2.0.13",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
-    "dompurify": "^3.1.6",
+    "dompurify": "^3.4.0",
     "less": "^4.2.0",
     "micromatch": "^4.0.8",
     "next": "14.2.15",
