@@ -1,6 +1,3 @@
 allowBuilds:
   less: true
   sharp: true
-onlyBuiltDependencies:
-  - less
-  - sharp
