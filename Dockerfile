@@ -8,6 +8,7 @@ WORKDIR /app
 
 COPY . .
 RUN corepack enable pnpm && \
+    pnpm config set ignore-scripts false && \
     pnpm i --frozen-lockfile && \
     pnpm build
 
