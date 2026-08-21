@@ -28,7 +28,6 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
   const [endTime, setEndTime] = useState(new Date(props.survey.end_date));
   const [allowSubmit, setAllowSubmit] = useState(props.survey.allow_submit);
   const [allowView, setAllowView] = useState(props.survey.allow_view);
-  const [allowJudge, setAllowJudge] = useState(props.survey.allow_judge);
   const [allowReSubmit, setAllowReSubmit] = useState(props.survey.allow_re_submit);
 
   useEffect(() => {
@@ -40,27 +39,25 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
     setEndTime(new Date(props.survey.end_date));
     setAllowSubmit(props.survey.allow_submit);
     setAllowView(props.survey.allow_view);
-    setAllowJudge(props.survey.allow_judge);
     setAllowReSubmit(props.survey.allow_re_submit);
   }, [props.opened]);
 
   const save = () => {
-    SurveyNetwork.saveSurvey(
-      {
-        allow_judge: allowJudge,
-        allow_re_submit: allowReSubmit,
-        allow_submit: allowSubmit,
-        allow_view: allowView,
-        badge,
-        description,
-        end_date: endTime.toISOString(),
-        id: props.survey.id,
-        image,
-        start_date: startTime.toISOString(),
-        title,
-      },
-      props.survey.id === 0
-    ).then(() => {
+    const editedSurvey = preserveDeprecatedSurveyFields(props.survey, {
+      allow_judge: props.survey.allow_judge,
+      allow_re_submit: allowReSubmit,
+      allow_submit: allowSubmit,
+      allow_view: allowView,
+      badge,
+      description,
+      end_date: endTime.toISOString(),
+      id: props.survey.id,
+      image,
+      start_date: startTime.toISOString(),
+      title,
+    });
+
+    SurveyNetwork.saveSurvey(editedSurvey, props.survey.id === 0).then(() => {
       notifications.show({
         title: '保存成功',
         message: '问卷已保存',
@@ -143,11 +140,6 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
                 label="允许查看"
               />
               <Switch
-                checked={allowJudge}
-                onChange={(e) => setAllowJudge(e.currentTarget.checked)}
-                label="允许评判"
-              />
-              <Switch
                 checked={allowReSubmit}
                 onChange={(e) => setAllowReSubmit(e.currentTarget.checked)}
                 label="允许重新提交"
@@ -177,6 +169,13 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
       </Group>
     </Modal>
   );
+}
+
+export function preserveDeprecatedSurveyFields(original: Survey, edited: Survey): Survey {
+  return {
+    ...edited,
+    allow_judge: original.allow_judge,
+  };
 }
 
 export interface SurveyCardEditProps {
