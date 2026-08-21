@@ -204,7 +204,7 @@ export default function JudgeSinglePage({ params }: { params: { answerId: number
                 填写用户:&nbsp;
                 <Text
                   component="a"
-                  href={`https://klpbbs.us/?${answer?.user}`}
+                  href={`https://klpbbs.com/?${answer?.user}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   c="blue"

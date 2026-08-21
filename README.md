@@ -31,23 +31,23 @@ If you encounter any problems in using the project, you can [submit an Issue](ht
 
 - **zrll_** Front-end, Back-end, Test
     - [GitHub](https://github.com/zrll12)
-    - [KLPBBS](https://klpbbs.us/?922084)
+    - [KLPBBS](https://klpbbs.com/?922084)
 
 - **Snowball_233** Front-end, CI/CD, Ops, Doc
     - [GitHub](https://github.com/SnowballXueQiu)
-    - [KLPBBS](https://klpbbs.us/?1082463)
+    - [KLPBBS](https://klpbbs.com/?1082463)
 
 - **M397749490** CI/CD, Ops
     - [GitHub](https://github.com/M397749490)
-    - [KLPBBS](https://klpbbs.us/?32980)
+    - [KLPBBS](https://klpbbs.com/?32980)
 
 - **damesck** Front-end, Doc
     - [GitHub](https://github.com/damesck233)
-    - [KLPBBS](https://klpbbs.us/?6173)
+    - [KLPBBS](https://klpbbs.com/?6173)
 
 - **GaoNeng-wWw** Front-end
     - [GitHub](https://github.com/GaoNeng-wWw)
 
 - **klpz** API Provide
     - [GitHub](https://github.com/klpbbs)
-    - [KLPBBS](https://klpbbs.us/?1)
+    - [KLPBBS](https://klpbbs.com/?1)
