@@ -17,6 +17,7 @@ import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import { ColorSchemeToggle } from '@/components/ColorSchemeToggle';
 import { useUser } from '@/data/use-user';
+import UserNetwork from '@/network/user';
 import logo from '@/public/favicon.svg';
 import classes from './Header.module.css';
 
@@ -57,13 +58,22 @@ export default function Header({ opened, toggle }: HeaderProps) {
       labels: { confirm: '退出所有设备', cancel: '退出当前设备' },
       onCancel: () => {
         localStorage.removeItem('token');
-        user.mutate().then(() => {});
+        user.mutate(undefined, { revalidate: false }).then(() => {});
         notifications.show({ title: '退出成功', message: '您已经退出登录', color: 'teal' });
       },
-      onConfirm: () => {
-        localStorage.removeItem('token');
-        user.mutate().then(() => {});
-        notifications.show({ title: '退出成功', message: '您已经退出所有登录', color: 'teal' });
+      onConfirm: async () => {
+        try {
+          await UserNetwork.invalidateToken();
+          localStorage.removeItem('token');
+          await user.mutate(undefined, { revalidate: false });
+          notifications.show({
+            title: '退出成功',
+            message: '您已经退出所有登录',
+            color: 'teal',
+          });
+        } catch {
+          notifications.show({ title: '退出失败', message: '请重试', color: 'red' });
+        }
       },
     });
   };

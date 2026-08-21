@@ -83,15 +83,31 @@ function evaluateCondition(
 ): boolean {
   const { id, value } = condition;
   const answer = answers.get(id);
+  const question = questions.find((q) => q.id === id);
+
+  const hasAnswer = (() => {
+    if (!question || answer === undefined || answer.trim() === '') {
+      return false;
+    }
+    if (question.type !== 'MultipleChoice') {
+      return true;
+    }
+    try {
+      const selectedOptions = JSON.parse(answer);
+      return Array.isArray(selectedOptions) && selectedOptions.length > 0;
+    } catch {
+      return false;
+    }
+  })();
 
   // 如果条件值为"answered"，检查问题是否已回答
   if (value === 'answered') {
-    return answer !== undefined && answer !== '';
+    return hasAnswer;
   }
 
   // 如果条件值为"unanswered"，检查问题是否未回答
   if (value === 'unanswered') {
-    return answer === undefined || answer === '';
+    return !hasAnswer;
   }
 
   // 如果没有答案，条件不满足
@@ -100,7 +116,6 @@ function evaluateCondition(
   }
 
   // 获取问题类型
-  const question = questions.find((q) => q.id === id);
   if (!question) {
     return false;
   }

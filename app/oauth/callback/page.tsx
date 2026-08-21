@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Box, Center, Space, Stack } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -8,14 +8,20 @@ import { useUser } from '@/data/use-user';
 import UserNetwork from '@/network/user';
 import UserInfoCard from './components/UserInfoCard';
 
-export default function CallbackPage() {
+function CallbackContent() {
   const searchParams = useSearchParams();
   const user = useUser();
   const token = searchParams.get('token');
 
   useEffect(() => {
-    UserNetwork.login(token as string).then(() => {
-      user.mutate().then((data) => {
+    if (!token) {
+      notifications.show({ title: '登录失败', message: '缺少登录凭证', color: 'red' });
+      return;
+    }
+
+    UserNetwork.login(token)
+      .then(() => user.mutate())
+      .then((data) => {
         if (data) {
           notifications.show({
             title: '登录成功',
@@ -29,8 +35,10 @@ export default function CallbackPage() {
             color: 'red',
           });
         }
+      })
+      .catch(() => {
+        notifications.show({ title: '登录失败', message: '请重试', color: 'red' });
       });
-    });
   }, [token]);
 
   return (
@@ -47,5 +55,13 @@ export default function CallbackPage() {
         <Space h={100} />
       </Stack>
     </Center>
+  );
+}
+
+export default function CallbackPage() {
+  return (
+    <Suspense fallback={<Space h={200} />}>
+      <CallbackContent />
+    </Suspense>
   );
 }

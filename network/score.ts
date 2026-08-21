@@ -1,6 +1,6 @@
-import {baseFetcher} from '@/network/base';
-import {Paged} from "@/model/paged";
-import {Score} from "@/model/score";
+import { Paged } from '@/model/paged';
+import { Score } from '@/model/score';
+import { baseFetcher } from '@/network/base';
 
 export class ScoreNetwork {
   public static submitAnswer = (surveyId: number, answer: object, scoreId?: number) =>
@@ -24,7 +24,7 @@ export class ScoreNetwork {
       'PATCH',
       true,
       undefined,
-      new URLSearchParams({id: scoreId.toString()}),
+      new URLSearchParams({ id: scoreId.toString() }),
       false
     );
 
@@ -34,57 +34,36 @@ export class ScoreNetwork {
       'GET',
       true,
       undefined,
-      new URLSearchParams({survey: survey.toString()})
+      new URLSearchParams({ survey: survey.toString() })
     );
 
-  public static fetchSearchedScore = (page: number, size?: number, survey?: number, user?: number, only_unfinished?: boolean) => {
+  public static fetchSearchedScore = (
+    page: number,
+    size?: number,
+    survey?: number,
+    user?: number,
+    onlyUnfinished?: boolean
+  ) => {
     const params = new URLSearchParams({
       page: page.toString(),
-      ...(survey !== undefined ? {survey: survey.toString()} : {}),
-      ...(size !== undefined ? {size: size.toString()} : {}),
-      ...(user !== undefined ? {user: user.toString()} : {}),
-      ...(only_unfinished !== undefined
-        ? {only_unfinished: only_unfinished.toString()}
-        : {})
-    })
+      ...(survey !== undefined ? { survey: survey.toString() } : {}),
+      ...(size !== undefined ? { size: size.toString() } : {}),
+      ...(user !== undefined ? { user: user.toString() } : {}),
+      ...(onlyUnfinished !== undefined ? { only_unfinished: onlyUnfinished.toString() } : {}),
+    });
 
-    return baseFetcher<Paged<Score[]>>(
-      `/api/score/search`,
-      'GET',
-      true,
-      undefined,
-      new URLSearchParams(params)
-    )
-  }
+    return baseFetcher<Paged<Score[]>>(`/api/score/search`, 'GET', true, undefined, params);
+  };
 
   public static exportAnswer = (survey: number) =>
-    baseFetcher<string>(
-      `/api/score/${survey}/export`,
-      'GET',
-      true,
-      undefined,
-      undefined,
-      false
-    )();
+    baseFetcher<string>(`/api/score/${survey}/export`, 'GET', true, undefined, undefined, false)();
 
   public static fetchScoreById = (id: number) =>
-    baseFetcher<Score>(
-      `/api/score/${id}`,
-      'GET',
-      true,
-    );
+    baseFetcher<Score>(`/api/score/${id}`, 'GET', true);
 
   public static confirmScore = (id: number) =>
-    baseFetcher<Score>(
-      `/api/score/${id}`,
-      'POST',
-      true,
-    )();
+    baseFetcher<string>(`/api/score/${id}`, 'POST', true, undefined, undefined, false)();
 
   public static rejudgeScore = (id: number) =>
-    baseFetcher<Score>(
-      `/api/score/${id}`,
-      'PATCH',
-      true,
-    )();
+    baseFetcher<Score>(`/api/score/${id}`, 'PATCH', true)();
 }

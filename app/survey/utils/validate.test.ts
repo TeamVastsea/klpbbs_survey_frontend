@@ -120,6 +120,19 @@ describe('validate', () => {
       expect(unanswered).toEqual([{ id: 2, title: '性别', reason: 'required' }]);
     });
 
+    it('应该把空的多选数组视为未回答', () => {
+      const questions = createTestQuestions();
+      const answers = new Map<number, string>([
+        [1, '张三'],
+        [2, '0'],
+        [4, '[]'],
+      ]);
+
+      const unanswered = checkNecessaryQuestions(answers, questions);
+
+      expect(unanswered).toEqual([{ id: 4, title: '兴趣爱好', reason: 'required' }]);
+    });
+
     it('应该忽略不可见的必填题', () => {
       const questions = createTestQuestions();
       const answers = new Map<number, string>([

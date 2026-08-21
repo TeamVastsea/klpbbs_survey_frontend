@@ -6,6 +6,7 @@ import { notifications } from '@mantine/notifications';
 import classes from '@/app/components/Header.module.css';
 import { ColorSchemeToggle } from '@/components/ColorSchemeToggle';
 import { useUser } from '@/data/use-user';
+import UserNetwork from '@/network/user';
 
 interface Link {
   link: string;
@@ -45,10 +46,23 @@ export function NavbarList() {
       ),
       labels: { confirm: '退出所有设备', cancel: '退出当前设备' },
       onCancel: () => {
+        localStorage.removeItem('token');
+        user.mutate(undefined, { revalidate: false }).then(() => {});
         notifications.show({ title: '退出成功', message: '您已经退出登录', color: 'teal' });
       },
-      onConfirm: () => {
-        notifications.show({ title: '退出成功', message: '您已经退出所有登录', color: 'teal' });
+      onConfirm: async () => {
+        try {
+          await UserNetwork.invalidateToken();
+          localStorage.removeItem('token');
+          await user.mutate(undefined, { revalidate: false });
+          notifications.show({
+            title: '退出成功',
+            message: '您已经退出所有登录',
+            color: 'teal',
+          });
+        } catch {
+          notifications.show({ title: '退出失败', message: '请重试', color: 'red' });
+        }
       },
     });
   };

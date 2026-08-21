@@ -15,4 +15,10 @@ export default class UserNetwork {
   };
 
   public static fetchUser = baseFetcher<User>('/api/user', 'GET', true);
+
+  public static fetchUserById = (uid: string) =>
+    baseFetcher<User>(`/api/user/${encodeURIComponent(uid)}`, 'GET', true);
+
+  public static invalidateToken = () =>
+    baseFetcher<string>('/api/user', 'DELETE', true, undefined, undefined, false)();
 }

@@ -26,7 +26,6 @@ export function baseFetcher<T>(
     if (useToken) {
       const token = localStorage.getItem('token');
       if (token == null || token === '') {
-        errorHandler(401, 'Token not found', url);
         throw new Error('Token not found');
       }
       myHeaders.set('token', token);
@@ -61,6 +60,8 @@ export function errorHandler(code: number, message: string, _path: string) {
       notifications.show({ title: '参数错误', message, color: 'red' });
       break;
     case 401: // Invalid token
+      localStorage.removeItem('token');
+      notifications.show({ title: '登录已失效', message: '请重新登录', color: 'red' });
       break;
     case 403: // Permission denied
       notifications.show({ title: '权限不足', message: '请联系管理员', color: 'red' });
@@ -69,10 +70,12 @@ export function errorHandler(code: number, message: string, _path: string) {
       notifications.show({ title: '资源不存在', message, color: 'red' });
       break;
     case 429: // Too many requests
+      notifications.show({ title: '无法重复提交', message, color: 'red' });
       break;
     case 500: // Panic or database error
       notifications.show({ title: '服务器错误', message: '请稍后再试', color: 'red' });
       break;
     default:
+      notifications.show({ title: '请求失败', message, color: 'red' });
   }
 }

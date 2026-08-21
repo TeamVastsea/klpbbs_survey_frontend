@@ -1,10 +1,11 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
 import { IconGripVertical } from '@tabler/icons-react';
-import {Button, Card, Center, Container, Pagination, Space, Stack} from '@mantine/core';
+import { Button, Center, Container, Group, Pagination, Space, Stack } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import QuestionEditor from '@/app/admin/survey/[id]/components/QuestionEditor';
 import RichTextHTMLEditor from '@/components/RichTextHTMLEditor';
 import { usePageByIndex } from '@/data/use-page';
@@ -18,23 +19,12 @@ export default function EditSurveyPage() {
   const params = useParams();
   const survey = JSON.parse((params.id as string) || '0') as number;
   const [pageIndex, setPageIndex] = useState(0);
-  // 添加一个状态变量，用于强制组件重新渲染
-  const [refreshKey, setRefreshKey] = useState(0);
   const page = usePageByIndex(survey, pageIndex);
-  const questions = useQuestionByPage(page.page?.data.id || 0);
+  const questions = useQuestionByPage(page.page?.data.id);
 
-  // 创建一个刷新函数
-  const refreshQuestions = useCallback(() => {
-    // 增加refreshKey触发重新渲染
-    setRefreshKey((prev) => prev + 1);
-    console.log('刷新数据，当前refreshKey:', refreshKey);
-    return questions.mutate(undefined, { revalidate: true }).then((result) => {
-      console.log('数据刷新完成，新数据:', result);
-      return result;
-    });
-  }, [questions, refreshKey]);
+  const refreshQuestions = () => questions.mutate(undefined, { revalidate: true });
 
-  const handleDragEnd = (result: DropResult) => {
+  const handleDragEnd = async (result: DropResult) => {
     if (!result.destination || !questions.questionList) {
       return;
     }
@@ -57,13 +47,23 @@ export default function EditSurveyPage() {
       // 先用本地数据更新UI
       questions.mutate(newQuestionList, false);
 
+      try {
+        await QuestionNetwork.swapQuestion(pageId, sourceIndex, destinationIndex)();
+      } catch {
+        await questions.mutate(undefined, { revalidate: true });
+        notifications.show({ title: '排序失败', message: '问题顺序未保存', color: 'red' });
+      }
+    }
+  };
 
-      // 然后发送网络请求并刷新数据
-      QuestionNetwork.swapQuestion(pageId, sourceIndex, destinationIndex)()
-      .then(() => {})
-      .catch(() => {
-        // 或许这里需要增加一个回滚
-      })
+  const addPage = async () => {
+    try {
+      await PageNetwork.newPage('新页面', survey, pageIndex);
+      await page.mutate();
+      setPageIndex(pageIndex + 1);
+      notifications.show({ title: '创建成功', message: '已添加新页面', color: 'green' });
+    } catch {
+      notifications.show({ title: '创建失败', message: '无法添加页面', color: 'red' });
     }
   };
 
@@ -116,13 +116,13 @@ export default function EditSurveyPage() {
                           availableQuestions={
                             questions.questionList
                               ? questions.questionList
-                                .filter((q) => q.id !== question.id) // 排除当前问题
-                                .map((q) => ({
-                                  id: q.id,
-                                  title: q.content.title,
-                                  type: q.type,
-                                  values: q.values,
-                                }))
+                                  .filter((q) => q.id !== question.id) // 排除当前问题
+                                  .map((q) => ({
+                                    id: q.id,
+                                    title: q.content.title,
+                                    type: q.type,
+                                    values: q.values,
+                                  }))
                               : []
                           }
                           onSave={(updatedQuestion) => {
@@ -153,26 +153,37 @@ export default function EditSurveyPage() {
           </Droppable>
         </DragDropContext>
         <Stack gap="xl">
-          <Button
-            onClick={() => {
-              const newQuestion: Question = {
-                page: page.page?.data.id || 0,
-                id: 0,
-                content: { title: '新问题', content: '' },
-                type: 'Text',
-                values: [],
-                condition: undefined,
-                required: true,
-                answer: undefined,
-              };
-              QuestionNetwork.newQuestion(newQuestion)().then(() => {
-                // 使用刷新函数强制更新UI
-                return refreshQuestions();
-              });
-            }}
-          >
-            添加问题
-          </Button>
+          <Group grow>
+            <Button
+              onClick={() => {
+                const newQuestion: Question = {
+                  page: page.page?.data.id || 0,
+                  id: 0,
+                  content: { title: '新问题', content: '' },
+                  type: 'Text',
+                  values: [],
+                  condition: undefined,
+                  required: true,
+                  answer: undefined,
+                };
+                QuestionNetwork.newQuestion(newQuestion)()
+                  .then(() => refreshQuestions())
+                  .catch(() => {
+                    notifications.show({
+                      title: '创建失败',
+                      message: '无法添加问题',
+                      color: 'red',
+                    });
+                  });
+              }}
+              disabled={!page.page?.data.id}
+            >
+              添加问题
+            </Button>
+            <Button variant="light" onClick={addPage} disabled={!page.page?.data.id}>
+              添加页面
+            </Button>
+          </Group>
           <Center>
             <Pagination
               total={page.page?.total || 0}

@@ -1,25 +1,33 @@
 'use client';
 
-import {useEffect, useMemo, useRef, useState} from 'react';
-import {useParams, useRouter} from 'next/navigation';
-import {Button, ButtonGroup, Center, Container, LoadingOverlay, Space, Stack,} from '@mantine/core';
-import {useDisclosure} from '@mantine/hooks';
-import {notifications} from '@mantine/notifications';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import {
+  Button,
+  ButtonGroup,
+  Center,
+  Container,
+  LoadingOverlay,
+  Space,
+  Stack,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import LoadAnswerScreen from '@/app/survey/[id]/components/LoadAnswerScreen';
-import {checkNecessaryQuestions} from '@/app/survey/utils/validate';
-import {checkVisibility} from '@/app/survey/utils/visibility';
+import { checkNecessaryQuestions, UnansweredQuestion } from '@/app/survey/utils/validate';
+import { checkVisibility } from '@/app/survey/utils/visibility';
 import Question from '@/components/Question/Question';
 import SafeHTML from '@/components/SafeHTML';
-import {usePageByIndex} from '@/data/use-page';
-import {useQuestionByPage} from '@/data/use-question';
-import {ScoreNetwork} from '@/network/score';
+import { usePageByIndex } from '@/data/use-page';
+import { useQuestionByPage } from '@/data/use-question';
+import { ScoreNetwork } from '@/network/score';
 
 export default function Survey() {
   const router = useRouter();
   const params = useParams();
   const survey = JSON.parse((params.id as string) || '0') as number;
   const [pageIndex, setPageIndex] = useState(0);
-  const [answers, setAnswers] = useState(new Map());
+  const [answers, setAnswers] = useState<Map<number, string>>(new Map());
   const [scoreId, setScoreId] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [loadable, setLoadable] = useState<{ id: number; answer: string; update_time: string }[]>(
@@ -27,10 +35,10 @@ export default function Survey() {
   );
   const [loadableOpened, { open, close }] = useDisclosure(false);
   const page = usePageByIndex(survey, pageIndex);
-  const questions = useQuestionByPage(page.page?.data.id || 0);
+  const questions = useQuestionByPage(page.page?.data.id);
 
   // 验证相关状态
-  const [unansweredQuestions, setUnansweredQuestions] = useState<any[]>([]);
+  const [unansweredQuestions, setUnansweredQuestions] = useState<UnansweredQuestion[]>([]);
   const questionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
   // 计算问题可见性
@@ -51,8 +59,8 @@ export default function Survey() {
   };
 
   const loadAnswer = (answer: number) => {
-    const answers = Object.entries(JSON.parse(loadable[answer].answer));
-    const answerMap = new Map(answers.map(([key, value]) => [Number(key), value]));
+    const savedAnswers = Object.entries(JSON.parse(loadable[answer].answer));
+    const answerMap = new Map(savedAnswers.map(([key, value]) => [Number(key), String(value)]));
     setAnswers(answerMap);
     setScoreId(loadable[answer].id);
   };
@@ -72,17 +80,6 @@ export default function Survey() {
     });
   }, []);
 
-  useEffect(() => {
-    if (answers.size === 0) {
-      return;
-    }
-
-    ScoreNetwork.submitAnswer(survey, Object.fromEntries(answers), scoreId)().then((res) => {
-      setScoreId(res);
-    });
-    notifications.show({ title: '保存成功', message: '当前的内容已保存', color: 'teal' });
-  }, [pageIndex]);
-
   // 验证逻辑：当页面或答案变化时检查必填题
   useEffect(() => {
     if (!questions.questionList) {
@@ -95,9 +92,45 @@ export default function Survey() {
   }, [answers, questions.questionList, pageIndex]);
 
   // 处理页面切换，检查当前页面是否有未回答的必填题
-  const handlePageChange = (newPageIndex: number) => {
+  const saveAnswers = async (showSuccess = true): Promise<number | undefined> => {
+    setLoading(true);
+    try {
+      const savedScoreId = await ScoreNetwork.submitAnswer(
+        survey,
+        Object.fromEntries(answers),
+        scoreId
+      )();
+      setScoreId(savedScoreId);
+      if (showSuccess) {
+        notifications.show({
+          title: '保存成功',
+          message: '当前的内容已保存',
+          color: 'teal',
+        });
+      }
+      return savedScoreId;
+    } catch {
+      notifications.show({
+        title: '保存失败',
+        message: '答案未能保存，请重试',
+        color: 'red',
+      });
+      return undefined;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = async (newPageIndex: number) => {
+    if (newPageIndex < pageIndex) {
+      const savedScoreId = await saveAnswers();
+      if (savedScoreId !== undefined) {
+        setPageIndex(newPageIndex);
+      }
+      return;
+    }
+
     if (!questions.questionList) {
-      setPageIndex(newPageIndex);
       return;
     }
 
@@ -128,7 +161,7 @@ export default function Survey() {
 
         return;
       }
-      handleFinish();
+      await handleFinish();
       return;
     }
 
@@ -158,26 +191,33 @@ export default function Survey() {
       return;
     }
 
-    setPageIndex(newPageIndex);
+    const savedScoreId = await saveAnswers();
+    if (savedScoreId !== undefined) {
+      setPageIndex(newPageIndex);
+    }
   };
 
-  const handleFinish = () => {
-    ScoreNetwork.submitAnswer(survey, Object.fromEntries(answers), scoreId)().then((res) => {
-      setScoreId(res);
-    });
-
-    if (scoreId === undefined) {
-      return;
-    }
-
+  const handleFinish = async () => {
     setLoading(true);
-
-    ScoreNetwork.finishAnswer(scoreId)()
-      .then(() => {
-        notifications.show({ title: '提交成功', message: '您已经成功提交问卷', color: 'teal' });
-        router.push(`/survey/${survey}/finished`);
-      })
-      .finally(() => setLoading(false));
+    try {
+      const savedScoreId = await ScoreNetwork.submitAnswer(
+        survey,
+        Object.fromEntries(answers),
+        scoreId
+      )();
+      setScoreId(savedScoreId);
+      await ScoreNetwork.finishAnswer(savedScoreId)();
+      notifications.show({ title: '提交成功', message: '您已经成功提交问卷', color: 'teal' });
+      router.push(`/survey/${survey}/finished`);
+    } catch {
+      notifications.show({
+        title: '提交失败',
+        message: '问卷提交时发生错误，请重试',
+        color: 'red',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

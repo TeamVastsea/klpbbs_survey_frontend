@@ -9,8 +9,7 @@ export default function TextQuestion(props: QuestionProps) {
       minRows={2}
       maxRows={4}
       onChange={(event) => props.setValue(event.currentTarget.value)}
-      // ref={ref}
-      // disabled={props.disabled}
+      disabled={props.disabled}
     />
   );
 }

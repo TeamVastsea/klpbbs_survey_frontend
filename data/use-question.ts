@@ -1,10 +1,10 @@
 import useSWR from 'swr';
 import { QuestionNetwork } from '@/network/question';
 
-export function useQuestionByPage(page: number) {
+export function useQuestionByPage(page: number | undefined) {
   const { data, mutate, error } = useSWR(
-    `api_question_${page}`,
-    QuestionNetwork.fetchQuestionByPage(page),
+    page === undefined || page <= 0 ? null : `api_question_${page}`,
+    page === undefined || page <= 0 ? null : QuestionNetwork.fetchQuestionByPage(page),
     {
       onErrorRetry: () => {},
       revalidateOnFocus: true,

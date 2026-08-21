@@ -24,13 +24,13 @@ export class PageNetwork {
     )();
 
   public static newPage = (title: string, survey: number, index: number) =>
-    baseFetcher<string>(
+    baseFetcher<Page>(
       '/api/page',
       'POST',
       true,
       JSON.stringify({ title, survey, index }),
       undefined,
-      false,
+      true,
       'application/json'
     )();
 }

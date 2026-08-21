@@ -4,6 +4,23 @@ import { checkVisibility } from './visibility';
 type Answers = Map<number, string> | Record<number, string>;
 type Questions = Question[];
 
+function hasAnswer(question: Question, answer: string | undefined): boolean {
+  if (answer === undefined || answer.trim() === '') {
+    return false;
+  }
+
+  if (question.type !== 'MultipleChoice') {
+    return true;
+  }
+
+  try {
+    const selected = JSON.parse(answer);
+    return Array.isArray(selected) && selected.length > 0;
+  } catch {
+    return false;
+  }
+}
+
 export interface UnansweredQuestion {
   id: number;
   title: string;
@@ -43,7 +60,7 @@ export function checkNecessaryQuestions(
 
     // 检查问题是否已回答
     const answer = answersMap.get(question.id);
-    const isAnswered = answer !== undefined && answer !== '';
+    const isAnswered = hasAnswer(question, answer);
 
     // 如果问题可见但未回答，且是必填题，则记录
     if (!isAnswered && question.required) {
@@ -102,7 +119,7 @@ export function getVisibleUnansweredQuestions(
 
     // 检查问题是否已回答
     const answer = answersMap.get(question.id);
-    const isAnswered = answer !== undefined && answer !== '';
+    const isAnswered = hasAnswer(question, answer);
 
     // 如果问题可见但未回答，则记录
     if (!isAnswered) {
