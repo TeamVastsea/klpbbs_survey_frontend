@@ -1,4 +1,5 @@
-import { User } from '@/model/user';
+import { Paged } from '@/model/paged';
+import { ManagedUser, User } from '@/model/user';
 import { baseFetcher } from '@/network/base';
 
 export default class UserNetwork {
@@ -21,4 +22,41 @@ export default class UserNetwork {
 
   public static invalidateToken = () =>
     baseFetcher<string>('/api/user', 'DELETE', true, undefined, undefined, false)();
+
+  public static fetchManagedUsers = (page: number, size: number, search?: string) =>
+    baseFetcher<Paged<ManagedUser[]>>(
+      '/api/user/manage',
+      'GET',
+      true,
+      undefined,
+      new URLSearchParams({
+        page: page.toString(),
+        size: size.toString(),
+        ...(search?.trim() ? { search: search.trim() } : {}),
+      })
+    );
+
+  public static updateManagedUser = (
+    uid: string,
+    update: { admin?: boolean; disabled?: boolean }
+  ) =>
+    baseFetcher<ManagedUser>(
+      `/api/user/${encodeURIComponent(uid)}`,
+      'PATCH',
+      true,
+      JSON.stringify(update),
+      undefined,
+      true,
+      'application/json'
+    )();
+
+  public static invalidateUserSessions = (uid: string) =>
+    baseFetcher<string>(
+      `/api/user/${encodeURIComponent(uid)}/sessions`,
+      'DELETE',
+      true,
+      undefined,
+      undefined,
+      false
+    )();
 }

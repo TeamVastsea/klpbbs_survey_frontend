@@ -15,3 +15,19 @@ export function useUser() {
     mutate,
   };
 }
+
+export function useManagedUsers(page: number, size: number, search?: string) {
+  const normalizedSearch = search?.trim() ?? '';
+  const { data, mutate, error } = useSWR(
+    ['api_managed_users', page, size, normalizedSearch],
+    UserNetwork.fetchManagedUsers(page, size, normalizedSearch),
+    { onErrorRetry: () => {} }
+  );
+
+  return {
+    users: data,
+    isLoading: !error && !data,
+    isError: error,
+    mutate,
+  };
+}
