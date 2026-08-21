@@ -1,5 +1,5 @@
 import { Survey } from '@/model/survey';
-import { preserveDeprecatedSurveyFields } from './SurveyCardEdit';
+import { applySurveyDefaults } from './SurveyCardEdit';
 
 const original: Survey = {
   id: 1,
@@ -15,17 +15,16 @@ const original: Survey = {
   allow_re_submit: false,
 };
 
-describe('preserveDeprecatedSurveyFields', () => {
-  it('保存其他设置时不修改已弃用的 allow_judge', () => {
-    const result = preserveDeprecatedSurveyFields(original, {
+describe('applySurveyDefaults', () => {
+  it('始终将已弃用的 allow_judge 设置为 true', () => {
+    const result = applySurveyDefaults({
       ...original,
       title: '新标题',
-      allow_judge: true,
       allow_re_submit: true,
     });
 
     expect(result.title).toBe('新标题');
     expect(result.allow_re_submit).toBe(true);
-    expect(result.allow_judge).toBe(false);
+    expect(result.allow_judge).toBe(true);
   });
 });

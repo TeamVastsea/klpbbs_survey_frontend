@@ -43,8 +43,8 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
   }, [props.opened]);
 
   const save = () => {
-    const editedSurvey = preserveDeprecatedSurveyFields(props.survey, {
-      allow_judge: props.survey.allow_judge,
+    const editedSurvey = applySurveyDefaults({
+      allow_judge: true,
       allow_re_submit: allowReSubmit,
       allow_submit: allowSubmit,
       allow_view: allowView,
@@ -171,10 +171,10 @@ export default function SurveyCardEdit(props: SurveyCardEditProps) {
   );
 }
 
-export function preserveDeprecatedSurveyFields(original: Survey, edited: Survey): Survey {
+export function applySurveyDefaults(edited: Survey): Survey {
   return {
     ...edited,
-    allow_judge: original.allow_judge,
+    allow_judge: true,
   };
 }
 
