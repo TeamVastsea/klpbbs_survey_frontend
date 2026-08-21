@@ -11,7 +11,7 @@ export default function Footer() {
                 <a
                   href="https://github.com/TeamVastsea"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   style={{ textDecoration: 'none' }}
                 >
                     瀚海工艺
@@ -20,7 +20,7 @@ export default function Footer() {
                 <a
                   href="https://klpbbs.com"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   style={{ textDecoration: 'none' }}
                 >
                     苦力怕论坛
