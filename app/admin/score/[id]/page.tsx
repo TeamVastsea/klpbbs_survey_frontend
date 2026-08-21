@@ -16,6 +16,7 @@ import {
   Text,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import { checkVisibility } from '@/app/survey/utils/visibility';
 import Question from '@/components/Question/Question';
 import SafeHTML from '@/components/SafeHTML';
 import { usePageByIndex } from '@/data/use-page';
@@ -54,6 +55,10 @@ export default function ScoreDetailPage() {
         ])
       ),
     [score.score?.scores]
+  );
+  const questionVisibility = useMemo(
+    () => checkVisibility(answers, questions.questionList || []),
+    [answers, questions.questionList]
   );
   const confirmed = score.score?.judge !== undefined && score.score?.judge !== null;
 
@@ -161,16 +166,22 @@ export default function ScoreDetailPage() {
       </Center>
 
       <Stack gap="xl">
-        {questions.questionList?.map((question) => (
-          <Question
-            key={question.id}
-            question={question}
-            value={answers.get(question.id) || ''}
-            setValue={() => {}}
-            disabled
-            showCorrectAnswer
-            score={scores.get(question.id)}
-          />
+        {questions.questionList?.map((question, index) => (
+          <Stack key={question.id} gap="xs">
+            {!questionVisibility[index] && (
+              <Alert color="gray" variant="light">
+                隐藏题目：该用户无需作答
+              </Alert>
+            )}
+            <Question
+              question={question}
+              value={answers.get(question.id) || ''}
+              setValue={() => {}}
+              disabled
+              showCorrectAnswer
+              score={scores.get(question.id)}
+            />
+          </Stack>
         ))}
       </Stack>
 
