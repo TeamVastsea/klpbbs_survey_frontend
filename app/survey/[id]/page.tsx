@@ -91,7 +91,7 @@ export default function Survey() {
     setUnansweredQuestions(unanswered);
   }, [answers, questions.questionList, pageIndex]);
 
-  // 处理页面切换，检查当前页面是否有未回答的必填题
+  // 保存答案
   const saveAnswers = async (showSuccess = true): Promise<number | undefined> => {
     setLoading(true);
     try {
@@ -121,6 +121,7 @@ export default function Survey() {
     }
   };
 
+  // 处理页面切换，检查当前页面是否有未回答的必填题
   const handlePageChange = async (newPageIndex: number) => {
     if (newPageIndex < pageIndex) {
       const savedScoreId = await saveAnswers();
@@ -258,7 +259,11 @@ export default function Survey() {
 
       <Space h="lg" />
       <ButtonGroup>
-        <Button onClick={() => setPageIndex(pageIndex - 1)} fullWidth disabled={pageIndex === 0}>
+        <Button
+          onClick={() => handlePageChange(pageIndex - 1)}
+          fullWidth
+          disabled={pageIndex === 0}
+        >
           上一页
         </Button>
         <Button

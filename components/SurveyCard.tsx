@@ -1,6 +1,6 @@
 'use client';
 
-import { IconSettings2 } from '@tabler/icons-react';
+import { IconSettings2, IconTrash } from '@tabler/icons-react';
 import {
   ActionIcon,
   Badge,
@@ -55,17 +55,35 @@ export default function SurveyCard(props: SurveyCardProps) {
       />
 
       {props.editable && (
-        <ActionIcon
-          onClick={open}
-          style={{
-            position: 'absolute',
-            top: 10,
-            right: 10,
-          }}
-          size="lg"
-        >
-          <IconSettings2 />
-        </ActionIcon>
+        <>
+          {props.onDelete && (
+            <ActionIcon
+              onClick={props.onDelete}
+              color="red"
+              style={{
+                position: 'absolute',
+                top: 10,
+                right: 50,
+              }}
+              size="lg"
+              aria-label={`删除问卷 ${props.survey.title}`}
+            >
+              <IconTrash />
+            </ActionIcon>
+          )}
+          <ActionIcon
+            onClick={open}
+            style={{
+              position: 'absolute',
+              top: 10,
+              right: 10,
+            }}
+            size="lg"
+            aria-label={`编辑问卷 ${props.survey.title}`}
+          >
+            <IconSettings2 />
+          </ActionIcon>
+        </>
       )}
 
       <Space h="md" />
@@ -121,4 +139,5 @@ export interface SurveyCardProps {
   editable: boolean;
   onEnter: () => void;
   onAfterSave?: () => void;
+  onDelete?: () => void;
 }

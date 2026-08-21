@@ -33,4 +33,7 @@ export class PageNetwork {
       true,
       'application/json'
     )();
+
+  public static deletePage = (id: number) =>
+    baseFetcher<string>(`/api/page/${id}`, 'DELETE', true, undefined, undefined, false)();
 }

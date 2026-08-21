@@ -1,7 +1,8 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
-import {Card, Group, Stack, Switch} from '@mantine/core';
-import {useFocusWithin} from '@mantine/hooks';
-import {Condition, Question} from '@/model/question';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { IconTrash } from '@tabler/icons-react';
+import { ActionIcon, Card, Group, Stack, Switch } from '@mantine/core';
+import { useFocusWithin } from '@mantine/hooks';
+import { Condition, Question } from '@/model/question';
 import ChoiceOptionsEditor from './ChoiceOptionsEditor';
 import ConditionEditor from './ConditionEditor';
 import QuestionTypeAndScore from './QuestionTypeAndScore';
@@ -73,9 +74,18 @@ export default function QuestionEditor(props: QuestionEditorProps) {
   const handleSave = useCallback(() => {
     debouncedSave();
   }, [debouncedSave]);
-  useEffect(()=>{
+  useEffect(() => {
     handleSave();
   }, [type, title, content, values, answer, allPoints, subPoints, required, conditions]);
+
+  useEffect(
+    () => () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    },
+    []
+  );
 
   // 获取可用于条件的问题列表
   const availableQuestions = props.availableQuestions || [];
@@ -91,7 +101,17 @@ export default function QuestionEditor(props: QuestionEditorProps) {
             subPoints={subPoints}
             setSubPoints={setSubPoints}
           />
-          {props.dragHandle}
+          <Group gap="xs">
+            <ActionIcon
+              color="red"
+              variant="subtle"
+              onClick={props.onDelete}
+              aria-label={`删除问题 ${title}`}
+            >
+              <IconTrash size={18} />
+            </ActionIcon>
+            {props.dragHandle}
+          </Group>
         </Group>
         <TitleAndContentEditor
           title={title}
@@ -146,5 +166,6 @@ export interface QuestionEditorProps {
   question: Question;
   dragHandle?: React.ReactNode;
   onSave: (question: Question) => void;
+  onDelete: () => void;
   availableQuestions?: { id: number; title: string }[];
 }

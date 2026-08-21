@@ -2,7 +2,7 @@ import { Survey } from '@/model/survey';
 import { baseFetcher } from '@/network/base';
 
 export default class SurveyNetwork {
-  public static fetchSurveyList = (page: number, size: number) =>
+  public static fetchSurveyList = (page: number, size: number, search?: string) =>
     baseFetcher<Survey[]>(
       '/api/survey',
       'GET',
@@ -11,6 +11,7 @@ export default class SurveyNetwork {
       new URLSearchParams({
         page: page.toString(),
         size: size.toString(),
+        ...(search?.trim() ? { search: search.trim() } : {}),
       })
     );
 
@@ -27,4 +28,7 @@ export default class SurveyNetwork {
       false,
       'application/json'
     )();
+
+  public static deleteSurvey = (id: number) =>
+    baseFetcher<string>(`/api/survey/${id}`, 'DELETE', true, undefined, undefined, false)();
 }

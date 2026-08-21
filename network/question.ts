@@ -40,4 +40,6 @@ export class QuestionNetwork {
       false,
       'application/json'
     );
+  public static deleteQuestion = (id: number) =>
+    baseFetcher<string>(`/api/question/${id}`, 'DELETE', true, undefined, undefined, false)();
 }

@@ -3,8 +3,19 @@
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
-import { IconGripVertical } from '@tabler/icons-react';
-import { Button, Center, Container, Group, Pagination, Space, Stack } from '@mantine/core';
+import { IconGripVertical, IconTrash } from '@tabler/icons-react';
+import {
+  Button,
+  Center,
+  Container,
+  Group,
+  Pagination,
+  Space,
+  Stack,
+  Text,
+  Tooltip,
+} from '@mantine/core';
+import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
 import QuestionEditor from '@/app/admin/survey/[id]/components/QuestionEditor';
 import RichTextHTMLEditor from '@/components/RichTextHTMLEditor';
@@ -67,25 +78,94 @@ export default function EditSurveyPage() {
     }
   };
 
+  const confirmDeletePage = () => {
+    if (!page.page || page.page.total <= 1) {
+      return;
+    }
+
+    const pageId = page.page.data.id;
+    const pageTitle = page.page.data.title.replace(/<[^>]*>/g, '');
+    modals.openConfirmModal({
+      title: '删除页面',
+      children: <Text size="sm">确定删除“{pageTitle}”吗？该页面内的所有问题都会永久删除。</Text>,
+      labels: { confirm: '确认删除', cancel: '取消' },
+      confirmProps: { color: 'red' },
+      onConfirm: async () => {
+        try {
+          await PageNetwork.deletePage(pageId);
+          const nextIndex = Math.min(pageIndex, page.page!.total - 2);
+          if (nextIndex === pageIndex) {
+            await page.mutate();
+          } else {
+            setPageIndex(nextIndex);
+          }
+          notifications.show({ title: '删除成功', message: '页面已删除', color: 'green' });
+        } catch {
+          notifications.show({ title: '删除失败', message: '无法删除页面', color: 'red' });
+        }
+      },
+    });
+  };
+
+  const confirmDeleteQuestion = (question: Question) => {
+    modals.openConfirmModal({
+      title: '删除问题',
+      children: <Text size="sm">确定删除“{question.content.title}”吗？此操作无法撤销。</Text>,
+      labels: { confirm: '确认删除', cancel: '取消' },
+      confirmProps: { color: 'red' },
+      onConfirm: async () => {
+        const previousQuestions = questions.questionList;
+        questions.mutate(
+          previousQuestions?.filter((item) => item.id !== question.id),
+          false
+        );
+        try {
+          await QuestionNetwork.deleteQuestion(question.id);
+          notifications.show({ title: '删除成功', message: '问题已删除', color: 'green' });
+        } catch {
+          await questions.mutate(previousQuestions, false);
+          notifications.show({ title: '删除失败', message: '无法删除问题', color: 'red' });
+        }
+      },
+    });
+  };
+
   return (
     <div>
       <Container w="80%">
         <Space h={50} />
-        {page.page?.data.title && (
-          <RichTextHTMLEditor
-            content={page.page?.data.title}
-            setContent={(content) => {
-              if (page.page) {
-                PageNetwork.savePage({
-                  ...page.page.data,
-                  title: content,
-                }).then(() => {
-                  // 刷新页面数据，强制重新验证
-                  return page.mutate(undefined, { revalidate: true });
-                });
-              }
-            }}
-          />
+        {page.page && (
+          <Stack>
+            <RichTextHTMLEditor
+              content={page.page.data.title}
+              setContent={(content) => {
+                if (page.page) {
+                  PageNetwork.savePage({
+                    ...page.page.data,
+                    title: content,
+                  }).then(() => {
+                    // 刷新页面数据，强制重新验证
+                    return page.mutate(undefined, { revalidate: true });
+                  });
+                }
+              }}
+            />
+            <Group justify="flex-end">
+              <Tooltip label={page.page.total <= 1 ? '问卷至少需要保留一个页面' : '删除当前页面'}>
+                <div>
+                  <Button
+                    color="red"
+                    variant="light"
+                    leftSection={<IconTrash size={16} />}
+                    onClick={confirmDeletePage}
+                    disabled={page.page.total <= 1}
+                  >
+                    删除页面
+                  </Button>
+                </div>
+              </Tooltip>
+            </Group>
+          </Stack>
         )}
 
         <Space h={20} />
@@ -142,6 +222,7 @@ export default function EditSurveyPage() {
                             // 发送网络请求，但不强制刷新UI
                             QuestionNetwork.modifyQuestion(updatedQuestion)();
                           }}
+                          onDelete={() => confirmDeleteQuestion(question)}
                         />
                       </div>
                     )}
