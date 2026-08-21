@@ -38,7 +38,7 @@ export default function TosPage() {
         </Title>
         <Title
           order={3}
-          onClick={() => window.open('https://klpbbs.us/thread-65605-1-1.html', '_blank')}
+          onClick={() => window.open('https://klpbbs.com/thread-65605-1-1.html', '_blank')}
           style={{ cursor: 'pointer' }}
         >
           苦力怕论坛总坛规

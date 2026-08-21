@@ -31,23 +31,23 @@
 
 - **zrll_** 前端, 后端, 测试
 	- [GitHub](https://github.com/zrll12)
-	- [苦力怕论坛](https://klpbbs.us/?922084)
+	- [苦力怕论坛](https://klpbbs.com/?922084)
 
 - **Snowball_233** 前端, CI/CD, 运维, 文档
 	- [GitHub](https://github.com/SnowballXueQiu)
-	- [苦力怕论坛](https://klpbbs.us/?1082463)
+	- [苦力怕论坛](https://klpbbs.com/?1082463)
 
 - **M397749490** CI/CD, 运维
 	- [GitHub](https://github.com/M397749490)
-	- [苦力怕论坛](https://klpbbs.us/?32980)
+	- [苦力怕论坛](https://klpbbs.com/?32980)
 
 - **damesck** 前端, 文档
 	- [GitHub](https://github.com/damesck233)
-	- [苦力怕论坛](https://klpbbs.us/?6173)
+	- [苦力怕论坛](https://klpbbs.com/?6173)
 
 - **GaoNeng-wWw** 前端
 	- [GitHub](https://github.com/GaoNeng-wWw)
 
 - **苦力怕纸** API提供
     - [GitHub](https://github.com/klpbbs)
-    - [苦力怕论坛](https://klpbbs.us/?1)
+    - [苦力怕论坛](https://klpbbs.com/?1)

@@ -18,7 +18,7 @@ export default function Footer() {
                 </a>
                 &nbsp;|&nbsp;
                 <a
-                  href="https://klpbbs.us"
+                  href="https://klpbbs.com"
                   target="_blank"
                   rel="noreferrer"
                   style={{ textDecoration: 'none' }}

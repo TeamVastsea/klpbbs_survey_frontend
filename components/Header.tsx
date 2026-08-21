@@ -15,7 +15,7 @@ interface Link {
 
 const links: Link[] = [
     { link: '/', label: '首页' },
-    { link: 'https://klpbbs.us', label: '主站' },
+    { link: 'https://klpbbs.com', label: '主站' },
     { link: '/about', label: '关于' },
     { link: '/tos', label: '条款' },
 ];
