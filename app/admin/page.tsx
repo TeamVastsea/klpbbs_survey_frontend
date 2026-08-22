@@ -8,16 +8,26 @@ import {
   Divider,
   Group,
   Image,
-  Progress,
   SimpleGrid,
   Space,
   Stack,
   Text,
   Title,
 } from '@mantine/core';
+import { useAdminStatistics } from '@/data/use-statistics';
 
 export default function AdminPage() {
   const router = useRouter();
+  const { statistics, isLoading, isError } = useAdminStatistics();
+  const displayValue = (value?: number) => {
+    if (isError) {
+      return '加载失败';
+    }
+    if (isLoading || value === undefined) {
+      return '加载中...';
+    }
+    return value.toLocaleString('zh-CN');
+  };
 
   return (
     <Center>
@@ -47,7 +57,8 @@ export default function AdminPage() {
               <Image src="/survey.svg" />
 
               <Text>
-                共{}个问卷，{}个可用
+                共 {displayValue(statistics?.surveys)} 个问卷，
+                {displayValue(statistics?.available_surveys)} 个可用
               </Text>
 
               <Button onClick={() => router.push('/admin/survey')}>进入</Button>
@@ -61,12 +72,7 @@ export default function AdminPage() {
 
               <Image src="/judge.svg" />
 
-              <Group justify="flex-end" align="center" grow>
-                <Progress value={50} />
-                <Text>
-                  {}/{}个提交
-                </Text>
-              </Group>
+              <Text>共 {displayValue(statistics?.submissions)} 个提交（一周内 {displayValue(statistics?.recent_submissions)} 个）</Text>
 
               <Button onClick={() => router.push('/admin/score')}>进入</Button>
             </Stack>
@@ -79,7 +85,7 @@ export default function AdminPage() {
 
               <Image src="/user.svg" />
 
-              <Text>{}个用户</Text>
+              <Text>{displayValue(statistics?.users)} 个用户</Text>
 
               <Button onClick={() => router.push('/admin/user')}>进入</Button>
             </Stack>
